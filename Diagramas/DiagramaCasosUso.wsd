@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+:Usuario: as User << Human >>
+:Main Database: as MySql << Application >>
+:Arduino: as Arduino << Application >>
+
+(Loguear en la app) as (Login)
+(Manejar luces) as (Luces)
+(Manejar calefaccion) as (Calefaccion)
+(Manejar persianas) as (Persianas)
+(Planificar luces) as (PlanLuces)
+(Planificar calefaccion) as (PlanCalefaccion)
+(Planificar persianas) as (PlanPersianas)
+(Registrar dispositivo) as (Registrar)
+
+User --> (Login)
+User --> (Luces)
+User --> (PlanLuces)
+User --> (Calefaccion)
+User --> (PlanCalefaccion)
+User --> (Persianas)
+User --> (PlanPersianas)
+User --> (Registrar)
+(Login) <-- MySql
+(Luces) <-- Arduino
+(Calefaccion) <-- Arduino
+(PlanCalefaccion) <-- Arduino
+(PlanLuces) <-- Arduino
+(Persianas) <-- Arduino
+(PlanPersianas) <-- Arduino
+@enduml

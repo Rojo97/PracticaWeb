@@ -1,0 +1,15 @@
+@startuml
+
+title Relationships - Class Diagram
+
+class Arduino
+class Usuario
+class Actuadores
+class Sensores
+class Servicio_web as "Servicio Web"
+
+Arduino -- Usuario : Tiene <
+
+
+
+@enduml
