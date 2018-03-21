@@ -5,7 +5,7 @@
 Para la correcta visualizacion de los archivos html se debe descargar la ultima vesión de el template adminLTE del repositorio:
 https://github.com/almasaeed2010/AdminLTE/releases
 
-Al introducir el archivo html que se cree en la carpeta raiz de adminLTE se podrá ver correctamente.
+Al introducir el archivo html que se cree en la carpeta raiz de adminLTE se podrá ver correctamente, para que se vea el logo tambien será necesario meter en la raíz la imagen con él.
 
 ### Uso del repositorio
 
