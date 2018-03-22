@@ -1,10 +1,13 @@
 @startuml
 left to right direction
 :Usuario: as User << Human >>
-:Main Database: as MySql << Application >>
-:Arduino: as Arduino << Application >>
+':Main Database: as MySql << Application >>
+':Arduino: as Arduino << Application >>
 
 (Loguear en la app) as (Login)
+(Registrarse en la app) as (Registro)
+(Recuperar contraseña) as (Recup)
+
 (Manejar luces) as (Luces)
 (Manejar calefaccion) as (Calefaccion)
 (Manejar persianas) as (Persianas)
@@ -12,8 +15,16 @@ left to right direction
 (Planificar calefaccion) as (PlanCalefaccion)
 (Planificar persianas) as (PlanPersianas)
 (Registrar dispositivo) as (Registrar)
+(Crear grupo) as (CGrupo)
+(Introducir datos de sensores) as (datos)
+(Gestionar usuarios) as (usuarios)
+(Gestionar grupos) as (grupos)
+(Consultardatos de sensores) as (ConsDatos)
+
 
 User --> (Login)
+User --> (Registro)
+User --> (Recup)
 User --> (Luces)
 User --> (PlanLuces)
 User --> (Calefaccion)
@@ -21,11 +32,16 @@ User --> (PlanCalefaccion)
 User --> (Persianas)
 User --> (PlanPersianas)
 User --> (Registrar)
-(Login) <-- MySql
-(Luces) <-- Arduino
-(Calefaccion) <-- Arduino
-(PlanCalefaccion) <-- Arduino
-(PlanLuces) <-- Arduino
-(Persianas) <-- Arduino
-(PlanPersianas) <-- Arduino
+User --> (CGrupo)
+User --> (datos)
+User --> (usuarios)
+User --> (grupos)
+User --> (ConsDatos)
+'(Login) <-- MySql
+'(Luces) <-- Arduino
+'(Calefaccion) <-- Arduino
+'(PlanCalefaccion) <-- Arduino
+'(PlanLuces) <-- Arduino
+'(Persianas) <-- Arduino
+'(PlanPersianas) <-- Arduino
 @enduml
