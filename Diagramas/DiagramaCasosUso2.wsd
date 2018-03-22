@@ -1,0 +1,28 @@
+@startuml
+left to right direction
+:Usuario: as User << Human >>
+':Main Database: as MySql << Application >>
+':Arduino: as Arduino << Application >>
+
+(Planificar persianas) as (PlanPersianas)
+(Registrar dispositivo) as (Registrar)
+(Crear grupo) as (CGrupo)
+(Introducir datos de sensores) as (datos)
+(Modificar usuarios) as (usuarios)
+(Eliminar usuario) as (eusuarios)
+(Gestionar grupos) as (grupos)
+(Consultar datos de sensores) as (ConsDatos)
+(Crear nuevo programa de control) as (Control)
+
+
+User --> (PlanPersianas)
+User --> (Registrar)
+User --> (CGrupo)
+User --> (datos)
+User --> (usuarios)
+User --> (eusuarios)
+User --> (grupos)
+User --> (ConsDatos)
+User --> (Control)
+
+@enduml
