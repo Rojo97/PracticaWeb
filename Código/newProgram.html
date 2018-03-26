@@ -22,10 +22,15 @@
   <link rel="stylesheet" href="bower_components/morris.js/morris.css">
   <!-- jvectormap -->
   <link rel="stylesheet" href="bower_components/jvectormap/jquery-jvectormap.css">
-  <!-- Date Picker -->
-  <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <!-- Bootstrap time Picker -->
+  <link rel="stylesheet" href="plugins/timepicker/bootstrap-timepicker.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
@@ -169,129 +174,195 @@
     <div class="content-wrapper">
       <section class="content-header" style="margin-bottom:5%">
         <h1 class="logo-lg" style="margin-top:1%">
-          <b>Registrar dispositivo</b>
+          <b>Añadir programa</b>
         </h1>
         <ol class="breadcrumb">
           <li>
             <a href="#">
-              <i class="fa fa-compass"></i>Registrar dispositivo</a>
+              <i class="fa fa-hourglass"></i>Añadir programa</a>
           </li>
         </ol>
       </section>
       <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
-      <div style="margin-left:5%; margin-right:5%">
-        <div class="box box-default" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%">
-          <div class="col-md-50" >
+      <div class="col-md-50">
+        <div style="margin-left:5%; margin-right:5%">
+          <div class="box box-default" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%">
             <!-- Nombre del dispositivo -->
-            <div class="form-group">
-              <label for="dispName">Nombre del dispositivo</label>
-              <input type="email" class="form-control" id="dispName" placeholder="Nombre del dispositivo">
+            <div class="form-group imput-lg">
+              <label for="progName">Nombre del programa</label>
+              <input type="text" class="form-control" id="progName" placeholder="Nombre del programa">
             </div>
-            <!-- Caja tipo sensor -->
             <div class="form-group">
-              <label>Tipo</label>
-              <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
-                <option selected="selected">Controlador</option>
-                <option>Sensor</option>
-                <option>Actuador</option>
+              <label for="progDesc">Descripción</label>
+              <input type="text" class="form-control" id="progDesc" placeholder="Descripción">
+            </div>
+            <!-- Caja grupos -->
+            <form role="form">
+              <label for="groups">Grupos</label>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Casa completa
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Cocina
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Salón
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Cochera
+                </label>
+              </div>
+            </form>
+            <!-- Caja Actuadores -->
+            <div class="form-group">
+              <label>Actuadores</label>
+              <select class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="Seleccione los Actuadores" style="width: 100%;"
+                tabindex="-1" aria-hidden="true">
+                <option>Luz-1</option>
+                <option>Luz-2</option>
+                <option>Termostato-1</option>
+                <option>Termostato-2</option>
+                <option>Persiana-1</option>
+                <option>Persiana-2</option>
+                <option>Persiana-3</option>
               </select>
-              <span class="select2 select2-container select2-container--default select2-container--below" dir="ltr" style="width: 100%;">
             </div>
-            <!-- /.form-group -->
-          </div>
-          <!-- /.col -->
-          <div class="col-md-50">
-            <!-- Caja tipo sensor -->
+            <!--Caja Sensores -->
             <div class="form-group">
-              <label>Función</label>
-              <select class="form-control select2 select2-hidden-accessible" style="width: 100%" tabindex="-1" aria-hidden="true">
-                <option selected="selected">Temperatura</option>
-                <option>Persiana</option>
-                <option>Persiana</option>
-                <option>Luminosidad</option>
-                <option>Termostato</option>
-                <option>Luz</option>
-                <option>Persiana</option>
+              <label>Sensores</label>
+              <select class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="Seleccione las luces" style="width: 100%;"
+                tabindex="-1" aria-hidden="true">
+                <option>Luminosidad-1</option>
+                <option>Luminosidad-2</option>
+                <option>Luminosidad-3</option>
+                <option>Temperatura-1</option>
+                <option>Temperatura-2</option>
               </select>
-              <span class="select2 select2-container select2-container--default select2-container--below" dir="ltr" style="width: 100%">
             </div>
-            <!-- Grupo -->
+            <!--Caja hora Inicio -->
             <div class="form-group">
-              <label>Grupo</label>
-              <select class="form-control select2 select2-hidden-accessible" style="width: 100%" tabindex="-1" aria-hidden="true">
-                <option selected="selected">Sin grupo</option>
-                <option>Grupo 1</option>
-                <option>Grupo 2</option>
-                <option>Grupo 3</option>
-              </select>
-              <span class="select2 select2-container select2-container--default select2-container--below" dir="ltr" style="width: 100%;">
+              <label>Hora inicio</label>
+              <div class="input-group">
+                <input type="text" class="form-control timepicker">
+                <div class="input-group-addon">
+                  <i class="fa fa-clock-o"></i>
+                </div>
+              </div>
+              <!--Caja hora final -->
+              <div class="form-group">
+                <label>Hora final</label>
+                <div class="input-group">
+                  <input type="text" class="form-control timepicker">
+                  <div class="input-group-addon">
+                    <i class="fa fa-clock-o"></i>
+                  </div>
+                </div>
+              </div>
+              
+              
             </div>
-            <!-- /.form-group -->
-
-            <!-- /.col -->
           </div>
-        </div>
-        <div class="box-footer" style="padding-left:1%; padding-right:1%">
-          <button type="registrar" class="btn btn-primary">Registrar</button>
-        </div>
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-          <!-- Create the tabs -->
-          <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-          </ul>
-          <!-- Tab panes -->
-          <div class="tab-content">
-            <!-- Home tab content -->
-            <div id="control-sidebar-home-tab">
-              </form>
+          <div class="box-footer" style="padding-left:1%; padding-right:1%">
+            <button type="raddButton" class="btn btn-primary">Añadir</button>
+          </div>
+          <!-- Control Sidebar -->
+          <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+              <!-- Home tab content -->
+              <div id="control-sidebar-home-tab">
+                </form>
+              </div>
+              <!-- /.tab-pane -->
             </div>
-            <!-- /.tab-pane -->
-          </div>
-        </aside>
-        <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed
+          </aside>
+          <!-- /.control-sidebar -->
+          <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
-        <div class="control-sidebar-bg"></div>
-      </div>
-      <!-- ./wrapper -->
+          <div class="control-sidebar-bg"></div>
+        </div>
+        <!-- ./wrapper -->
 
-      <!-- jQuery 3 -->
-      <script src="bower_components/jquery/dist/jquery.min.js"></script>
-      <!-- jQuery UI 1.11.4 -->
-      <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-      <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-      <script>
-        $.widget.bridge('uibutton', $.ui.button);
-      </script>
-      <!-- Bootstrap 3.3.7 -->
-      <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-      <!-- Morris.js charts -->
-      <script src="bower_components/raphael/raphael.min.js"></script>
-      <script src="bower_components/morris.js/morris.min.js"></script>
-      <!-- Sparkline -->
-      <script src="bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
-      <!-- jvectormap -->
-      <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-      <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-      <!-- jQuery Knob Chart -->
-      <script src="bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
-      <!-- daterangepicker -->
-      <script src="bower_components/moment/min/moment.min.js"></script>
-      <script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-      <!-- datepicker -->
-      <script src="bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-      <!-- Bootstrap WYSIHTML5 -->
-      <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-      <!-- Slimscroll -->
-      <script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-      <!-- FastClick -->
-      <script src="bower_components/fastclick/lib/fastclick.js"></script>
-      <!-- AdminLTE App -->
-      <script src="dist/js/adminlte.min.js"></script>
-      <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-      <script src="dist/js/pages/dashboard.js"></script>
-      <!-- AdminLTE for demo purposes -->
-      <script src="dist/js/demo.js"></script>
+        <!-- jQuery 3 -->
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <!-- jQuery UI 1.11.4 -->
+        <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+        <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+        <script>
+          $.widget.bridge('uibutton', $.ui.button);
+        </script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <!-- Morris.js charts -->
+        <script src="bower_components/raphael/raphael.min.js"></script>
+        <script src="bower_components/morris.js/morris.min.js"></script>
+        <!-- Sparkline -->
+        <script src="bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+        <!-- jvectormap -->
+        <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+        <!-- jQuery Knob Chart -->
+        <script src="bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
+        <!-- daterangepicker -->
+        <script src="bower_components/moment/min/moment.min.js"></script>
+        <script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+        <!-- datepicker -->
+        <script src="bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+        <!-- Bootstrap WYSIHTML5 -->
+        <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+        <!-- Slimscroll -->
+        <script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="bower_components/fastclick/lib/fastclick.js"></script>
+        <!-- AdminLTE App -->
+        <script src="dist/js/adminlte.min.js"></script>
+        <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+        <script src="dist/js/pages/dashboard.js"></script>
+        <!-- AdminLTE for demo purposes -->
+        <script src="dist/js/demo.js"></script>
+        <!-- Select2 -->
+        <script src="bower_components/select2/dist/js/select2.full.min.js"></script>
+        <!-- InputMask -->
+        <script src="plugins/input-mask/jquery.inputmask.js"></script>
+        <script src="plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+        <script src="plugins/input-mask/jquery.inputmask.extensions.js"></script>
+        <!-- bootstrap datepicker -->
+        <script src="bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+        <!-- bootstrap color picker -->
+        <script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+        <!-- bootstrap time picker -->
+        <script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
+        <!-- SlimScroll -->
+        <script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+        <script src="bower_components/fastclick/lib/fastclick.js"></script>
+        <script>
+          $.widget.bridge('uibutton', $.ui.button);
+        </script>
+        <!-- jvectormap -->
+        <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+        <!-- jQuery Knob Chart -->
+        <script src="bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
+        <script>
+          $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+            //Timepicker
+            $('.timepicker').timepicker({
+              showInputs: false
+            })
+          })
+        </script>
 </body>
 
 </html>
