@@ -28,6 +28,10 @@
   <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -100,7 +104,7 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
           <div style="width:50%; margin:auto" class="img-responsive">
-            <img src="DomoticTrails.png" class="img-circle" style="width:100%; margin-top: 15%; margin-bottom: 15%">
+            <img src="../Imagenes/DomoticTrails.png" class="img-circle" style="width:100%; margin-top: 15%; margin-bottom: 15%">
           </div>
           <li class="header">CONTROL</li>
           <li class="treeview">
@@ -133,7 +137,7 @@
             <ul class="treeview-menu">
               <li>
                 <a href="pages/layout/top-nav.html">
-                  <i class="fa fa-circle-o"></i> Ver Programa</a>
+                  <i class="fa fa-circle-o"></i> Ver Programas</a>
               </li>
               <li>
                 <a href="pages/layout/boxed.html">
@@ -171,28 +175,41 @@
       <!-- Content Header (Page header) -->
       <section class="content-header" style="margin-bottom:5%">
         <h1 class="logo-lg">
-          <b>Programas</b>
+          <b>Ver programas</b>
         </h1>
         <ol class="breadcrumb">
-          <li>
-            <a href="#">
-              <i class="fa fa-clock-o"></i> Programas</a>
-          </li>
+          <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+          <li><a href="#">Programas</a></li>
+          <li class="active">Ver programas</li>
         </ol>
       </section>
 
       <section class="content">
-        <div style="margin:2%; padding-left:10%;padding-right:10%">
+        <div style="padding-left:10%;padding-right:10%">
+          <div class="row-md-20">
+            <div class="form-group">
+              <label>Grupo</label>
+              <select class="form-control select2" style="width: 100%;">
+                <option selected="selected">Todos los grupos</option>
+                <option>Cocina</option>
+                <option>Cocina+Salon</option>
+                <option>Cochera</option>
+                <option>Salon</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Desplegable -->
           <div class="box box-default">
             <div class="box-header with-border" style="padding:0">
-              <div class="info-box bg-blue" style="margin:0">
+              <div class="info-box bg-green" style="margin:0">
                 <span class="info-box-icon">
                   <i class="fa fa-clock-o"></i>
                 </span>
 
                 <div class="info-box-content">
                   <span class="info-box-number">Luces del salón</span>
+                  <span class="info-box-text"><small>Salón</small></span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -205,8 +222,61 @@
               <!-- /.box-tools -->
             </div>
             <!-- /.box-header -->
-            <div class="box-body" style="display: none;">
-              Cuerpo del desplegable
+            <div class="box-body" style="display: none; margin-top:2%">
+              <div class="row">
+                <div class="col-md-2"  style="margin-left:7%">
+                  <strong><i class="fa"></i> <big>Luces</big></strong>
+
+                  <p class="text-muted">
+                    <ul>
+                      <li>Luz Salon 1</li>
+                      <li>Luz Salon 2</li>
+                      <li>Luz Salon 3</li>
+                    </ul>
+                  </p>
+                </div>
+                <div class="col-md-2">
+                  <strong><i class="fa"></i> <big>Persianas</big></strong>
+
+                  <p class="text-muted">
+                    <ul>
+                      <li>Persiana 1</li>
+                      <li>Persiana 2</li>
+                    </ul>
+                  </p>
+                </div>
+                <div class="col-md-2">
+                  <strong><i class="fa"></i> <big>Termostatos</big></strong>
+
+                  <p class="text-muted">
+                    <ul>
+                      <li>Termostato 1</li>
+                    </ul>
+                  </p>
+                </div>
+                <div class="col-md-2">
+                  <strong><i class="fa"></i> <big>Sensores luminosidad</big></strong>
+
+                  <p class="text-muted">
+                    <ul>
+                      <li>Luminosidad 1</li>
+                      <li>Luminosidad 2</li>
+                    </ul>
+                  </p>
+                </div>
+                <div class="col-md-2">
+                  <strong><i class="fa"></i> <big>Termometros</big></strong>
+
+                  <p class="text-muted">
+                    <ul>
+                      <li>Termometro 1</li>
+                    </ul>
+                  </p>
+                </div>
+                <hr>
+              </div>
+              <button type="submit" class="btn btn-default">Eliminar</button>
+              <button type="submit" class="btn btn-info pull-right bg-green">Editar</button>
             </div>
             <!-- /.box-body -->
           </div>
@@ -216,7 +286,7 @@
           <!-- Desplegable -->
           <div class="box box-default">
             <div class="box-header with-border" style="padding:0">
-              <div class="info-box bg-yellow" style="margin:0">
+              <div class="info-box bg-green" style="margin:0">
                 <span class="info-box-icon">
                   <i class="fa fa-clock-o"></i>
                 </span>
@@ -239,8 +309,7 @@
               Cuerpo del desplegable
             </div>
             <!-- /.box-body -->
-
-            <!-- /Desplegable -->
+          </div>
 
             <!-- Desplegable -->
             <div class="box box-default">
@@ -275,7 +344,7 @@
             <!-- Desplegable -->
             <div class="box box-default">
               <div class="box-header with-border" style="padding:0">
-                <div class="info-box bg-red" style="margin:0">
+                <div class="info-box bg-green" style="margin:0">
                   <span class="info-box-icon">
                     <i class="fa fa-clock-o"></i>
                   </span>
@@ -305,7 +374,7 @@
             <!-- Desplegable -->
             <div class="box box-default">
               <div class="box-header with-border" style="padding:0">
-                <div class="info-box bg-blue" style="margin:0">
+                <div class="info-box bg-green" style="margin:0">
                   <span class="info-box-icon">
                     <i class="fa fa-clock-o"></i>
                   </span>
@@ -334,7 +403,7 @@
             <!-- Desplegable -->
             <div class="box box-default">
               <div class="box-header with-border" style="padding:0">
-                <div class="info-box bg-yellow" style="margin:0">
+                <div class="info-box bg-green" style="margin:0">
                   <span class="info-box-icon">
                     <i class="fa fa-clock-o"></i>
                   </span>
@@ -421,6 +490,15 @@
     <script src="dist/js/pages/dashboard.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="dist/js/demo.js"></script>
+    <!-- Select2 -->
+    <script src="bower_components/select2/dist/js/select2.full.min.js"></script>
+    <!-- Page script -->
+    <script>
+      $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+      })
+    </script>
 </body>
 
 </html>
