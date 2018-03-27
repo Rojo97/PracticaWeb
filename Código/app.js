@@ -68,7 +68,7 @@ Vue.component("menulateral", {
           </a>
           <ul class="treeview-menu">
             <li>
-              <a href="grupos.html">
+              <a href="index.html">
                 <i class="fa fa-circle-o"></i> Ver grupos</a>
             </li>
             <li>
@@ -76,6 +76,12 @@ Vue.component("menulateral", {
                 <i class="fa fa-circle-o"></i> Añadir grupos</a>
             </li>
           </ul>
+        </li>
+        <li>
+          <a href="addSensor.html">
+            <i class="fa fa-plus"></i>
+            <span>Nuevo dispositivo</span>
+          </a>
         </li>
         <li class="treeview">
           <a href="#">
