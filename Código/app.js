@@ -23,13 +23,13 @@ Vue.component("menulateral", {
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <span class="hidden-xs">Fernando Sanz</span>
+              <span class="hidden-xs">Antonio</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
                 <p style="margin-top:25%">
-                  Fernando Sanz
+                  Antonio
                 </p>
               </li>
               <!-- Menu Footer-->
