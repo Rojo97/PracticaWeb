@@ -41,7 +41,7 @@
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-  <div class="wrapper" id="app">
+  <div class="wrapper" id="groups">
 
     <menulateral></menulateral>
 
@@ -64,99 +64,7 @@
 
 
       <section class="content">
-
-
-        <!-- Info boxes -->
-
-        <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
-          
-          <a href="grupos.html">
-            <div class="info-box bg-green">
-              <span class="info-box-icon">
-                <i class="fa fa-calendar-minus-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Todos</span>
-                <span class="info-box-text">26 dispositivos</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-          </a>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-
-        <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
-          <a href="grupos.html">
-            <div class="info-box bg-green">
-              <span class="info-box-icon">
-                <i class="fa fa-home"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Salón</span>
-                <span class="info-box-text">5 dispositivos</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-          </a>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
-          <a href="grupos.html">
-            <div class="info-box bg-green">
-              <span class="info-box-icon">
-                <i class="fa fa-home"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Cocina</span>
-                <span class="info-box-text">2 dispositivos</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-          </a>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-
-        <!-- fix for small devices only -->
-        <div class="clearfix visible-sm-block"></div>
-
-        <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
-          <a href="grupos.html">
-            <div class="info-box bg-green">
-              <span class="info-box-icon">
-                <i class="fa fa-home"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Pasillo</span>
-                <span class="info-box-text">3 dispositivos</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-          </a>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
-          <div class="info-box bg-green">
-            <span class="info-box-icon">
-              <i class="fa fa-lightbulb-o"></i>
-            </span>
-
-            <div class="info-box-content">
-              <span class="info-box-number">Luces</span>
-              <span class="info-box-text">14 dispositivos</span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
+        <groupdisplay v-bind:groups="groups"></groupdisplay>
       </section>
 
 
@@ -219,7 +127,7 @@
     <!-- AdminLTE for demo purposes -->
     <script src="dist/js/demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="app.js"></script>
+    <script src="groups.js"></script>
 </body>
 
 </html>

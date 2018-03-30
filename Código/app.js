@@ -121,7 +121,8 @@ Vue.component("menulateral", {
   </aside>
   </div>`
 });
-
 var app = new Vue({
   el: "#app"
+  
 });
+
