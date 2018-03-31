@@ -25,7 +25,7 @@ db.init_app(app)'''
 
 
 @app.route('/groups')
-def open_groups():
+def groups_template():
     groups = [
       { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
       { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
@@ -39,28 +39,26 @@ def open_groups():
         groups=groups
     )
 
+@app.route('/newGroup')
+def new_groups_template():
+    groups = [
+      { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
+      { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
+      { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
+      { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
+      { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
+    ]
+    return render_template(
+        'new-group.html',
+        domain=DOMAIN,
+        groups=groups
+    )
 
-'''@socketio.on('new_message')
-def new_message(message):
+@socketio.on('createGroup')
+def greateGroup(group):
     # Send message to alls users
-    emit('channel-' + str(message['channel']), {
-        'username': message['username'],
-        'text': message['text']
-    },
-        broadcast=True
-    )
-    # Save message
-    my_new_chat = Chat(
-        username=message['username'],
-        text=message['text'],
-        channel=message['channel']
-    )
-    db.session.add(my_new_chat)
-    try:
-        db.session.commit()
-    except:
-        db.session.rollback()
+    print(group)
 
-'''
+
 if __name__ == '__main__':
     socketio.run(app)

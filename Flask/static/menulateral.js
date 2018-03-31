@@ -68,11 +68,11 @@ Vue.component("menulateral", {
             </a>
             <ul class="treeview-menu">
               <li>
-                <a href="index.html">
+                <a href="groups">
                   <i class="fa fa-circle-o"></i> Ver grupos</a>
               </li>
               <li>
-                <a href="new-group.html">
+                <a href="newGroup">
                   <i class="fa fa-circle-o"></i> Añadir grupos</a>
               </li>
             </ul>
