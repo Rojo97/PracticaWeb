@@ -35,10 +35,10 @@ Vue.component("menulateral", {
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-left">
-                      <a href="cambiarPassword.html" class="btn btn-default btn-flat">Cambiar contraseña</a>
+                      <a href="changePass" class="btn btn-default btn-flat">Cambiar contraseña</a>
                   </div>
                   <div class="pull-right">
-                      <a href="login2.html" class="btn btn-default btn-flat">Salir</a>
+                      <a href="/" class="btn btn-default btn-flat">Salir</a>
                   </div>
                 </li>
               </ul>
@@ -78,7 +78,7 @@ Vue.component("menulateral", {
             </ul>
           </li>
           <li>
-            <a href="addSensor.html">
+            <a href="newSensor">
               <i class="fa fa-plus"></i>
               <span>Nuevo dispositivo</span>
             </a>
@@ -93,24 +93,24 @@ Vue.component("menulateral", {
             </a>
             <ul class="treeview-menu">
               <li>
-                <a href="programas.html">
+                <a href="programs">
                   <i class="fa fa-circle-o"></i> Ver Programa</a>
               </li>
               <li>
-                <a href="newProgram.html">
+                <a href="newProgram">
                   <i class="fa fa-circle-o"></i> Añadir programa</a>
               </li>
             </ul>
           </li>
           <li>
-            <a href="gestionarUsuariosGrupos.html">
+            <a href="manageUserGroups">
               <i class="fa fa-users"></i>
               <span>Usuarios</span>
             </a>
           </li>
           <li class="header">DEBUG</li>
           <li>
-            <a href="introducirDatos.html">
+            <a href="newData">
               <i class="fa fa-sliders"></i>
               <span>Añadir medidas manualmente</span>
             </a>

@@ -38,22 +38,84 @@ def groups_template():
         domain=DOMAIN,
         groups=groups
     )
-
 @app.route('/newGroup')
 def new_groups_template():
-    groups = [
-      { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
-      { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
-      { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
-      { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
-      { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
-    ]
     return render_template(
         'new-group.html',
         domain=DOMAIN,
-        groups=groups
+    )
+@app.route('/')
+def login_template():
+    return render_template(
+        'login2.html',
+        domain=DOMAIN,
+    )
+@app.route('/register')
+def register_template():
+    return render_template(
+        'registro2.html',
+        domain=DOMAIN,
+    )
+@app.route('/recoverPass')
+def recover_password_template():
+    return render_template(
+        'recuperarPassword.html',
+        domain=DOMAIN,
     )
 
+@app.route('/newSensor')
+def new_sensor_template():
+    return render_template(
+        'addSensor.html',
+        domain=DOMAIN,
+    )
+
+@app.route('/addToGroup')
+def add_to_group_template():
+    return render_template(
+        'addToGroup.html',
+        domain=DOMAIN,
+    )
+
+@app.route('/changePass')
+def change_pass_template():
+    return render_template(
+        'cambiarPassword.html',
+        domain=DOMAIN,
+    )
+
+@app.route('/manageUserGroups')
+def manage_user_groups_template():
+    return render_template(
+        'gestionarUsuariosGrupos.html',
+        domain=DOMAIN,
+    )
+
+@app.route('/group')
+def group_template():
+    return render_template(
+        'grupos.html',
+        domain=DOMAIN,
+    )
+
+@app.route('/newData')
+def new_data_template():
+    return render_template(
+        'introducirDatos.html',
+        domain=DOMAIN,
+    )
+@app.route('/newProgram')
+def new_program_template():
+    return render_template(
+        'newProgram.html',
+        domain=DOMAIN,
+    )
+@app.route('/programs')
+def programs_template():
+    return render_template(
+        'programas.html',
+        domain=DOMAIN,
+    )
 @socketio.on('createGroup')
 def greateGroup(group):
     # Send message to alls users
