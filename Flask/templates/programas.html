@@ -1,10 +1,7 @@
 {% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
 
 <div class="wrapper" id="app">
-
   <menulateral></menulateral>
-
-
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
@@ -30,292 +27,70 @@
         <div class="row-md-20">
           <div class="form-group">
             <label>Grupo</label>
-            <select class="form-control select2" style="width: 100%;">
+            <select class="form-control select2" style="width: 100%;" v-model="grupoamostrar">
               <option selected="selected">Todos los grupos</option>
-              <option>Cocina</option>
-              <option>Cocina+Salon</option>
-              <option>Cochera</option>
-              <option>Salon</option>
+              <option v-for="group in groups">[[group]]</option>
             </select>
           </div>
         </div>
+        <programdisplay v-bind:programs="programs" v-bind:grupoamostrar="grupoamostrar"></programdisplay>
 
-        <!-- Desplegable -->
-        <div class="box box-default">
-          <div class="box-header with-border" style="padding:0">
-            <div class="info-box bg-green" style="margin:0">
-              <span class="info-box-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Luces del salón</span>
-                <span class="info-box-text">
-                  <small>Salón</small>
-                </span>
-              </div>
-              <!-- /.info-box-content -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+          <!-- Create the tabs -->
+          <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <!-- Home tab content -->
+            <div id="control-sidebar-home-tab">
+              </form>
             </div>
-
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-plus" style="color:grey"></i>
-              </button>
-            </div>
-            <!-- /.box-tools -->
+            <!-- /.tab-pane -->
           </div>
-          <!-- /.box-header -->
-          <div class="box-body" style="display: none; margin-top:2%">
-            <div class="row">
-              <div class="col-md-2" style="margin-left:7%">
-                <strong>
-                  <i class="fa"></i>
-                  <big>Luces</big>
-                </strong>
-
-                <p class="text-muted">
-                  <ul>
-                    <li>Luz Salon 1</li>
-                    <li>Luz Salon 2</li>
-                    <li>Luz Salon 3</li>
-                  </ul>
-                </p>
-              </div>
-              <div class="col-md-2">
-                <strong>
-                  <i class="fa"></i>
-                  <big>Persianas</big>
-                </strong>
-
-                <p class="text-muted">
-                  <ul>
-                    <li>Persiana 1</li>
-                    <li>Persiana 2</li>
-                  </ul>
-                </p>
-              </div>
-              <div class="col-md-2">
-                <strong>
-                  <i class="fa"></i>
-                  <big>Termostatos</big>
-                </strong>
-
-                <p class="text-muted">
-                  <ul>
-                    <li>Termostato 1</li>
-                  </ul>
-                </p>
-              </div>
-              <div class="col-md-2">
-                <strong>
-                  <i class="fa"></i>
-                  <big>Sensores luminosidad</big>
-                </strong>
-
-                <p class="text-muted">
-                  <ul>
-                    <li>Luminosidad 1</li>
-                    <li>Luminosidad 2</li>
-                  </ul>
-                </p>
-              </div>
-              <div class="col-md-2">
-                <strong>
-                  <i class="fa"></i>
-                  <big>Termometros</big>
-                </strong>
-
-                <p class="text-muted">
-                  <ul>
-                    <li>Termometro 1</li>
-                  </ul>
-                </p>
-              </div>
-              <hr>
-            </div>
-            <button type="submit" class="btn btn-default">Eliminar</button>
-            <button type="submit" class="btn btn-info pull-right bg-green">Editar</button>
-          </div>
-          <!-- /.box-body -->
-        </div>
-
-        <!-- /Desplegable -->
-
-        <!-- Desplegable -->
-        <div class="box box-default">
-          <div class="box-header with-border" style="padding:0">
-            <div class="info-box bg-green" style="margin:0">
-              <span class="info-box-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Luces del pasillo</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-plus" style="color:grey"></i>
-              </button>
-            </div>
-            <!-- /.box-tools -->
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body" style="display: none;">
-            Cuerpo del desplegable
-          </div>
-          <!-- /.box-body -->
-        </div>
-
-        <!-- Desplegable -->
-        <div class="box box-default">
-          <div class="box-header with-border" style="padding:0">
-            <div class="info-box bg-green" style="margin:0">
-              <span class="info-box-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Persianas de la habitación grande</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-plus" style="color:grey"></i>
-              </button>
-            </div>
-            <!-- /.box-tools -->
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body" style="display: none;">
-            Cuerpo del desplegable
-          </div>
-          <!-- /.box-body -->
-        </div>
-
-        <!-- /Desplegable -->
-
-        <!-- Desplegable -->
-        <div class="box box-default">
-          <div class="box-header with-border" style="padding:0">
-            <div class="info-box bg-green" style="margin:0">
-              <span class="info-box-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Temperatura de la cocina</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-plus" style="color:grey"></i>
-              </button>
-            </div>
-            <!-- /.box-tools -->
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body" style="display: none;">
-            Cuerpo del desplegable
-          </div>
-          <!-- /.box-body -->
-        </div>
-
-        <!-- /Desplegable -->
-
-        <!-- Desplegable -->
-        <div class="box box-default">
-          <div class="box-header with-border" style="padding:0">
-            <div class="info-box bg-green" style="margin:0">
-              <span class="info-box-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Persianas de toda la casa</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-plus" style="color:grey"></i>
-              </button>
-            </div>
-            <!-- /.box-tools -->
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body" style="display: none;">
-            Cuerpo del desplegable
-          </div>
-          <!-- /.box-body -->
-        </div>
-        <!-- /Desplegable -->
-
-        <!-- Desplegable -->
-        <div class="box box-default">
-          <div class="box-header with-border" style="padding:0">
-            <div class="info-box bg-green" style="margin:0">
-              <span class="info-box-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Temperatura de habitaciones</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-plus" style="color:grey"></i>
-              </button>
-            </div>
-            <!-- /.box-tools -->
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body" style="display: none;">
-            Cuerpo del desplegable
-          </div>
-          <!-- /.box-body -->
-        </div>
-        <!-- /Desplegable -->
-      </div>
-
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Create the tabs -->
-        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <!-- Home tab content -->
-          <div id="control-sidebar-home-tab">
-            </form>
-          </div>
-          <!-- /.tab-pane -->
-        </div>
-      </aside>
-      <!-- /.control-sidebar -->
-      <!-- Add the sidebar's background. This div must be placed
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
-      <div class="control-sidebar-bg"></div>
+        <div class="control-sidebar-bg"></div>
+      </div>
   </div>
 </div>
 
 <!-- ./wrapper -->
 
 {% endblock %} {% block javascripts %}{{ super() }}
+<script src="{{ url_for('static', filename='programs.js') }}"></script>
+
 <script>
   var appNewGroup = new Vue({
-    el: "#app"
-
+    el: "#app",
+    delimiters: ['[[', ']]'],
+    data: {
+      programs: [
+        {% for program in programs %}
+		    		{
+      id: '{{ program.id }}',
+      name: '{{ program.name }}',
+      group: '{{ program.group }}',
+      class: '{{program.class}}'
+    }{% if not loop.last %}, {% endif %}
+  {% endfor %}
+      ],
+  grupoamostrar: 'Todos los grupos'
+    },
+  computed: {
+    groups: function () {
+      var group = []
+      lenP = this.programs.length
+      for (i=0;i<lenP;i++) {
+        if (!group.includes(this.programs[i].group)) {
+          group.push(this.programs[i].group)
+        }
+      }
+      return group
+    }
+  }
   });
 
 

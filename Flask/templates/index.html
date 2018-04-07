@@ -1,6 +1,5 @@
 {% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
 <div class="wrapper" id="groups">
-
   <menulateral></menulateral>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -17,14 +16,9 @@
         </li>
       </ol>
     </section>
-
-
-
     <section class="content">
       <groupdisplay v-bind:groups="groups"></groupdisplay>
     </section>
-
-
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Create the tabs -->
@@ -61,8 +55,7 @@
       class: '{{ group.class }}',
     }{% if not loop.last %}, {% endif %}
   {% endfor %}
-		    	]
+          ]
         }
-
       });
 </script> {% endblock %}

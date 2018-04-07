@@ -42,79 +42,87 @@ def groups_template():
 def new_groups_template():
     return render_template(
         'new-group.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 @app.route('/')
 def login_template():
     return render_template(
         'login2.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 @app.route('/register')
 def register_template():
     return render_template(
         'registro2.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 @app.route('/recoverPass')
 def recover_password_template():
     return render_template(
         'recuperarPassword.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 
 @app.route('/newSensor')
 def new_sensor_template():
     return render_template(
         'addSensor.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 
 @app.route('/addToGroup')
 def add_to_group_template():
     return render_template(
         'addToGroup.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 
 @app.route('/changePass')
 def change_pass_template():
     return render_template(
         'cambiarPassword.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 
 @app.route('/manageUserGroups')
 def manage_user_groups_template():
     return render_template(
         'gestionarUsuariosGrupos.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 
 @app.route('/group')
 def group_template():
     return render_template(
         'grupos.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 
 @app.route('/newData')
 def new_data_template():
     return render_template(
         'introducirDatos.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 @app.route('/newProgram')
 def new_program_template():
     return render_template(
         'newProgram.html',
-        domain=DOMAIN,
+        domain=DOMAIN
     )
 @app.route('/programs')
 def programs_template():
+    programs = [
+      { "id": 1, "group": "Cochera", "name": "Luces de la cochera", "class": "fa-clock-o"},
+      { "id": 2, "group": "Salón", "name": "Luces del salon", "class": "fa-clock-o"},
+      { "id": 3, "group": "Salón", "name": "Temperatura del salon", "class": "fa-clock-o"},
+      { "id": 4, "group": "Cocina", "name": "Luces de la cocina", "class": "fa-clock-o"},
+      { "id": 5, "group": "Cocina", "name": "Temperatura de la cocina", "class": "fa-clock-o"},
+    ]
     return render_template(
         'programas.html',
         domain=DOMAIN,
+        programs=programs
     )
 @socketio.on('createGroup')
 def greateGroup(group):
