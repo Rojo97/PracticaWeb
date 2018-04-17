@@ -34,52 +34,56 @@
           </div>
         </div>
         <!-- Caja Actuadores -->
-        <div class="col-md-12">
-          <div class="box box-primary" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%">
-            <div class="form-group">
-              <label>Actuadores</label>
-              <select class="form-control select2 select2-hidden-accessible" data-placeholder="Seleccione los Actuadores" style="width: 100%;"
-                tabindex="-1" aria-hidden="true">
-                <option>Luz-1</option>
-                <option>Luz-2</option>
-                <option>Termostato-1</option>
-                <option>Termostato-2</option>
-                <option>Persiana-1</option>
-                <option>Persiana-2</option>
-                <option>Persiana-3</option>
-              </select>
-            </div>
-            <!--Caja hora Inicio -->
-            <div class="form-group">
-              <label>Hora inicio</label>
-              <div class="input-group" style="margin-bottom:1.5%;">
-                <input type="text" class="form-control timepicker">
-                <div class="input-group-addon">
-                  <i class="fa fa-clock-o"></i>
-                </div>
-              </div>
-              <!--Caja hora final -->
+        <div v-for="device in devices">
+          <div class="col-md-12">
+            <div class="box box-primary" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%">
               <div class="form-group">
-                <label>Hora final</label>
-                <div class="input-group">
-                  <input type="text" class="form-control timepicker">
+                <label>Actuadores</label>
+                <select class="form-control select2 select2-hidden-accessible" data-placeholder="Seleccione los Actuadores" style="width: 100%;"
+                  tabindex="-1" aria-hidden="true" v-model="device.device">
+                  <option>Luz-1</option>
+                  <option>Luz-2</option>
+                  <option>Termostato-1</option>
+                  <option>Termostato-2</option>
+                  <option>Persiana-1</option>
+                  <option>Persiana-2</option>
+                  <option>Persiana-3</option>
+                </select>
+              </div>
+              <!--Caja hora Inicio -->
+              <div class="form-group">
+                <label>Hora inicio</label>
+                <div class="input-group" style="margin-bottom:1.5%;">
+                  <input type="text" class="form-control timepicker" v-model="device.init">
                   <div class="input-group-addon">
                     <i class="fa fa-clock-o"></i>
                   </div>
                 </div>
-              </div>
-              <div class="form-group imput-lg">
-                <label for="progName">Valor del sensor</label>
-                <input type="text" class="form-control" id="sensorValue" placeholder="Aqui va el valor de los sensores que hace de condición del programa">
+                <!--Caja hora final -->
+                <div class="form-group">
+                  <label>Hora final</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control timepicker" v-model="device.end">
+                    <div class="input-group-addon">
+                      <i class="fa fa-clock-o"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group imput-lg">
+                  <label for="progName">Valor del actuador</label>
+                  <input type="text" class="form-control" id="sensorValue" placeholder="Aqui va el valor de los sensores que hace de condición del programa"
+                    v-model="device.value">
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div class="row margin pull-left" style="margin-right:6% ;margin-left:5%">
-          <button type="raddButton" class="btn btn-success pull-right">Añadir sensor</button>
+          <button type="raddButton" class="btn btn-success pull-right" @click="addDevice">Añadir sensor</button>
+          <button type="raddButton" class="btn btn-success pull-right" @click="removeDevice">Eliminar sensor</button>
         </div>
         <div class="row margin pull-right" style="margin-right:6% ;margin-left:5%">
-          <button type="raddButton" class="btn btn-success pull-right">Guardar</button>
+          <button type="raddButton" class="btn btn-success pull-right" @click="createProgram">Guardar</button>
         </div>
       </div>
     </section>
@@ -109,9 +113,29 @@
 <!-- ./wrapper -->
 {% endblock %} {% block javascripts %}{{ super() }}
 <script>
-  var appNewGroup = new Vue({
-    el: "#app"
-
+  var socket = io.connect('{{ domain }}');
+  var app = new Vue({
+    el: "#app",
+    data: {
+      name: '',
+      desc: '',
+      devices: []
+    },
+    methods: {
+      addDevice: () => {
+        app.devices.push({ id: app.devices.length, device: '', init: 'asd', end: 'asd', value: 'asd' });
+      },
+      removeDevice: () => {
+        app.devices.splice(app.devices.length - 1, 1);
+      },
+      createProgram: () => {
+        socket.emit('createProgram', {
+          name: app.name,
+          desc: app.desc,
+          devices: app.devices
+        });
+      }
+    }
   });
 
 
