@@ -16,7 +16,7 @@ Vue.component("groupInfoBox", {
   template:
   `
   <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">  
-    <a href="grupos.html">
+    <a href="/group">
       <div class="info-box bg-green">
         <span class="info-box-icon">
           <i class="fa" v-bind:class="group.class" ></i>

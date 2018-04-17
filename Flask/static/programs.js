@@ -26,7 +26,7 @@ Vue.component("programinfobox", {
               <div class="info-box-content">
                 <span class="info-box-number">{{program.name}}</span>
                 <span class="info-box-text">
-                  <small>Salón</small>
+                  <small>{{program.group}}</small>
                 </span>
               </div>
               <!-- /.info-box-content -->
