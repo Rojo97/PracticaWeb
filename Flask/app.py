@@ -125,7 +125,12 @@ def programs_template():
         programs=programs
     )
 @socketio.on('createGroup')
-def greateGroup(group):
+def createGroup(group):
+    # Send message to alls users
+    print(group)
+
+@socketio.on('createProgram')
+def createProgram(group):
     # Send message to alls users
     print(group)
 
