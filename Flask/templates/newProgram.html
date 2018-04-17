@@ -41,13 +41,7 @@
                 <label>Actuadores</label>
                 <select class="form-control select2 select2-hidden-accessible" data-placeholder="Seleccione los Actuadores" style="width: 100%;"
                   tabindex="-1" aria-hidden="true" v-model="device.device">
-                  <option>Luz-1</option>
-                  <option>Luz-2</option>
-                  <option>Termostato-1</option>
-                  <option>Termostato-2</option>
-                  <option>Persiana-1</option>
-                  <option>Persiana-2</option>
-                  <option>Persiana-3</option>
+                  <option v-for="actuador in actuadores">[[actuador.name]]</option>
                 </select>
               </div>
               <!--Caja hora Inicio -->
@@ -116,10 +110,21 @@
   var socket = io.connect('{{ domain }}');
   var app = new Vue({
     el: "#app",
+    delimiters: ['[[',']]'],
     data: {
       name: '',
       desc: '',
-      devices: []
+      devices: [],
+      actuadores: [
+        {% for actuador in actuadores %}
+		    		{
+      id: '{{ actuador.id }}',
+      name: '{{ actuador.name }}',
+      num: '{{ actuador.num }}',
+      class: '{{ actuador.class }}',
+    }{% if not loop.last %}, {% endif %}
+  {% endfor %}
+          ]
     },
     methods: {
       addDevice: () => {
