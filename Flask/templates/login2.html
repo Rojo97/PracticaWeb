@@ -1,0 +1,39 @@
+{% extends "loginLayout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
+<div class="login-box">
+  <div class="login-logo">
+    <b>DomoticsTrails</b>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Loguea para empezar a controlar tu casa</p>
+
+    <form action="groups" method="get">
+      <div class="form-group has-feedback">
+        <input class="form-control" placeholder="Email" type="email">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input class="form-control" placeholder="Contraseña" type="password">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+
+
+      <div class="col-xs-12">
+        <button type="submit" class="btn btn-primary btn-block btn-flat">Login</button>
+      </div>
+
+    </form>
+
+    <br>
+    <br>
+
+
+    <a href="recoverPass">Me olvide mi contraseña</a>
+    <br>
+    <a href="register" class="text-center">Quiero registrarme</a>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+{% endblock %} {% block javascripts %}{{ super() }}
+{% endblock %}

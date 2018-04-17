@@ -1,0 +1,150 @@
+
+{% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
+<div class="wrapper" id="app">
+
+    <menulateral></menulateral>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <section class="content-header" style="margin-bottom:5%">
+        <h1 class="logo-lg" style="margin-top:1%">
+          <b>Añadir programa</b>
+        </h1>
+        <ol class="breadcrumb">
+          <li>
+            <a href="#">
+              <i class="fa fa-hourglass"></i>Añadir programa</a>
+          </li>
+        </ol>
+      </section>
+      <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
+      <div class="row margin" style="margin-right:5% ;margin-left:5%">
+        <div class="col-md-6">
+          <div class="box box-primary" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%;">
+            <!-- Nombre del dispositivo -->
+            <div class="form-group imput-lg">
+              <label for="progName">Nombre del programa</label>
+              <input type="text" class="form-control" id="progName" placeholder="Nombre del programa">
+            </div>
+            <div class="form-group" style="margin-bottom:7.3%">
+              <label for="progDesc">Descripción</label>
+              <input type="text" class="form-control" id="progDesc" placeholder="Descripción">
+            </div>
+          </div>
+          <!-- Caja grupos -->
+          <div class="box box-primary" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%">
+            <form role="form">
+              <label for="groups">Grupos</label>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Casa completa
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Cocina
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Salón
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Cochera
+                </label>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- Caja Actuadores -->
+        <div class="col-md-6">
+          <div class="box box-primary" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%">
+            <div class="form-group">
+              <label>Actuadores</label>
+              <select class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="Seleccione los Actuadores" style="width: 100%;"
+                tabindex="-1" aria-hidden="true">
+                <option>Luz-1</option>
+                <option>Luz-2</option>
+                <option>Termostato-1</option>
+                <option>Termostato-2</option>
+                <option>Persiana-1</option>
+                <option>Persiana-2</option>
+                <option>Persiana-3</option>
+              </select>
+            </div>
+            <!--Caja Sensores -->
+            <div class="form-group">
+              <label>Sensores</label>
+              <select class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="Seleccione las luces" style="width: 100%;"
+                tabindex="-1" aria-hidden="true">
+                <option>Luminosidad-1</option>
+                <option>Luminosidad-2</option>
+                <option>Luminosidad-3</option>
+                <option>Temperatura-1</option>
+                <option>Temperatura-2</option>
+              </select>
+            </div>
+            <!--Caja hora Inicio -->
+            <div class="form-group">
+              <label>Hora inicio</label>
+              <div class="input-group" style="margin-bottom:1.5%;">
+                <input type="text" class="form-control timepicker">
+                <div class="input-group-addon">
+                  <i class="fa fa-clock-o"></i>
+                </div>
+              </div>
+              <!--Caja hora final -->
+              <div class="form-group">
+                <label>Hora final</label>
+                <div class="input-group">
+                  <input type="text" class="form-control timepicker">
+                  <div class="input-group-addon">
+                    <i class="fa fa-clock-o"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group imput-lg">
+                <label for="progName">Valor del sensor</label>
+                <input type="text" class="form-control" id="sensorValue" placeholder="Aqui va el valor de los sensores que hace de condición del programa">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row margin" style="margin-right:6% ;margin-left:5%">
+        <button type="raddButton" class="btn btn-success pull-right">Añadir</button>
+      </div>
+
+
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- Home tab content -->
+          <div id="control-sidebar-home-tab">
+            </form>
+          </div>
+          <!-- /.tab-pane -->
+        </div>
+      </aside>
+      <!-- /.control-sidebar -->
+      <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+      <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- ./wrapper -->
+{% endblock %} {% block javascripts %}{{ super() }}
+<script>
+  var appNewGroup = new Vue({
+    el: "#app"
+
+  });
+
+
+</script> {% endblock %}

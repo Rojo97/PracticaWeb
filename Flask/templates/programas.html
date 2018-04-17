@@ -1,0 +1,97 @@
+{% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
+
+<div class="wrapper" id="app">
+  <menulateral></menulateral>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
+    <!-- Content Header (Page header) -->
+    <section class="content-header" style="margin-bottom:5%">
+      <h1 class="logo-lg">
+        <b>Ver programas</b>
+      </h1>
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">
+            <i class="fa fa-dashboard"></i> Home</a>
+        </li>
+        <li>
+          <a href="#">Programas</a>
+        </li>
+        <li class="active">Ver programas</li>
+      </ol>
+    </section>
+
+    <section class="content">
+      <div style="padding-left:10%;padding-right:10%">
+        <div class="row-md-20">
+          <div class="form-group">
+            <label>Grupo</label>
+            <select class="form-control select2" style="width: 100%;" v-model="grupoamostrar">
+              <option selected="selected">Todos los grupos</option>
+              <option v-for="group in groups">[[group]]</option>
+            </select>
+          </div>
+        </div>
+        <programdisplay v-bind:programs="programs" v-bind:grupoamostrar="grupoamostrar"></programdisplay>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+          <!-- Create the tabs -->
+          <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <!-- Home tab content -->
+            <div id="control-sidebar-home-tab">
+              </form>
+            </div>
+            <!-- /.tab-pane -->
+          </div>
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+      </div>
+  </div>
+</div>
+
+<!-- ./wrapper -->
+
+{% endblock %} {% block javascripts %}{{ super() }}
+<script src="{{ url_for('static', filename='programs.js') }}"></script>
+
+<script>
+  var appNewGroup = new Vue({
+    el: "#app",
+    delimiters: ['[[', ']]'],
+    data: {
+      programs: [
+        {% for program in programs %}
+		    		{
+      id: '{{ program.id }}',
+      name: '{{ program.name }}',
+      group: '{{ program.group }}',
+      class: '{{program.class}}'
+    }{% if not loop.last %}, {% endif %}
+  {% endfor %}
+      ],
+  grupoamostrar: 'Todos los grupos'
+    },
+  computed: {
+    groups: function () {
+      var group = []
+      lenP = this.programs.length
+      for (i=0;i<lenP;i++) {
+        if (!group.includes(this.programs[i].group)) {
+          group.push(this.programs[i].group)
+        }
+      }
+      return group
+    }
+  }
+  });
+
+
+</script> {% endblock %}

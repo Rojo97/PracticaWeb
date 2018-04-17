@@ -1,0 +1,61 @@
+{% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
+<div class="wrapper" id="groups">
+  <menulateral></menulateral>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
+    <!-- Content Header (Page header) -->
+    <section class="content-header" style="margin-bottom:5%">
+      <h1 class="logo-lg">
+        <b>Grupos</b>
+      </h1>
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">
+            <i class="fa fa-sitemap"></i> Grupos</a>
+        </li>
+      </ol>
+    </section>
+    <section class="content">
+      <groupdisplay v-bind:groups="groups"></groupdisplay>
+    </section>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Create the tabs -->
+      <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <!-- Home tab content -->
+        <div id="control-sidebar-home-tab">
+          </form>
+        </div>
+        <!-- /.tab-pane -->
+      </div>
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+ immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+  </div>
+  <!-- ./wrapper -->
+</div>
+{% endblock %} {% block javascripts %}{{ super() }}
+<script src="{{ url_for('static', filename='groups.js') }}"></script>
+<script>
+  var appGroups = new Vue({
+    el: "#groups",
+    data: {
+      groups: [
+        {% for group in groups %}
+		    		{
+      id: '{{ group.id }}',
+      name: '{{ group.name }}',
+      num: '{{ group.num }}',
+      class: '{{ group.class }}',
+    }{% if not loop.last %}, {% endif %}
+  {% endfor %}
+          ]
+        }
+      });
+</script> {% endblock %}

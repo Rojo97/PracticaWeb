@@ -1,0 +1,41 @@
+{% extends "loginLayout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
+<div class="register-box">
+    <div class="register-logo">
+        <b>DomoticsTrails</b>
+    </div>
+
+    <div class="register-box-body">
+      <p class="login-box-msg">Registrate en la plataforma</p>
+
+      <form action="/" method="get">
+        <div class="form-group has-feedback">
+          <input class="form-control" placeholder="Nombre" type="text">
+          <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input class="form-control" placeholder="Email" type="email">
+          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input class="form-control" placeholder="Contraseña" type="password">
+          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input class="form-control" placeholder="Reescribe la contraseña" type="password">
+          <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+        </div>
+        <!-- /.col -->
+        <div class="col-xs-12">
+          <button type="submit" class="btn btn-primary btn-block btn-flat">Registro</button>
+        </div>
+        <!-- /.col -->
+      </form>
+      <br>
+      <br>
+      <a href="/" class="text-center">Ya estoy registrado</a>
+    </div>
+    <!-- /.form-box -->
+  </div>
+  <!-- /.register-box -->
+{% endblock %} {% block javascripts %}{{ super() }}
+{% endblock %}

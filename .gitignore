@@ -4,5 +4,13 @@ Código/dist
 Código/documentation
 Código/pages
 Código/plugins
+
+Flask/static/bower_components
+Flask/static/build
+Flask/static/dist
+Flask/static/documentation
+Flask/static/pages
+Flask/static/plugins
+
 .vscode
 AdminLTE-2.4.3/
