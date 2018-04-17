@@ -52,24 +52,15 @@
                   <h3 class="box-title">Subgrupos</h3>
                 </div>
                 <form role="form">
+                  
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox"> Casa completa
+                      <input type="checkbox" v-model="subgroups" value="home" id="home"> Casa completa
                     </label>
                   </div>
-                  <div class="checkbox">
+                  <div class="checkbox" v-for="group in groups">
                     <label>
-                      <input type="checkbox"> Cocina
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox"> Salón
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox"> Cochera
+                      <input type="checkbox" v-model="subgroups" v-bind:value="group" v-bind:id="group"> [[group]]
                     </label>
                   </div>
                 </form>
@@ -101,38 +92,26 @@
                   <div class="col-md-12">
                     <div class="form-group">
                       <label>Luces</label>
-                      <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione las luces" style="width: 100%;">
-                        <option>Luz-1</option>
-                        <option>Luz-2</option>
-                        <option>Luz-3</option>
-                        <option>Luz-4</option>
-                        <option>Luz-5</option>
-                        <option>Luz-6</option>
-                        <option>Luz-8</option>
+                      <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione las luces" style="width: 100%;" v-model="lights">
+                        <option v-for="device in devices"
+                        v-if="device.type == 'light'">[[device.name]]</option>
                       </select>
                     </div>
 
                     <div class="form-group">
                       <label>Persianas</label>
-                      <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione los termostatos" style="width: 100%;">
-                        <option>Persiana-1</option>
-                        <option>Persiana-2</option>
-                        <option>Persiana-3</option>
-                        <option>Persiana-4</option>
-                        <option>Persiana-5</option>
-                        <option>Persiana-6</option>
-                        <option>Persiana-7</option>
-                      </select>
+                      <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione los persianas" style="width: 100%;"
+                        v-model="blinds">
+                        <option v-for="device in devices"
+                        v-if="device.type == 'blind'">[[device.name]]</option>                      </select>
                     </div>
                     <!-- /.form-group -->
                     <div class="form-group">
                       <label>Termostatos</label>
-                      <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione las persianas" style="width: 100%;">
-                        <option>Termostato-1</option>
-                        <option>Termostato-2</option>
-                        <option>Termostato-3</option>
-                        <option>Termostato-4</option>
-                      </select>
+                      <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione las termostatos" style="width: 100%;"
+                        v-model="thermostats">
+                        <option v-for="device in devices"
+                        v-if="device.type == 'thermostat'">[[device.name]]</option>                      </select>
                     </div>
 
                     <div class="box-footer">
@@ -167,21 +146,44 @@
   var socket = io.connect('{{ domain }}');
   var app = new Vue({
     el: "#app",
+    delimiters: ['[[', ']]'],
     data: {
       name: '',
       desc: '',
       subgroups: [],
-      devices: []
+      thermostats: [],
+      blinds: [],
+      lights: [],
+      devices: [{% for device in devices %}
+		    		{
+              id: '{{ device.id }}',
+              name: '{{ device.name }}',
+              type: '{{ device.type }}',
+              group: '{{ device.group }}'
+            }{% if not loop.last %}, {% endif %}
+          {% endfor %}]
     },
     methods: {
       createGroup: () => {
         socket.emit('createGroup', {
           name: app.name,
           desc: app.desc,
-          devices: app.devices,
+          devices: app.lights.concat(app.thermostats).concat(app.blinds),
           subgroups: app.subgroups
         });
       }
+    },
+  computed: {
+    groups: function () {
+      var group = []
+      lenP = this.devices.length
+      for (i=0;i<lenP;i++) {
+        if (!group.includes(this.devices[i].group)) {
+          group.push(this.devices[i].group)
+        }
+      }
+      return group
     }
+  }
   });
 </script> {% endblock %}

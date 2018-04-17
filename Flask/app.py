@@ -40,9 +40,17 @@ def groups_template():
     )
 @app.route('/newGroup')
 def new_groups_template():
+    devices = [
+      { "id": 1, "group": "Cochera", "name": "Luces de la cochera", "type": "light"},
+      { "id": 2, "group": "Salón", "name": "Luces del salon", "type": "light"},
+      { "id": 3, "group": "Salón", "name": "Temperatura del salon", "type": "thermostat"},
+      { "id": 4, "group": "Cocina", "name": "Luces de la cocina", "type": "light"},
+      { "id": 5, "group": "Cocina", "name": "Temperatura de la cocina", "type": "thermostat"},
+    ]
     return render_template(
         'new-group.html',
-        domain=DOMAIN
+        domain=DOMAIN,
+        devices=devices
     )
 @app.route('/')
 def login_template():
