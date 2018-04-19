@@ -54,7 +54,7 @@
                 <div class="form-group">
                   <label>Hora inicio</label>
                   <div class="input-group" style="margin-bottom:1.5%;">
-                    <input type="text" class="form-control timepicker" v-model="device.init">
+                    <input type="time" class="form-control timepicker" v-model="device.init">
                     <div class="input-group-addon">
                       <i class="fa fa-clock-o"></i>
                     </div>
@@ -63,7 +63,7 @@
                   <div class="form-group">
                     <label>Hora final</label>
                     <div class="input-group">
-                      <input type="text" class="form-control timepicker" v-model="device.end">
+                      <input type="time" class="form-control timepicker" v-model="device.end">
                       <div class="input-group-addon">
                         <i class="fa fa-clock-o"></i>
                       </div>
@@ -125,7 +125,7 @@
     },
     methods: {
       addDevice: () => {
-        app.devices.push({ id: app.devices.length, device: '', init: 'asd', end: 'asd', value: 'asd' });
+        app.devices.push({ id: app.devices.length, device: '', init: '', end: '', value: '' });
       },
       removeDevice: () => {
         app.devices.splice(app.devices.length - 1, 1);
