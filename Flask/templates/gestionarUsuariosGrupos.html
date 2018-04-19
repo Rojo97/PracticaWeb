@@ -28,7 +28,7 @@
     <section class="content">
 
       <!-- Desplegable -->
-      <div style="margin-right:15%; margin-left:15%">
+      <div style="margin-right:15%; margin-left:15%" v-for="group in groups">
         <div class="box box-default">
           <div class="box-header with-border" style="padding:0">
             <div class="info-box bg-green" style="margin:0">
@@ -37,7 +37,7 @@
               </span>
 
               <div class="info-box-content">
-                <span class="info-box-number">Luces del salón</span>
+                <span class="info-box-number">[[group.name]]</span>
                 <span class="info-box-text">
                   <small>Salón</small>
                 </span>
@@ -55,29 +55,19 @@
           <!-- /.box-header -->
           <div class="box-body" style="display: none; margin-top:2%">
             <div style="padding-left:10%; padding-right:10%">
-            <strong>
-              <i class="fa"></i>
-              <big>Usuarios</big>
-            </strong>
+              <strong>
+                <i class="fa"></i>
+                <big>Usuarios</big>
+              </strong>
 
-            <ul>
-              <li>Usuario 1
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-              <li>Usuario 2
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-              <li>Usuario 3
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-            </ul>
-          </div>
+              <ul>
+                <li v-for="user in group.users">[[user.name]]
+                  <i>
+                    <i class="fa fa-close pull-right" style="color:red" @click="removeUser(group.id,user.id)"></i>
+                  </i>
+                </li>
+              </ul>
+            </div>
             <button type="submit" class="btn btn-default pull-right bg-green">Añadir usuario</button>
           </div>
           <!-- /.box-body -->
@@ -111,8 +101,37 @@
 
   {% endblock %} {% block javascripts %}{{ super() }}
   <script>
+      var socket = io.connect('{{ domain }}');
     var appNewGroup = new Vue({
-      el: "#app"
+      el: "#app",
+      data: {
+        groups: [
+          {% for group in groups %}
+		    		{
+              id: '{{ group.id }}',
+              name: '{{ group.name }}',
+              users: [
+                {% for user in group.users %}
+                  {
+                    id: '{{ user.id }}',
+                    name: '{{ user.name }}'
+                  }{% if not loop.last %}, {% endif %}
+                {% endfor %}
+              ],
+              class: '{{ group.class }}',
+            }{% if not loop.last %}, {% endif %}
+          {% endfor %}
+          ]
+        },
+    delimiters: ['[[', ']]'],
+      methods: {
 
+      removeUser: (grupo, usuario) => {
+        socket.emit('removeUserFromGroup', {
+          userId: usuario,
+          groupId: grupo
+        });
+      }
+    }
     });
   </script> {% endblock %}

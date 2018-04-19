@@ -94,8 +94,16 @@ def change_pass_template():
 
 @app.route('/manageUserGroups')
 def manage_user_groups_template():
+    groups = [
+      { "id": 1, "name": "Todos",  "class": "fa-calendar-minus-o","users":[{"id":1,"name":"Usuario1"},{"id":2,"name":"Usuario1"},{"id":3,"name":"Usuario1"},{"id":4,"name":"Usuario1"}]},
+      { "id": 2, "name": "Salón", "class": "fa-home","users":[{"id":1,"name":"Usuario1"},{"id":2,"name":"Usuario1"},{"id":3,"name":"Usuario1"},{"id":4,"name":"Usuario1"}]},
+      { "id": 3, "name": "Cocina", "class": "fa-home","users":[{"id":1,"name":"Usuario1"},{"id":2,"name":"Usuario1"},{"id":3,"name":"Usuario1"},{"id":4,"name":"Usuario1"}]},
+      { "id": 4, "name": "Pasillo", "class": "fa-home","users":[{"id":1,"name":"Usuario1"},{"id":2,"name":"Usuario1"},{"id":3,"name":"Usuario1"},{"id":4,"name":"Usuario1"}]},
+      { "id": 5, "name": "Luces", "class": "fa-lightbulb-o","users":[{"id":1,"name":"Usuario1"},{"id":2,"name":"Usuario1"},{"id":3,"name":"Usuario1"},{"id":4,"name":"Usuario1"}]}
+    ]
     return render_template(
         'gestionarUsuariosGrupos.html',
+        groups=groups,
         domain=DOMAIN
     )
 
@@ -148,6 +156,10 @@ def createGroup(group):
 def createProgram(group):
     # Send message to alls users
     print(group)
+@socketio.on('removeUserFromGroup')
+def removeUserFromGroup(userAndGroup):
+    # Send message to alls users
+    print(userAndGroup)
 
 
 if __name__ == '__main__':
