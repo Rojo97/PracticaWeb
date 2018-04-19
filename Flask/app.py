@@ -114,16 +114,9 @@ def new_data_template():
     )
 @app.route('/newProgram')
 def new_program_template():
-    actuadores = [
-      { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
-      { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
-      { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
-      { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
-      { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
-    ]
     return render_template(
         'newProgram.html',
-        domain=DOMAIN, actuadores = actuadores
+        domain=DOMAIN
     )
 @app.route('/programs')
 def programs_template():
