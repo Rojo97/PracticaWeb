@@ -41,13 +41,7 @@
                   <label>Actuadores</label>
                   <select class="form-control select2 select2-hidden-accessible" data-placeholder="Seleccione los Actuadores" style="width: 100%;"
                     tabindex="-1" aria-hidden="true" v-model="device.device">
-                    <option>Luz-1</option>
-                    <option>Luz-2</option>
-                    <option>Termostato-1</option>
-                    <option>Termostato-2</option>
-                    <option>Persiana-1</option>
-                    <option>Persiana-2</option>
-                    <option>Persiana-3</option>
+                    <option v-for="actuador in actuadores">[[actuador.name]]</option>
                   </select>
                 </div>
                 <!--Caja hora Inicio -->
@@ -79,8 +73,8 @@
             </div>
           </div>
           <div class="row margin pull-left" style="margin-right:6% ;margin-left:5%">
-            <button type="raddButton" class="btn btn-success pull-right" @click="addDevice">Añadir sensor</button>
-            <button type="raddButton" class="btn btn-success pull-right" @click="removeDevice">Eliminar sensor</button>
+            <button type="raddButton" class="btn btn-success" @click="addDevice" style="margin-right:1em">Añadir sensor</button>
+            <button type="raddButton" class="btn btn-success" @click="removeDevice" :disabled="devices.length <2" >Eliminar sensor</button>
           </div>
           <div class="row margin pull-right" style="margin-right:6% ;margin-left:5%">
             <button type="raddButton" class="btn btn-success pull-right" @click="createProgram">Guardar</button>
@@ -122,7 +116,7 @@
     data: {
       name: '',
       desc: '',
-      devices: [],
+      devices: [{ id: 0, device: '', init: '', end: '', value: '' }],
       actuadores: [
         {% for actuador in actuadores %}
 		    		{
@@ -139,7 +133,9 @@
         app.devices.push({ id: app.devices.length, device: '', init: '', end: '', value: '' });
       },
       removeDevice: () => {
-        app.devices.splice(app.devices.length - 1, 1);
+        if (app.devices.length > 1) {
+          app.devices.splice(app.devices.length - 1, 1);
+        }
       },
       createProgram: () => {
         socket.emit('createProgram', {
