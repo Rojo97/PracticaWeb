@@ -1,118 +1,167 @@
 {% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
 <div class="wrapper" id="app">
 
-  <menulateral></menulateral>
+    <menulateral></menulateral>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
 
-    <!-- Content Header (Page header) -->
-    <section class="content-header" style="margin-bottom:5%">
-      <h1 class="logo-lg">
-        <b>Gestionar usuarios</b>
-      </h1>
-      <ol class="breadcrumb">
-        <li>
-          <a href="#">
-            <i class="fa fa-sitemap"></i> Grupos</a>
-        </li>
-        <li class="active">
-          Gestionar usuarios
-        </li>
-      </ol>
-    </section>
+      <!-- Content Header (Page header) -->
+      <section class="content-header" style="margin-bottom:5%">
+        <h1 class="logo-lg">
+          <b>Gestionar usuarios</b>
+        </h1>
+        <ol class="breadcrumb">
+          <li>
+            <a href="#">
+              <i class="fa fa-sitemap"></i> Grupos</a>
+          </li>
+          <li class="active">
+            Gestionar usuarios
+          </li>
+        </ol>
+      </section>
 
 
-    <!-- Main content -->
-    <section class="content">
+      <!-- Main content -->
+      <section class="content">
 
-      <!-- Desplegable -->
-      <div style="margin-right:15%; margin-left:15%">
-        <div class="box box-default">
-          <div class="box-header with-border" style="padding:0">
-            <div class="info-box bg-green" style="margin:0">
-              <span class="info-box-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Luces del salón</span>
-                <span class="info-box-text">
-                  <small>Salón</small>
-                </span>
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active">
+              <a href="#users" data-toggle="tab">Usuarios</a>
+            </li>
+            <li>
+              <a href="#remove" data-toggle="tab">Eliminar usuarios</a>
+            </li>
+            <li>
+              <a href="#add" data-toggle="tab">Añadir usuarios</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="active tab-pane" id="users">
+              <div>
+                <h3>Grupo 1</h3>
+                <ul>
+                  <li>usuario 1</li>
+                  <li>usuario 2</li>
+                  
+                </ul>
               </div>
-              <!-- /.info-box-content -->
+              <div>
+                <h3>Grupo 2</h3>
+                <ul>
+                  <li>usuario 3</li>
+                  <li>usuario 4</li>
+                  
+                </ul>
+              </div>
+              <div>
+                <h3>Grupo 3</h3>
+                <ul>
+                  <li>usuario 1</li>
+                  <li>usuario 3</li>
+                  
+                </ul>
+              </div>
             </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="remove">
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label>Seleccionar grupo:</label>
+                    <select class="form-control">
+                      <option>Grupo 1</option>
+                      <option>Grupo 2</option>
+                      <option>Grupo 3</option>
+                      <option>Grupo 4</option>
+                      <option>Grupo 5</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-5">
 
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-plus" style="color:grey"></i>
-              </button>
+                  <div class="form-group">
+                    <label>Seleccionar usuario:</label>
+                    <select class="form-control">
+                      <option>Usuario 1</option>
+                      <option>Usuario 2</option>
+                      <option>Usuario 3</option>
+                      <option>Usuario 4</option>
+                      <option>Usuario 5</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <button type="button" class="btn btn-block btn-success" style="margin-top:1.65em">Eliminar</button>
+                </div>
+              </div>
             </div>
-            <!-- /.box-tools -->
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body" style="display: none; margin-top:2%">
-            <div style="padding-left:10%; padding-right:10%">
-            <strong>
-              <i class="fa"></i>
-              <big>Usuarios</big>
-            </strong>
+            <!-- /.tab-pane -->
 
-            <ul>
-              <li>Usuario 1
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-              <li>Usuario 2
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-              <li>Usuario 3
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-            </ul>
+            <div class="tab-pane" id="add">
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label>Seleccionar grupo:</label>
+                    <select class="form-control">
+                      <option>Grupo 1</option>
+                      <option>Grupo 2</option>
+                      <option>Grupo 3</option>
+                      <option>Grupo 4</option>
+                      <option>Grupo 5</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-5">
+
+                  <div class="form-group">
+                    <label>Usuario:</label>
+                    <input class="form-control" id="user" placeholder="Introducir usuario" type="text">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <button type="button" class="btn btn-block btn-success" style="margin-top:1.65em">Añadir</button>
+                </div>
+              </div>
+            </div>
+            <!-- /.tab-pane -->
           </div>
-            <button type="submit" class="btn btn-default pull-right bg-green">Añadir usuario</button>
-          </div>
-          <!-- /.box-body -->
+          <!-- /.tab-content -->
         </div>
-      </div>
-      <!-- /Desplegable -->
 
-    </section>
-    <!-- /.content -->
+      </section>
+      <!-- /.content -->
 
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Create the tabs -->
-      <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      </ul>
-      <!-- Tab panes -->
-      <div class="tab-content">
-        <!-- Home tab content -->
-        <div id="control-sidebar-home-tab">
-          </form>
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- Home tab content -->
+          <div id="control-sidebar-home-tab">
+            </form>
+          </div>
+          <!-- /.tab-pane -->
         </div>
-        <!-- /.tab-pane -->
-      </div>
-    </aside>
-    <!-- /.control-sidebar -->
-    <!-- Add the sidebar's background. This div must be placed
+      </aside>
+      <!-- /.control-sidebar -->
+      <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
-    <div class="control-sidebar-bg"></div>
-  </div>
-  <!-- ./wrapper -->
+      <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- ./wrapper -->
 
-  {% endblock %} {% block javascripts %}{{ super() }}
-  <script>
-    var appNewGroup = new Vue({
-      el: "#app"
+{% endblock %} {% block javascripts %}{{ super() }}
+<script>
+  var appNewGroup = new Vue({
+    el: "#app"
 
-    });
-  </script> {% endblock %}
+  });
+
+
+</script> {% endblock %}
