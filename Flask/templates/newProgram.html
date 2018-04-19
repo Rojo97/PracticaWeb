@@ -118,10 +118,21 @@
   var socket = io.connect('{{ domain }}');
   var app = new Vue({
     el: "#app",
+    delimiters: ['[[',']]'],
     data: {
       name: '',
       desc: '',
-      devices: []
+      devices: [],
+      actuadores: [
+        {% for actuador in actuadores %}
+		    		{
+      id: '{{ actuador.id }}',
+      name: '{{ actuador.name }}',
+      num: '{{ actuador.num }}',
+      class: '{{ actuador.class }}',
+    }{% if not loop.last %}, {% endif %}
+  {% endfor %}
+          ]
     },
     methods: {
       addDevice: () => {
