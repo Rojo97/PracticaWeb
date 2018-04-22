@@ -28,10 +28,8 @@
           <!-- Caja tipo sensor -->
           <div class="form-group">
             <label>Tipo</label>
-            <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
-              <option selected="selected">Controlador</option>
-              <option>Sensor</option>
-              <option>Actuador</option>
+            <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="tipo">
+                <option v-for="tipo in tipos ">[[tipo.name]]</option>
             </select>
             <span class="select2 select2-container select2-container--default select2-container--below" dir="ltr" style="width: 100%;">
           </div>
@@ -42,8 +40,8 @@
           <!-- Caja tipo sensor -->
           <div class="form-group">
             <label>Función</label>
-            <select class="form-control select2 select2-hidden-accessible" style="width: 100%" tabindex="-1" aria-hidden="true" v-model="function.function ">
-              <option v-for="function in functions ">[[function.name]]</option>
+            <select class="form-control select2 select2-hidden-accessible" style="width: 100%" tabindex="-1" aria-hidden="true" v-model="funcion">
+              <option v-for="funcion in funciones ">[[funcion.name]]</option>
             </select>
             <span class="select2 select2-container select2-container--default select2-container--below " dir="ltr
               " style="width: 100% ">
@@ -52,11 +50,8 @@
           <div class="form-group ">
             <label>Grupo</label>
             <select class="form-control select2 select2-hidden-accessible " style="width: 100% " tabindex="-1
-              " aria-hidden="true ">
-              <option selected="selected ">Sin grupo</option>
-              <option>Grupo 1</option>
-              <option>Grupo 2</option>
-              <option>Grupo 3</option>
+              " aria-hidden="true" v-model="grupo">
+              <option v-for="grupo in grupos ">[[grupo.name]]</option>
             </select>
             <span class="select2 select2-container select2-container--default select2-container--below " dir="ltr
               " style="width: 100%; ">
@@ -95,19 +90,30 @@
         el: "#app ",
         delimiters: ['[[', ']]'],
         data: {
-          functions: [{ %
+          funcion:'',
+          tipo:'',
+          grupo:'',
+          funciones: [{%
             for
-            function in functions %
-          } {
-            id: '{{ function.id }}',
-            name: '{{ function.name }}',
-            num: '{{ function.num }}',
-            class: '{{ function.class }}',
-          } { %
-            if not loop.last %
-          }, { % endif %
-          } { % endfor %
-          }]
+            funcion in funciones %} {
+            id: '{{ funcion.id }}',
+            name: '{{ funcion.name }}',
+            num: '{{ funcion.num }}',
+            class: '{{ funcion.class }}',
+          } {% if not loop.last %}, {% endif %} {% endfor %}],
+          tipos: [{%
+            for
+            tipo in tipos %} {
+            name: "{{ tipo.name }}", 
+          } {% if not loop.last %}, {% endif %} {% endfor %}],
+          grupos: [{%
+            for
+            grupo in grupos %} {
+            id: '{{ grupo.id }}',
+            name: '{{ grupo.name }}',
+            num: '{{ grupo.num }}',
+            class: '{{ grupo.class }}',
+          } {% if not loop.last %}, {% endif %} {% endfor %}]
         },
 
       });
