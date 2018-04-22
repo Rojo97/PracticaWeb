@@ -73,9 +73,17 @@ def recover_password_template():
 
 @app.route('/newSensor')
 def new_sensor_template():
+    functions = [
+      { "id": 1, "function": "Cochera", "name": "Luces de la cochera", "type": "light"},
+      { "id": 2, "function": "Salón", "name": "Luces del salon", "type": "light"},
+      { "id": 3, "function": "Salón", "name": "Temperatura del salon", "type": "thermostat"},
+      { "id": 4, "function": "Cocina", "name": "Luces de la cocina", "type": "light"},
+      { "id": 5, "function": "Cocina", "name": "Temperatura de la cocina", "type": "thermostat"},
+    ]
     return render_template(
         'addSensor.html',
-        domain=DOMAIN
+        domain=DOMAIN,
+        functions=functions
     )
 
 @app.route('/addToGroup')

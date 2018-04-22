@@ -74,7 +74,7 @@
           </div>
           <div class="row margin pull-left" style="margin-right:6% ;margin-left:5%">
             <button type="raddButton" class="btn btn-success" @click="addDevice" style="margin-right:1em">Añadir sensor</button>
-            <button type="raddButton" class="btn btn-success" @click="removeDevice" :disabled="devices.length <2" >Eliminar sensor</button>
+            <button type="raddButton" class="btn btn-success" @click="removeDevice" :disabled="devices.length <2">Eliminar sensor</button>
           </div>
           <div class="row margin pull-right" style="margin-right:6% ;margin-left:5%">
             <button type="raddButton" class="btn btn-success pull-right" @click="createProgram">Guardar</button>
@@ -112,25 +112,39 @@
   var socket = io.connect('{{ domain }}');
   var app = new Vue({
     el: "#app",
-    delimiters: ['[[',']]'],
+    delimiters: ['[[', ']]'],
     data: {
       name: '',
       desc: '',
-      devices: [{ id: 0, device: '', init: '', end: '', value: '' }],
-      actuadores: [
-        {% for actuador in actuadores %}
-		    		{
-      id: '{{ actuador.id }}',
-      name: '{{ actuador.name }}',
-      num: '{{ actuador.num }}',
-      class: '{{ actuador.class }}',
-    }{% if not loop.last %}, {% endif %}
-  {% endfor %}
-          ]
+      devices: [{
+        id: 0,
+        device: '',
+        init: '',
+        end: '',
+        value: ''
+      }],
+      actuadores: [{ %
+        for actuador in actuadores %
+      } {
+        id: '{{ actuador.id }}',
+        name: '{{ actuador.name }}',
+        num: '{{ actuador.num }}',
+        class: '{{ actuador.class }}',
+      } { %
+        if not loop.last %
+      }, { % endif %
+      } { % endfor %
+      }]
     },
     methods: {
       addDevice: () => {
-        app.devices.push({ id: app.devices.length, device: '', init: '', end: '', value: '' });
+        app.devices.push({
+          id: app.devices.length,
+          device: '',
+          init: '',
+          end: '',
+          value: ''
+        });
       },
       removeDevice: () => {
         if (app.devices.length > 1) {
@@ -146,6 +160,4 @@
       }
     }
   });
-
-
 </script> {% endblock %}
