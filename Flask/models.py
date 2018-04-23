@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 # Librarys
 from flask import Flask
 from datetime import datetime
@@ -96,7 +96,7 @@ class ProgramaGrupo(db.Model):
     progGID = Column(String(10), primary_key=True)
     grupoID = Column(ForeignKey('Grupo.grupoID'), index=True)
     nombre = Column(String(20), nullable=False)
-    descripccion = Column(String(200), nullable=False)
+    descripccion = Column(String(200), nullable=True)
 
     Grupo = relationship('Grupo')
 
@@ -121,7 +121,7 @@ class Usuario(db.Model):
     nickname = Column(String(10), primary_key=True)
     nombre = Column(String(20), nullable=False)
     contraseña = Column(String(20), nullable=False)
-    email = Column(String(50), nullable=False)
+    email = Column(String(50), nullable=False, unique=True)
 
 
 if __name__ == "__main__":
