@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Librarys
 from flask import Flask
 from datetime import datetime
@@ -75,6 +75,7 @@ class Grupo(db.Model):
     grupoID = Column(String(10), primary_key=True)
     nombre = Column(String(20), nullable=False)
     descripccion = Column(String(200), nullable=False)
+    clase = Column(String(40), nullable=False)
 
     Usuario = relationship('Usuario', secondary='DetalleMiembro')
 
