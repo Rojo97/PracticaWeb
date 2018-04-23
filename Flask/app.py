@@ -86,9 +86,28 @@ def recover_password_template():
 
 @app.route('/newSensor')
 def new_sensor_template():
+    funciones = [
+      { "id": 1, "funcion": "Cochera", "name": "Luminosidad", "type": "light"},
+      { "id": 2, "funcion": "Salón", "name": "Temperatura", "type": "light"},
+      { "id": 3, "funcion": "Salón", "name": "Persianas", "type": "thermostat"},
+    ]
+    tipos = [
+      {"name": "Actuador"},
+      {"name": "Sensor"},
+    ]
+    grupos = [
+      { "id": 1, "funcion": "Cochera", "name": "Grupo 1", "type": "light"},
+      { "id": 2, "funcion": "Salón", "name": "Grupo 2", "type": "light"},
+      { "id": 3, "funcion": "Salón", "name": "Grupo 3", "type": "thermostat"},
+      { "id": 4, "funcion": "Cocina", "name": "Grupo 4", "type": "light"},
+      { "id": 5, "funcion": "Cocina", "name": "Grupo 5", "type": "thermostat"},
+    ]
     return render_template(
         'addSensor.html',
-        domain=DOMAIN
+        domain=DOMAIN,
+        funciones=funciones,
+        tipos=tipos,
+        grupos=grupos
     )
 
 @app.route('/addToGroup')
