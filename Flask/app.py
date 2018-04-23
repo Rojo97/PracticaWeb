@@ -2,7 +2,9 @@ from os import environ
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
-#from models import db, Chat
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import sessionmaker
+import models
 
 load_dotenv(find_dotenv())
 app = Flask(__name__)
@@ -19,20 +21,17 @@ app.config['PORT'] = 80
 DOMAIN = environ.get('DOMAIN')
 socketio = SocketIO(app)
 
-'''# Database
+# Database
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE')
-db.init_app(app)'''
-
+db.init_app(app)
 
 @app.route('/groups')
 def groups_template():
-    groups = [
-      { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
-      { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
-      { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
-      { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
-      { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
-    ]
+    groups = []
+    allgroups = models.Grupo.query(all)
+    for n in allgroups:
+        sensores = models.Dispositivo.query(all).filter_by(Grupo = n.grupoID)
+        groups.append({"id": n.grupoID, "name": n.nombre, "num": len(sensores), "class": n.clase})
     return render_template(
         'index.html',
         domain=DOMAIN,
