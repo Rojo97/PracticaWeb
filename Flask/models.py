@@ -9,7 +9,7 @@ from os import environ
 from dotenv import load_dotenv, find_dotenv
 
 from sqlalchemy import Column, Date, Float, ForeignKey, String, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
 load_dotenv(find_dotenv())
@@ -25,66 +25,73 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-'''
-class Chat(db.Model):
-    __tablename__ = 'chat'
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(128))
-    text = db.Column(db.Text)
-    channel = db.Column(db.Integer)
-    created_at = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow)
-
-    def __repr__(self):
-        return '<Chat {0}>'.format(self.username)
-
-'''
-
 Base = declarative_base()
 metadata = Base.metadata
-
-
+'''
 t_DetalleDispositivo = Table(
     'DetalleDispositivo', metadata,
-    Column('grupoID', ForeignKey('Grupo.grupoID'), primary_key=True, nullable=False),
-    Column('disID', ForeignKey('Dispositivo.disID'), primary_key=True, nullable=False, index=True)
+    Column('grupoID',String(10), ForeignKey('grupo.grupoID')),
+    Column('disID',String(10), ForeignKey('dispositivo.disID'))
 )
-
 
 t_DetalleMiembro = Table(
     'DetalleMiembro', metadata,
-    Column('nickname', ForeignKey('Usuario.nickname'), primary_key=True, nullable=False),
-    Column('grupoID', ForeignKey('Grupo.grupoID'), primary_key=True, nullable=False, index=True)
+    Column('nickname',String(10), ForeignKey('usuario.nickname')),
+    Column('grupoID',String(10), ForeignKey('grupo.grupoID'))
 )
+'''
 
+class DetalleDispositivo(db.Model):
+    __tablename__ = 'detalleDispositivo'
 
-class Dispositivo(db.Model):
-    __tablename__ = 'Dispositivo'
+    grupoID = Column(ForeignKey('grupo.grupoID'), primary_key=True, index=True)
+    disID = Column(ForeignKey('dispositivo.disID'), primary_key=True, index=True)
 
-    disID = Column(String(10), primary_key=True)
-    tipo = Column(String(20), nullable=False)
-    estado = Column(String(20), nullable=False)
+class DetalleMiembro(db.Model):
+    __tablename__ = 'detalleMiembro'
 
-    Grupo = relationship('Grupo', secondary='DetalleDispositivo')
+    grupoID = Column(ForeignKey('grupo.grupoID'), primary_key=True, index=True)
+    nickname = Column(ForeignKey('usuario.nickname'), primary_key=True, index=True)
+
+class Usuario(db.Model):
+    __tablename__ = 'usuario'
+
+    nickname = Column(String(10), primary_key=True)
+    nombre = Column(String(20), nullable=False)
+    contraseña = Column(String(20), nullable=False)
+    email = Column(String(50), nullable=False, unique=True)
 
 
 class Grupo(db.Model):
-    __tablename__ = 'Grupo'
+    __tablename__ = 'grupo'
 
     grupoID = Column(String(10), primary_key=True)
     nombre = Column(String(20), nullable=False)
     descripccion = Column(String(200), nullable=False)
     clase = Column(String(40), nullable=False)
 
-    Usuario = relationship('Usuario', secondary='DetalleMiembro')
+    usuarios = relationship('Usuario', secondary='detalleMiembro',
+        backref=backref('grupos', lazy=True))
+
+
+
+class Dispositivo(db.Model):
+    __tablename__ = 'dispositivo'
+
+    disID = Column(String(10), primary_key=True)
+    tipo = Column(String(20), nullable=False)
+    estado = Column(String(20), nullable=False)
+
+    grupos = relationship('Grupo', secondary='detalleDispositivo',
+        backref=backref('dispositivos', lazy=True))
+
 
 
 class Medicion(db.Model):
-    __tablename__ = 'Medicion'
+    __tablename__ = 'medicion'
 
     medID = Column(String(10), primary_key=True)
-    disID = Column(ForeignKey('Dispositivo.disID'), index=True)
+    disID = Column(ForeignKey('dispositivo.disID'), index=True)
     valor = Column(Float(asdecimal=True), nullable=False)
     fecha = Column(Date, nullable=False)
 
@@ -92,10 +99,10 @@ class Medicion(db.Model):
 
 
 class ProgramaGrupo(db.Model):
-    __tablename__ = 'ProgramaGrupo'
+    __tablename__ = 'programaGrupo'
 
     progGID = Column(String(10), primary_key=True)
-    grupoID = Column(ForeignKey('Grupo.grupoID'), index=True)
+    grupoID = Column(ForeignKey('grupo.grupoID'), index=True)
     nombre = Column(String(20), nullable=False)
     descripccion = Column(String(200), nullable=True)
 
@@ -103,26 +110,17 @@ class ProgramaGrupo(db.Model):
 
 
 class ProgramaIndividual(db.Model):
-    __tablename__ = 'ProgramaIndividual'
+    __tablename__ = 'programaIndividual'
 
     progIID = Column(String(10), primary_key=True)
-    progGID = Column(ForeignKey('ProgramaGrupo.progGID'), index=True)
-    disID = Column(ForeignKey('Dispositivo.disID'), index=True)
+    progGID = Column(ForeignKey('programaGrupo.progGID'), index=True)
+    disID = Column(ForeignKey('dispositivo.disID'), index=True)
     valor = Column(Float(asdecimal=True), nullable=False)
     fechaIni = Column(Date, nullable=False)
     fechaFin = Column(Date, nullable=False)
 
     Dispositivo = relationship('Dispositivo')
     ProgramaGrupo = relationship('ProgramaGrupo')
-
-
-class Usuario(db.Model):
-    __tablename__ = 'Usuario'
-
-    nickname = Column(String(10), primary_key=True)
-    nombre = Column(String(20), nullable=False)
-    contraseña = Column(String(20), nullable=False)
-    email = Column(String(50), nullable=False, unique=True)
 
 
 if __name__ == "__main__":

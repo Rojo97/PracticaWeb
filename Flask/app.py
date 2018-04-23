@@ -23,15 +23,17 @@ socketio = SocketIO(app)
 
 # Database
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE')
-db.init_app(app)
+models.db.init_app(app)
 
 @app.route('/groups')
 def groups_template():
     groups = []
+    '''
     allgroups = models.Grupo.query(all)
     for n in allgroups:
         sensores = models.Dispositivo.query(all).filter_by(Grupo = n.grupoID)
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(sensores), "class": n.clase})
+    '''
     return render_template(
         'index.html',
         domain=DOMAIN,
@@ -39,6 +41,9 @@ def groups_template():
     )
 @app.route('/newGroup')
 def new_groups_template():
+    devices = models.Dispositivo.query.all()
+    groups = models.Grupo.query.all()
+    '''
     devices = [
       { "id": 1, "name": "Luces de la cochera", "type": "light"},
       { "id": 2, "name": "Luces del salon", "type": "light"},
@@ -53,6 +58,7 @@ def new_groups_template():
       { "id": 4, "name": "Pasillo", "class": "fa-home"},
       { "id": 5, "name": "Luces", "class": "fa-lightbulb-o"}
     ]
+    '''
     return render_template(
         'new-group.html',
         domain=DOMAIN,
