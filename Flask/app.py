@@ -41,16 +41,24 @@ def groups_template():
 @app.route('/newGroup')
 def new_groups_template():
     devices = [
-      { "id": 1, "group": "Cochera", "name": "Luces de la cochera", "type": "light"},
-      { "id": 2, "group": "Salón", "name": "Luces del salon", "type": "light"},
-      { "id": 3, "group": "Salón", "name": "Temperatura del salon", "type": "thermostat"},
-      { "id": 4, "group": "Cocina", "name": "Luces de la cocina", "type": "light"},
-      { "id": 5, "group": "Cocina", "name": "Temperatura de la cocina", "type": "thermostat"},
+      { "id": 1, "name": "Luces de la cochera", "type": "light"},
+      { "id": 2, "name": "Luces del salon", "type": "light"},
+      { "id": 3, "name": "Temperatura del salon", "type": "thermostat"},
+      { "id": 4, "name": "Luces de la cocina", "type": "light"},
+      { "id": 5, "name": "Temperatura de la cocina", "type": "thermostat"},
+    ]
+    groups = [
+      { "id": 1, "name": "Todos", "class": "fa-calendar-minus-o"},
+      { "id": 2, "name": "Salón", "class": "fa-home"},
+      { "id": 3, "name": "Cocina", "class": "fa-home"},
+      { "id": 4, "name": "Pasillo", "class": "fa-home"},
+      { "id": 5, "name": "Luces", "class": "fa-lightbulb-o"}
     ]
     return render_template(
         'new-group.html',
         domain=DOMAIN,
-        devices=devices
+        devices=devices,
+        groups=groups
     )
 @app.route('/')
 def login_template():
