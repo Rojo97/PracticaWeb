@@ -120,10 +120,8 @@
       actuadores: [
         {% for actuador in actuadores %}
 		    		{
-      id: '{{ actuador.id }}',
-      name: '{{ actuador.name }}',
-      num: '{{ actuador.num }}',
-      class: '{{ actuador.class }}',
+      id: '{{ actuador.disID }}',
+      name: '{{ actuador.nombre }}'
     }{% if not loop.last %}, {% endif %}
   {% endfor %}
           ]

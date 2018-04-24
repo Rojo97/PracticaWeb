@@ -87,7 +87,7 @@
     {% endblock %} {% block javascripts %}{{ super() }}
     <script>
       var socket = io.connect('{{ domain }}');
-      var appNewGroup = new Vue({
+      var app = new Vue({
         el: "#app ",
         delimiters: ['[[', ']]'],
         data: {
@@ -108,21 +108,20 @@
           } {% if not loop.last %}, {% endif %} {% endfor %}],
           grupos: [{%
             for grupo in grupos %} {
-            id: '{{ grupo.id }}',
-            name: '{{ grupo.name }}',
-            num: '{{ grupo.num }}',
-            class: '{{ grupo.class }}',
+            id: '{{ grupo.grupoID }}',
+            name: '{{ grupo.nombre }}'
+            
           } {% if not loop.last %}, {% endif %} {% endfor %}]
         },
         methods: {
-      createSensor: () => {
-        socket.emit('createSensor', {
-          name: app.name,
-          funcion: app.funcion,
-          grupo: app.grupo,
-          tipo: app.tipo
-        });
-      }
-    }
+          createSensor: () => {
+            socket.emit('createSensor', {
+              name: app.name,
+              funcion: app.funcion,
+              grupo: app.grupo,
+              tipo: app.tipo
+            });
+          }
+        }
       });
     </script> {% endblock %}
