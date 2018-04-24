@@ -1,21 +1,22 @@
-Vue.component("devicedisplaySensor", {
+Vue.component("devicedisplaysensor", {
   props: ['devices'],
   template:
   `
   <div>
-  <deviceInfoBox
+  <deviceInfoBoxSensor
     v-for="device in devices"
-    v-bind:key="device.disID"
+    v-bind:key="device.id"
     v-bind:device="device"
-  ></deviceInfoBox>
+  ></deviceInfoBoxSensor>
   </div>
   `
 });
-Vue.component("deviceInfoBox", {
+Vue.component("deviceInfoBoxSensor", {
   props:["device"],
   template:
   `
-  <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
+  <div style="margin-bottom:2%; margin-left:10%; margin-right:15%"
+  v-if = "device.tipo === 'sensor'">
   <div class="box box-default expanded-box">
     <div class="box-header with-border" style="padding:0">
       <div class="info-box bg-green" style="margin:0">

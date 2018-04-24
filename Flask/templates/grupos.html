@@ -40,8 +40,8 @@
       <!-- mostramos los dispositivos -->
       <section class="content">
         <devicedisplay v-bind:devices="devices"></devicedisplay>
-        <devicedisplayLight v-bind:devices="devices"></devicedisplayLight>
-        <devicedisplaySensor v-bind:devices="devices"></devicedisplaySensor>
+        <devicedisplaylight v-bind:devices="devices"></devicedisplaylight>
+        <devicedisplaysensor v-bind:devices="devices"></devicedisplaysensor>
       </section>
 
 
@@ -71,6 +71,8 @@
 
 {% endblock %} {% block javascripts %}{{ super() }}
 <script src="{{ url_for('static', filename='deviceNormal.js') }}"></script>
+<script src="{{ url_for('static', filename='deviceSensor.js') }}"></script>
+<script src="{{ url_for('static', filename='deviceLight.js') }}"></script>
 
 <script>
   var appGroups = new Vue({
@@ -81,6 +83,9 @@
 		    		{
       id: '{{ device.disID }}',
       name: '{{ device.nombre }}',
+      tipo: '{{ device.tipo }}',
+      funcion: '{{ device.funcion }}',
+      estado: '{{ device.estado }}'
     }{% if not loop.last %}, {% endif %}
   {% endfor %}
           ]

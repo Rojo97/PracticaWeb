@@ -1,21 +1,22 @@
-Vue.component("devicedisplayLight", {
+Vue.component("devicedisplaylight", {
   props: ['devices'],
   template:
   `
   <div>
-  <deviceInfoBox
+  <deviceInfoBoxLight
     v-for="device in devices"
     v-bind:key="device.id"
     v-bind:device="device"
-  ></deviceInfoBox>
+  ></deviceInfoBoxLight>
   </div>
   `
 });
-Vue.component("deviceInfoBox", {
+Vue.component("deviceInfoBoxLight", {
   props:["device"],
   template:
   `
-  <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
+  <div style="margin-bottom:2%; margin-left:10%; margin-right:15%"
+  v-if = "device.tipo === 'actuador' && device.funcion === 'Luminosidad'">
   <div class="box box-default">
     <div class="box-header with-border" style="padding:0">
       <div class="info-box bg-green" style="margin:0">
@@ -25,10 +26,14 @@ Vue.component("deviceInfoBox", {
 
         <div class="info-box-content">
           <span class="info-box-text">{{device.name}}</span>
-          <span class="info-box-number">{{device.id}}</span>
+          <span v-if = "device.estado === 0" class="info-box-number">Apagada</span>
+          <span v-else class="info-box-number">Encendida</span>
           <span class="pull-right">
-            <button type="button" class="btn btn-block btn-primary">
-              Apagar/Encender
+            <button v-if = "device.estado === 0" type="button" class="btn btn-block btn-primary">
+              Encender
+            </button>
+            <button v-else type="button" class="btn btn-block btn-primary">
+              Apagar
             </button>
           </span>
         </div>
