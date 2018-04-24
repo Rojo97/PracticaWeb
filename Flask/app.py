@@ -23,14 +23,17 @@ socketio = SocketIO(app)
 
 # Database
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE')
-db.init_app(app)
+models.db.init_app(app)
 
 @app.route('/groups')
 def groups_template():
     groups = []
+    '''
     allgroups = models.Grupo.query(all)
     for n in allgroups:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.sensores), "class": n.clase})
+
+    '''
     return render_template(
         'index.html',
         domain=DOMAIN,
@@ -38,17 +41,29 @@ def groups_template():
     )
 @app.route('/newGroup')
 def new_groups_template():
+    devices = models.Dispositivo.query.all()
+    groups = models.Grupo.query.all()
+    '''
     devices = [
-      { "id": 1, "group": "Cochera", "name": "Luces de la cochera", "type": "light"},
-      { "id": 2, "group": "Salón", "name": "Luces del salon", "type": "light"},
-      { "id": 3, "group": "Salón", "name": "Temperatura del salon", "type": "thermostat"},
-      { "id": 4, "group": "Cocina", "name": "Luces de la cocina", "type": "light"},
-      { "id": 5, "group": "Cocina", "name": "Temperatura de la cocina", "type": "thermostat"},
+      { "id": 1, "name": "Luces de la cochera", "type": "light"},
+      { "id": 2, "name": "Luces del salon", "type": "light"},
+      { "id": 3, "name": "Temperatura del salon", "type": "thermostat"},
+      { "id": 4, "name": "Luces de la cocina", "type": "light"},
+      { "id": 5, "name": "Temperatura de la cocina", "type": "thermostat"},
     ]
+    groups = [
+      { "id": 1, "name": "Todos", "class": "fa-calendar-minus-o"},
+      { "id": 2, "name": "Salón", "class": "fa-home"},
+      { "id": 3, "name": "Cocina", "class": "fa-home"},
+      { "id": 4, "name": "Pasillo", "class": "fa-home"},
+      { "id": 5, "name": "Luces", "class": "fa-lightbulb-o"}
+    ]
+    '''
     return render_template(
         'new-group.html',
         domain=DOMAIN,
-        devices=devices
+        devices=devices,
+        groups=groups
     )
 @app.route('/')
 def login_template():
@@ -71,9 +86,28 @@ def recover_password_template():
 
 @app.route('/newSensor')
 def new_sensor_template():
+    funciones = [
+      { "id": 1, "funcion": "Cochera", "name": "Luminosidad", "type": "light"},
+      { "id": 2, "funcion": "Salón", "name": "Temperatura", "type": "light"},
+      { "id": 3, "funcion": "Salón", "name": "Persianas", "type": "thermostat"},
+    ]
+    tipos = [
+      {"name": "Actuador"},
+      {"name": "Sensor"},
+    ]
+    grupos = [
+      { "id": 1, "funcion": "Cochera", "name": "Grupo 1", "type": "light"},
+      { "id": 2, "funcion": "Salón", "name": "Grupo 2", "type": "light"},
+      { "id": 3, "funcion": "Salón", "name": "Grupo 3", "type": "thermostat"},
+      { "id": 4, "funcion": "Cocina", "name": "Grupo 4", "type": "light"},
+      { "id": 5, "funcion": "Cocina", "name": "Grupo 5", "type": "thermostat"},
+    ]
     return render_template(
         'addSensor.html',
-        domain=DOMAIN
+        domain=DOMAIN,
+        funciones=funciones,
+        tipos=tipos,
+        grupos=grupos
     )
 
 @app.route('/addToGroup')

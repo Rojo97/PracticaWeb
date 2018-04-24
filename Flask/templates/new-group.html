@@ -60,7 +60,7 @@
                   </div>
                   <div class="checkbox" v-for="group in groups">
                     <label>
-                      <input type="checkbox" v-model="subgroups" v-bind:value="group" v-bind:id="group"> [[group]]
+                      <input type="checkbox" v-model="subgroups" v-bind:value="group" v-bind:id="group"> [[group.name]]
                     </label>
                   </div>
                 </form>
@@ -158,10 +158,19 @@
 		    		{
               id: '{{ device.id }}',
               name: '{{ device.name }}',
-              type: '{{ device.type }}',
-              group: '{{ device.group }}'
+              type: '{{ device.type }}'
             }{% if not loop.last %}, {% endif %}
-          {% endfor %}]
+          {% endfor %}],
+      groups: [
+        {% for group in groups %}
+          {
+              id: '{{ group.id }}',
+              name: '{{ group.name }}',
+              num: '{{ group.num }}',
+              class: '{{ group.class }}',
+            }{% if not loop.last %}, {% endif %}
+          {% endfor %}
+      ]
     },
     methods: {
       createGroup: () => {
@@ -172,18 +181,6 @@
           subgroups: app.subgroups
         });
       }
-    },
-  computed: {
-    groups: function () {
-      var group = []
-      lenP = this.devices.length
-      for (i=0;i<lenP;i++) {
-        if (!group.includes(this.devices[i].group)) {
-          group.push(this.devices[i].group)
-        }
-      }
-      return group
     }
-  }
   });
 </script> {% endblock %}
