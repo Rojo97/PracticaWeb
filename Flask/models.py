@@ -79,8 +79,10 @@ class Dispositivo(db.Model):
     __tablename__ = 'dispositivo'
 
     disID = Column(String(10), primary_key=True)
+    nombre = Column(String(20), nullable=False)
     tipo = Column(String(20), nullable=False)
     estado = Column(String(20), nullable=False)
+    clase = Column(String(40), nullable=False)
 
     grupos = relationship('Grupo', secondary='detalleDispositivo',
         backref=backref('dispositivos', lazy=True))

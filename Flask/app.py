@@ -31,8 +31,8 @@ def groups_template():
     '''
     allgroups = models.Grupo.query(all)
     for n in allgroups:
-        sensores = models.Dispositivo.query(all).filter_by(Grupo = n.grupoID)
-        groups.append({"id": n.grupoID, "name": n.nombre, "num": len(sensores), "class": n.clase})
+        groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.sensores), "class": n.clase})
+
     '''
     return render_template(
         'index.html',
@@ -146,26 +146,20 @@ def new_data_template():
     )
 @app.route('/newProgram')
 def new_program_template():
-    actuadores = [
-      { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
-      { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
-      { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
-      { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
-      { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
-    ]
+    actuadores = []
+    allactuadores = models.Dispositivo.query(all).filter_by(tipo = "actuador")
+    for n in allactuadores:
+        actuadores.append({"id": n.disID, "name": n.nombre , "Estado": n.estado, "class": n.clase})
     return render_template(
         'newProgram.html',
         domain=DOMAIN, actuadores = actuadores
     )
 @app.route('/programs')
 def programs_template():
-    programs = [
-      { "id": 1, "group": "Cochera", "name": "Luces de la cochera", "class": "fa-clock-o"},
-      { "id": 2, "group": "Salón", "name": "Luces del salon", "class": "fa-clock-o"},
-      { "id": 3, "group": "Salón", "name": "Temperatura del salon", "class": "fa-clock-o"},
-      { "id": 4, "group": "Cocina", "name": "Luces de la cocina", "class": "fa-clock-o"},
-      { "id": 5, "group": "Cocina", "name": "Temperatura de la cocina", "class": "fa-clock-o"},
-    ]
+    programs = []
+    allprograms = models.ProgramaGrupo.query(all)
+    for n in allprograms:
+        programs.append({ "id": n.progID, "group": n.grupo.nombre, "name": n.nombre, "class": "fa-clock-o"})
     return render_template(
         'programas.html',
         domain=DOMAIN,
