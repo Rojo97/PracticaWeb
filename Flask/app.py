@@ -5,6 +5,7 @@ from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 import models
+from flask import request
 
 load_dotenv(find_dotenv())
 app = Flask(__name__)
@@ -86,6 +87,8 @@ def recover_password_template():
 
 @app.route('/newSensor')
 def new_sensor_template():
+    group = request.args.get('group')
+    print(group)
     funciones = [
       {"name": "Luminosidad"},
       {"name": "Temperatura"},
@@ -101,7 +104,8 @@ def new_sensor_template():
         domain=DOMAIN,
         funciones=funciones,
         tipos=tipos,
-        grupos=groups
+        grupos=groups,
+        default_group=group
     )
 
 @app.route('/addToGroup')
@@ -127,9 +131,9 @@ def manage_user_groups_template():
 
 @app.route('/group/<int:groupID>')
 def group_template(groupID):
-    group = models.Grupo.query.filter_by(grupoID=groupID)
-
-    devices = group.dispositivos
+    group = models.Grupo.query.filter_by(grupoID=groupID).all()
+    print(group)
+    devices = group[0].dispositivos
     print(devices)
     return render_template(
         'grupos.html',
@@ -227,7 +231,20 @@ def createSensor(sensor):
         funcion = sensor['funcion']
     )
     models.db.session.add(newSensor)
-    models.db.session.commit()
+    try:
+        models.db.session.commit()
+    except:
+        models.db.session.rollback()
+    disGenerado= models.Dispositivo.query.all()[-1].disID
+    newDetalle = models.DetalleDispositivo(
+        grupoID=sensor['grupo'].split('-')[0],
+        disID=disGenerado
+    )
+    models.db.session.add(newDetalle)
+    try:
+        models.db.session.commit()
+    except:
+        models.db.session.rollback()
 
     # try:
         # models.db.session.commit()

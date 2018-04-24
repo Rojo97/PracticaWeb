@@ -16,7 +16,7 @@ Vue.component("deviceInfoBoxLight", {
   template:
   `
   <div style="margin-bottom:2%; margin-left:10%; margin-right:15%"
-  v-if = "device.tipo === 'actuador' && device.funcion === 'Luminosidad'">
+  v-if = "device.tipo === 'Actuador' && device.funcion === 'Luminosidad'">
   <div class="box box-default">
     <div class="box-header with-border" style="padding:0">
       <div class="info-box bg-green" style="margin:0">
