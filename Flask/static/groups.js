@@ -24,6 +24,7 @@ Vue.component("groupInfoBox", {
         <div class="info-box-content">
           <span class="info-box-number">{{group.name}}</span>
           <span class="info-box-text">{{group.num}} dispositivos</span>
+          <span class="info-box-text">{{group.desc}} </span>
         </div>
         <!-- /.info-box-content -->
       </div>

@@ -93,8 +93,8 @@
                     <div class="form-group">
                       <label>Luces</label>
                       <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione las luces" style="width: 100%;" v-model="lights">
-                        <option v-for="device in devices"
-                        v-if="device.type == 'light'">[[device.name]]</option>
+                        <option v-for="device in devices" :key="device.id"
+                        v-if="device.funcion == 'Luminosidad'">[[device.id]]- [[device.name]]</option>
                       </select>
                     </div>
 
@@ -102,16 +102,16 @@
                       <label>Persianas</label>
                       <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione los persianas" style="width: 100%;"
                         v-model="blinds">
-                        <option v-for="device in devices"
-                        v-if="device.type == 'blind'">[[device.name]]</option>                      </select>
+                        <option v-for="device in devices" :key="device.id"
+                        v-if="device.funcion == 'Persianas'">[[device.id]]- [[device.name]]</option>                      </select>
                     </div>
                     <!-- /.form-group -->
                     <div class="form-group">
                       <label>Termostatos</label>
                       <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione las termostatos" style="width: 100%;"
                         v-model="thermostats">
-                        <option v-for="device in devices"
-                        v-if="device.type == 'thermostat'">[[device.name]]</option>                      </select>
+                        <option v-for="device in devices" :key="device.id"
+                        v-if="device.funcion == 'Temperatura'">[[device.id]]- [[device.name]]</option>                      </select>
                     </div>
 
                     <div class="box-footer">
@@ -156,9 +156,9 @@
       lights: [],
       devices: [{% for device in devices %}
 		    		{
-              id: '{{ device.id }}',
-              name: '{{ device.name }}',
-              type: '{{ device.type }}'
+              id: '{{ device.disID }}',
+              name: '{{ device.nombre }}',
+              funcion: '{{ device.funcion }}'
             }{% if not loop.last %}, {% endif %}
           {% endfor %}],
       groups: [
