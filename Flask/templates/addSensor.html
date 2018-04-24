@@ -51,7 +51,7 @@
             <label>Grupo</label>
             <select class="form-control select2 select2-hidden-accessible " style="width: 100% " tabindex="-1
               " aria-hidden="true" v-model="grupo">
-              <option v-for="grupo in grupos ">[[grupo.name]]</option>
+              <option v-for="grupo in grupos ">[[grupo.id]]- [[grupo.name]]</option>
             </select>
             <span class="select2 select2-container select2-container--default select2-container--below " dir="ltr
               " style="width: 100%; ">
@@ -94,7 +94,7 @@
           name: '',
           funcion: '',
           tipo: '',
-          grupo: '',
+          grupo: '{{ default_group }}',
           funciones: [{%
             for funcion in funciones %} {
             id: '{{ funcion.id }}',

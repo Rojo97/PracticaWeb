@@ -16,7 +16,7 @@ Vue.component("deviceInfoBoxSensor", {
   template:
   `
   <div style="margin-bottom:2%; margin-left:10%; margin-right:15%"
-  v-if = "device.tipo === 'sensor'">
+  v-if = "device.tipo === 'Sensor'">
   <div class="box box-default expanded-box">
     <div class="box-header with-border" style="padding:0">
       <div class="info-box bg-green" style="margin:0">

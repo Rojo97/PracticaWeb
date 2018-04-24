@@ -16,7 +16,7 @@ Vue.component("deviceInfoBoxNormal", {
   template:
   `
   <div style="margin-bottom:2%; margin-left:10%; margin-right:15%"
-  v-if = "device.tipo === 'actuador' && device.funcion !== 'Luminosidad'">
+  v-if = "device.tipo === 'Actuador' && device.funcion !== 'Luminosidad'">
   <div class="info-box bg-green">
     <span class="info-box-icon">
       <i v-if = "device.funcion === 'Temperatura'" class="fa fa-eyedropper"></i>
