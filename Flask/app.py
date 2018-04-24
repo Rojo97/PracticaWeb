@@ -5,6 +5,7 @@ from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 import models
+from flask import request
 
 load_dotenv(find_dotenv())
 app = Flask(__name__)
@@ -23,15 +24,16 @@ socketio = SocketIO(app)
 
 # Database
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE')
-db.init_app(app)
+models.db.init_app(app)
 
 @app.route('/groups')
 def groups_template():
     groups = []
-    allgroups = models.Grupo.query(all)
+    
+    allgroups = models.Grupo.query.all()
     for n in allgroups:
-        sensores = models.Dispositivo.query(all).filter_by(Grupo = n.grupoID)
-        groups.append({"id": n.grupoID, "name": n.nombre, "num": len(sensores), "class": n.clase})
+        groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.dispositivos), "class": n.clase, "desc": n.descripccion})
+    
     return render_template(
         'index.html',
         domain=DOMAIN,
@@ -39,12 +41,16 @@ def groups_template():
     )
 @app.route('/newGroup')
 def new_groups_template():
+    
+    devices = models.Dispositivo.query.all()
+    groups = models.Grupo.query.all()
+    '''
     devices = [
-      { "id": 1, "name": "Luces de la cochera", "type": "light"},
-      { "id": 2, "name": "Luces del salon", "type": "light"},
-      { "id": 3, "name": "Temperatura del salon", "type": "thermostat"},
-      { "id": 4, "name": "Luces de la cocina", "type": "light"},
-      { "id": 5, "name": "Temperatura de la cocina", "type": "thermostat"},
+      { "disID": 1, "nombre": "Luces de la cochera", "funcion": "Luminosidad"},
+      { "disID": 2, "nombre": "Luces de la cochera", "funcion": "Luminosidad"},
+      { "disID": 3, "nombre": "Temperatura del salon", "funcion": "Luminosidad"},
+      { "disID": 4, "nombre": "Luces de la cocina", "funcion": "Luminosidad"},
+      { "disID": 5, "nombre": "Temperatura de la cocina", "funcion": "Luminosidad"},
     ]
     groups = [
       { "id": 1, "name": "Todos", "class": "fa-calendar-minus-o"},
@@ -53,6 +59,7 @@ def new_groups_template():
       { "id": 4, "name": "Pasillo", "class": "fa-home"},
       { "id": 5, "name": "Luces", "class": "fa-lightbulb-o"}
     ]
+    '''
     return render_template(
         'new-group.html',
         domain=DOMAIN,
@@ -80,9 +87,25 @@ def recover_password_template():
 
 @app.route('/newSensor')
 def new_sensor_template():
+    group = request.args.get('group')
+    print(group)
+    funciones = [
+      {"name": "Luminosidad"},
+      {"name": "Temperatura"},
+      {"name": "Persianas"},
+    ]
+    tipos = [
+      {"name": "Actuador"},
+      {"name": "Sensor"},
+    ]
+    groups = models.Grupo.query.all()
     return render_template(
         'addSensor.html',
-        domain=DOMAIN
+        domain=DOMAIN,
+        funciones=funciones,
+        tipos=tipos,
+        grupos=groups,
+        default_group=group
     )
 
 @app.route('/addToGroup')
@@ -106,10 +129,15 @@ def manage_user_groups_template():
         domain=DOMAIN
     )
 
-@app.route('/group')
-def group_template():
+@app.route('/group/<int:groupID>')
+def group_template(groupID):
+    group = models.Grupo.query.filter_by(grupoID=groupID).all()
+    print(group)
+    devices = group[0].dispositivos
+    print(devices)
     return render_template(
         'grupos.html',
+        devices = devices,
         domain=DOMAIN
     )
 
@@ -121,16 +149,19 @@ def new_data_template():
     )
 @app.route('/newProgram')
 def new_program_template():
-    actuadores = [
-      { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
-      { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
-      { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
-      { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
-      { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
-    ]
+    actuadores = models.Dispositivo.query.filter_by(tipo='Actuador').all()
+
+    # actuadores = [
+    #   { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
+    #   { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
+    #   { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
+    #   { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
+    #   { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
+    # ]
     return render_template(
         'newProgram.html',
-        domain=DOMAIN, actuadores = actuadores
+        domain=DOMAIN,
+        actuadores = actuadores
     )
 @app.route('/programs')
 def programs_template():
@@ -149,13 +180,75 @@ def programs_template():
 @socketio.on('createGroup')
 def createGroup(group):
     # Send message to alls users
-    print(group)
+    
+    newGroup = models.Grupo(
+        nombre=group['name'],
+        descripccion=group['desc'],
+        clase='',
+    )
+    models.db.session.add(newGroup)
+    try:
+        models.db.session.commit()
+    except:
+        models.db.session.rollback()
+        return 1
+    grupoGenerado= models.Grupo.query.all()[-1].grupoID
+    for dispositivo in group['devices']:
+        newDetalle = models.DetalleDispositivo(
+            grupoID=grupoGenerado,
+            disID=dispositivo.split('-')[0]
+        )
+        models.db.session.add(newDetalle)
+        try:
+            models.db.session.commit()
+        except:
+            models.db.session.rollback()
+
 
 @socketio.on('createProgram')
-def createProgram(group):
+def createProgram(createProgram):
+    # newProgram = mocreateProgramdels.ProgramaGrupo(
+    #     grupoID=0
+    #     nombre=createProgram['name'],
+    #     descripccion=createProgram['desc']
+    # )
+    # models.db.session.add(newGroup)
+    # try:
+    #     models.db.session.commit()
+    # except:
+    #     models.db.session.rollback()
+    #     return 1
+    print()
+@socketio.on('createSensor')
+def createSensor(sensor):
     # Send message to alls users
-    print(group)
+    print(sensor)
+    newSensor = models.Dispositivo(
+        nombre=sensor['name'],
+        tipo=sensor['tipo'],
+        estado=0,
+        clase='',
+        funcion = sensor['funcion']
+    )
+    models.db.session.add(newSensor)
+    try:
+        models.db.session.commit()
+    except:
+        models.db.session.rollback()
+    disGenerado= models.Dispositivo.query.all()[-1].disID
+    newDetalle = models.DetalleDispositivo(
+        grupoID=sensor['grupo'].split('-')[0],
+        disID=disGenerado
+    )
+    models.db.session.add(newDetalle)
+    try:
+        models.db.session.commit()
+    except:
+        models.db.session.rollback()
 
-
+    # try:
+        # models.db.session.commit()
+    # except:
+    #     models.db.session.rollback()
 if __name__ == '__main__':
     socketio.run(app)

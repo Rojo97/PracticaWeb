@@ -52,6 +52,7 @@
       id: '{{ group.id }}',
       name: '{{ group.name }}',
       num: '{{ group.num }}',
+      desc: '{{ group.desc }}',
       class: '{{ group.class }}',
     }{% if not loop.last %}, {% endif %}
   {% endfor %}
