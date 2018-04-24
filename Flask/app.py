@@ -125,10 +125,15 @@ def manage_user_groups_template():
         domain=DOMAIN
     )
 
-@app.route('/group')
-def group_template():
+@app.route('/group/<int:groupID>')
+def group_template(groupID):
+    group = models.Grupo.query.filter_by(grupoID=groupID)
+
+    devices = group.dispositivos
+    print(devices)
     return render_template(
         'grupos.html',
+        devices = devices,
         domain=DOMAIN
     )
 
