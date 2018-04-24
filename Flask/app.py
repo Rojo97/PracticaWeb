@@ -131,15 +131,12 @@ def manage_user_groups_template():
         domain=DOMAIN
     )
 
-@app.route('/group')
-def group_template():
-    devices = [
-        { "disID": 1, "nombre": "Luces de la cochera", "funcion": "Luminosidad", "estado": 0, "tipo":"sensor"},
-        { "disID": 2, "nombre": "Luces de la entrada", "funcion": "Temperatura", "estado": 1, "tipo":"actuador"},
-        { "disID": 3, "nombre": "Temperatura del salon", "funcion": "Persiana", "estado": 1, "tipo":"actuador"},
-        { "disID": 4, "nombre": "Luces de la cocina", "funcion": "Luminosidad", "estado": 1, "tipo":"sensor"},
-        { "disID": 5, "nombre": "Temperatura de la cocina", "funcion": "Luminosidad", "estado": 1, "tipo":"actuador"}
-    ]
+@app.route('/group/<int:groupID>')
+def group_template(groupID):
+    group = models.Grupo.query.filter_by(grupoID=groupID)
+
+    devices = group.dispositivos
+    print(devices)
     return render_template(
         'grupos.html',
         devices = devices,
