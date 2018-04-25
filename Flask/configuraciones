@@ -1,2 +1,6 @@
+Crear la tabla pertinente
+mysql -u usuario -p ssw < script.sql
+
+sudo apt-get install python-setuptools
 sudo apt-get install libmysqlclient-dev
 sudo pip3 install mysqlclient
