@@ -132,9 +132,7 @@ def manage_user_groups_template():
 @app.route('/group/<int:groupID>')
 def group_template(groupID):
     group = models.Grupo.query.filter_by(grupoID=groupID).all()
-    print(group)
     devices = group[0].dispositivos
-    print(devices)
     return render_template(
         'grupos.html',
         devices = devices,

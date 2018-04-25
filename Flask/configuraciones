@@ -1,2 +1,20 @@
+Crear la tabla pertinente
+mysql -u usuarioMysql -p baseDeDatos < script.sql
+modificar la linea 3 de envExample para poner la base de datos correcta, siguiendo el formato
+DATABASE="mysql+mysqldb://usuarioMysql:passwordMysql@localhost:puerto/baseDeDatos"
+ejemplo:
+DATABASE="mysql+mysqldb://root:root@localhost:3306/ssw"
+
+Despues copiamos envExample a .env, en la misma carpeta.
+cp envExample .env
+
+Intalamos los requisitos de la aplicacion (Flask, SQLAlchemy, etc...):
+pip3 install -r requirements.txt
+
+Y por separado debemos instalar el controlador de la base de datos:
+sudo apt-get install python-setuptools
 sudo apt-get install libmysqlclient-dev
 sudo pip3 install mysqlclient
+
+Ejecutar la aplicacion y acceder a http://127.0.0.1:5000/
+python3 app.py
