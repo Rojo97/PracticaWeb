@@ -3,7 +3,7 @@ Vue.component("menulateral", {
       <div>
       <header class="main-header">
       <!-- Logo -->
-      <a href="/" class="logo">
+      <a href="index.html" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini">
           <b>D</b>Tr</span>
@@ -35,7 +35,7 @@ Vue.component("menulateral", {
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-left">
-                      <a href="/changePass" class="btn btn-default btn-flat">Cambiar contraseña</a>
+                      <a href="changePass" class="btn btn-default btn-flat">Cambiar contraseña</a>
                   </div>
                   <div class="pull-right">
                       <a href="/" class="btn btn-default btn-flat">Salir</a>
@@ -68,17 +68,17 @@ Vue.component("menulateral", {
             </a>
             <ul class="treeview-menu">
               <li>
-                <a href="/groups">
+                <a href="groups">
                   <i class="fa fa-circle-o"></i> Ver grupos</a>
               </li>
               <li>
-                <a href="/newGroup">
+                <a href="newGroup">
                   <i class="fa fa-circle-o"></i> Añadir grupos</a>
               </li>
             </ul>
           </li>
           <li>
-            <a href="/newSensor">
+            <a href="newSensor">
               <i class="fa fa-plus"></i>
               <span>Nuevo dispositivo</span>
             </a>
@@ -93,24 +93,24 @@ Vue.component("menulateral", {
             </a>
             <ul class="treeview-menu">
               <li>
-                <a href="/programs">
+                <a href="programs">
                   <i class="fa fa-circle-o"></i> Ver Programa</a>
               </li>
               <li>
-                <a href="/newProgram">
+                <a href="newProgram">
                   <i class="fa fa-circle-o"></i> Añadir programa</a>
               </li>
             </ul>
           </li>
           <li>
-            <a href="/manageUserGroups">
+            <a href="manageUserGroups">
               <i class="fa fa-users"></i>
               <span>Usuarios</span>
             </a>
           </li>
           <li class="header">DEBUG</li>
           <li>
-            <a href="/newData">
+            <a href="newData">
               <i class="fa fa-sliders"></i>
               <span>Añadir medidas manualmente</span>
             </a>

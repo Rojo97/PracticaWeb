@@ -8,7 +8,7 @@ from flask_migrate import Migrate, MigrateCommand
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 
-from sqlalchemy import Column, Date, Float, ForeignKey, String, Table, Integer
+from sqlalchemy import Column, Date, Float, ForeignKey, String, Table
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -65,9 +65,9 @@ class Usuario(db.Model):
 class Grupo(db.Model):
     __tablename__ = 'grupo'
 
-    grupoID = Column(Integer, primary_key=True,autoincrement=True)
+    grupoID = Column(String(10), primary_key=True)
     nombre = Column(String(20), nullable=False)
-    descripccion = Column(String(200), nullable=True)
+    descripccion = Column(String(200), nullable=False)
     clase = Column(String(40), nullable=False)
 
     usuarios = relationship('Usuario', secondary='detalleMiembro',
@@ -78,12 +78,11 @@ class Grupo(db.Model):
 class Dispositivo(db.Model):
     __tablename__ = 'dispositivo'
 
-    disID = db.Column(Integer, primary_key=True, autoincrement=True)
+    disID = Column(String(10), primary_key=True)
     nombre = Column(String(20), nullable=False)
     tipo = Column(String(20), nullable=False)
-    estado = Column(Float, nullable=False)
+    estado = Column(String(20), nullable=False)
     clase = Column(String(40), nullable=False)
-    funcion = Column(String(20), nullable=False)
 
     grupos = relationship('Grupo', secondary='detalleDispositivo',
         backref=backref('dispositivos', lazy=True))
@@ -93,7 +92,7 @@ class Dispositivo(db.Model):
 class Medicion(db.Model):
     __tablename__ = 'medicion'
 
-    medID = Column(Integer, primary_key=True,autoincrement=True)
+    medID = Column(String(10), primary_key=True)
     disID = Column(ForeignKey('dispositivo.disID'), index=True)
     valor = Column(Float(asdecimal=True), nullable=False)
     fecha = Column(Date, nullable=False)
@@ -104,7 +103,7 @@ class Medicion(db.Model):
 class ProgramaGrupo(db.Model):
     __tablename__ = 'programaGrupo'
 
-    progGID = Column(Integer, primary_key=True,autoincrement=True)
+    progGID = Column(String(10), primary_key=True)
     grupoID = Column(ForeignKey('grupo.grupoID'), index=True)
     nombre = Column(String(20), nullable=False)
     descripccion = Column(String(200), nullable=True)
@@ -115,7 +114,7 @@ class ProgramaGrupo(db.Model):
 class ProgramaIndividual(db.Model):
     __tablename__ = 'programaIndividual'
 
-    progIID = Column(Integer, primary_key=True,autoincrement=True)
+    progIID = Column(String(10), primary_key=True)
     progGID = Column(ForeignKey('programaGrupo.progGID'), index=True)
     disID = Column(ForeignKey('dispositivo.disID'), index=True)
     valor = Column(Float(asdecimal=True), nullable=False)
