@@ -1,3 +1,5 @@
+Instalacion:
+
 Crear la tabla pertinente
 mysql -u usuarioMysql -p baseDeDatos < script.sql
 modificar la linea 3 de envExample para poner la base de datos correcta, siguiendo el formato

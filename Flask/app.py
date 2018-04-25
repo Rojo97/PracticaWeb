@@ -29,7 +29,7 @@ models.db.init_app(app)
 @app.route('/groups')
 def groups_template():
     groups = []
-    
+    devices = models.Dispositivo.query.all()
     allgroups = models.Grupo.query.all()
     for n in allgroups:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.dispositivos), "class": n.clase, "desc": n.descripccion})
@@ -37,7 +37,8 @@ def groups_template():
     return render_template(
         'index.html',
         domain=DOMAIN,
-        groups=groups
+        groups=groups,
+        dispositivostotal=len(devices)
     )
 @app.route('/newGroup')
 def new_groups_template():
@@ -131,8 +132,12 @@ def manage_user_groups_template():
 
 @app.route('/group/<int:groupID>')
 def group_template(groupID):
-    group = models.Grupo.query.filter_by(grupoID=groupID).all()
-    devices = group[0].dispositivos
+    if groupID!=0:
+        group = models.Grupo.query.filter_by(grupoID=groupID).all()
+        devices = group[0].dispositivos
+    else:
+        devices = models.Dispositivo.query.all()
+
     return render_template(
         'grupos.html',
         devices = devices,
@@ -187,20 +192,19 @@ def createGroup(group):
     models.db.session.add(newGroup)
     try:
         models.db.session.commit()
+        grupoGenerado= models.Grupo.query.all()[-1].grupoID
+        for dispositivo in group['devices']:
+            newDetalle = models.DetalleDispositivo(
+                grupoID=grupoGenerado,
+                disID=dispositivo.split('-')[0]
+            )
+            models.db.session.add(newDetalle)
+            try:
+                models.db.session.commit()
+            except:
+                models.db.session.rollback()
     except:
-        models.db.session.rollback()
-        return 1
-    grupoGenerado= models.Grupo.query.all()[-1].grupoID
-    for dispositivo in group['devices']:
-        newDetalle = models.DetalleDispositivo(
-            grupoID=grupoGenerado,
-            disID=dispositivo.split('-')[0]
-        )
-        models.db.session.add(newDetalle)
-        try:
-            models.db.session.commit()
-        except:
-            models.db.session.rollback()
+        models.db.session.rollback()    
 
 
 @socketio.on('createProgram')
@@ -231,19 +235,19 @@ def createSensor(sensor):
     models.db.session.add(newSensor)
     try:
         models.db.session.commit()
+        disGenerado= models.Dispositivo.query.all()[-1].disID
+        newDetalle = models.DetalleDispositivo(
+            grupoID=sensor['grupo'].split('-')[0],
+            disID=disGenerado
+        )
+        models.db.session.add(newDetalle)
+        try:
+            models.db.session.commit()
+        except:
+            models.db.session.rollback()
     except:
         models.db.session.rollback()
-    disGenerado= models.Dispositivo.query.all()[-1].disID
-    newDetalle = models.DetalleDispositivo(
-        grupoID=sensor['grupo'].split('-')[0],
-        disID=disGenerado
-    )
-    models.db.session.add(newDetalle)
-    try:
-        models.db.session.commit()
-    except:
-        models.db.session.rollback()
-
+    
     # try:
         # models.db.session.commit()
     # except:
