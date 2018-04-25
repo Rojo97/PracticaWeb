@@ -246,7 +246,6 @@ def createSensor(sensor):
         except:
             models.db.session.rollback()
     except:
-        print("Ha fallado")
         models.db.session.rollback()
     
     # try:
