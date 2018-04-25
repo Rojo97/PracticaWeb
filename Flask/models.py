@@ -57,7 +57,7 @@ class Usuario(db.Model):
     __tablename__ = 'usuario'
 
     nickname = Column(String(10), primary_key=True)
-    nombre = Column(String(20), nullable=False)
+    nombre = Column(String(40), nullable=False)
     contraseña = Column(String(20), nullable=False)
     email = Column(String(50), nullable=False, unique=True)
 
@@ -66,7 +66,7 @@ class Grupo(db.Model):
     __tablename__ = 'grupo'
 
     grupoID = Column(Integer, primary_key=True,autoincrement=True)
-    nombre = Column(String(20), nullable=False)
+    nombre = Column(String(40), nullable=False)
     descripccion = Column(String(200), nullable=True)
     clase = Column(String(40), nullable=False)
 
@@ -79,7 +79,7 @@ class Dispositivo(db.Model):
     __tablename__ = 'dispositivo'
 
     disID = db.Column(Integer, primary_key=True, autoincrement=True)
-    nombre = Column(String(20), nullable=False)
+    nombre = Column(String(40), nullable=False)
     tipo = Column(String(20), nullable=False)
     estado = Column(Float, nullable=False)
     clase = Column(String(40), nullable=False)
