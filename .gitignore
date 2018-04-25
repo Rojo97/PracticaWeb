@@ -12,6 +12,7 @@ Flask/static/documentation
 Flask/static/pages
 Flask/static/plugins
 Flask/__pycache__
+Flask/migrations
 
 .vscode
 AdminLTE-2.4.3/
