@@ -51,7 +51,7 @@
             <label>Grupo</label>
             <select class="form-control select2 select2-hidden-accessible " style="width: 100% " tabindex="-1
               " aria-hidden="true" v-model="grupo">
-              <option v-for="grupo in grupos ">[[grupo.name]]</option>
+              <option v-for="grupo in grupos ">[[grupo.id]]- [[grupo.name]]</option>
             </select>
             <span class="select2 select2-container select2-container--default select2-container--below " dir="ltr
               " style="width: 100%; ">
@@ -87,14 +87,14 @@
     {% endblock %} {% block javascripts %}{{ super() }}
     <script>
       var socket = io.connect('{{ domain }}');
-      var appNewGroup = new Vue({
+      var app = new Vue({
         el: "#app ",
         delimiters: ['[[', ']]'],
         data: {
           name: '',
           funcion: '',
           tipo: '',
-          grupo: '',
+          grupo: '{{ default_group }}',
           funciones: [{%
             for funcion in funciones %} {
             id: '{{ funcion.id }}',
@@ -108,21 +108,20 @@
           } {% if not loop.last %}, {% endif %} {% endfor %}],
           grupos: [{%
             for grupo in grupos %} {
-            id: '{{ grupo.id }}',
-            name: '{{ grupo.name }}',
-            num: '{{ grupo.num }}',
-            class: '{{ grupo.class }}',
+            id: '{{ grupo.grupoID }}',
+            name: '{{ grupo.nombre }}'
+            
           } {% if not loop.last %}, {% endif %} {% endfor %}]
         },
         methods: {
-      createSensor: () => {
-        socket.emit('createSensor', {
-          name: app.name,
-          funcion: app.funcion,
-          grupo: app.grupo,
-          tipo: app.tipo
-        });
-      }
-    }
+          createSensor: () => {
+            socket.emit('createSensor', {
+              name: app.name,
+              funcion: app.funcion,
+              grupo: app.grupo,
+              tipo: app.tipo
+            });
+          }
+        }
       });
     </script> {% endblock %}

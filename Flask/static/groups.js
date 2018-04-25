@@ -16,7 +16,7 @@ Vue.component("groupInfoBox", {
   template:
   `
   <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">  
-    <a href="/group">
+    <a v-bind:href="'/group/'+group.id">
       <div class="info-box bg-green">
         <span class="info-box-icon">
           <i class="fa" v-bind:class="group.class" ></i>
@@ -24,6 +24,7 @@ Vue.component("groupInfoBox", {
         <div class="info-box-content">
           <span class="info-box-number">{{group.name}}</span>
           <span class="info-box-text">{{group.num}} dispositivos</span>
+          <span class="info-box-text">{{group.desc}} </span>
         </div>
         <!-- /.info-box-content -->
       </div>
