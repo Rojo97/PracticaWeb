@@ -17,6 +17,22 @@
       </ol>
     </section>
     <section class="content">
+        <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">  
+            <a v-bind:href="'/group/'+group.id">
+              <div class="info-box bg-green">
+                <span class="info-box-icon">
+                  <i class="fa" v-bind:class="group.class" ></i>
+                </span>
+                <div class="info-box-content">
+                  <span class="info-box-number">Todos</span>
+                  <span class="info-box-text">BBDD dispositivos</span>
+                  <span class="info-box-text">Todos los dispositivos </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+            </a>
+            <!-- /.info-box -->
+          </div>
       <groupdisplay v-bind:groups="groups"></groupdisplay>
     </section>
     <!-- Control Sidebar -->
