@@ -10,7 +10,7 @@ DATABASE="mysql+mysqldb://root:root@localhost:3306/ssw"
 Despues copiamos envExample a .env, en la misma carpeta.
 cp envExample .env
 
-Para despleguar el servidor necesitamos tener instalado python3.
+Para desplegar el servidor necesitamos tener instalado python3.
 Si tienes python instalado pero no pip3:
 sudo apt-get install python3-pip
 Intalamos los requisitos de la aplicacion (Flask, SQLAlchemy, etc...):
