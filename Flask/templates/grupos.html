@@ -25,7 +25,7 @@
       <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
         <div class="row" style="margin-bottom:2%">
           <div class="col-md-6">
-            <a class="btn btn-block btn-social btn-bitbucket" href="addSensor.html">
+            <a class="btn btn-block btn-social btn-bitbucket" :href="'/newSensor?group='+idgrupo">
               <i class="fa fa-plus"></i>Añadir nuevo dispositivo
             </a>
           </div>
@@ -78,6 +78,7 @@
   var appGroups = new Vue({
     el: "#app",
     data: {
+      idgrupo: {{ idgrupo }},
       devices: [
         {% for device in devices %}
 		    		{

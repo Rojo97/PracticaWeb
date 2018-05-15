@@ -90,7 +90,10 @@ def recover_password_template():
 @app.route('/newSensor')
 def new_sensor_template():
     group = request.args.get('group')
-    print(group)
+    if group == None or group == 0:
+        group = ''
+    groupData = models.Grupo.query.filter_by(grupoID=group).all()
+
     funciones = [
       {"name": "Luminosidad"},
       {"name": "Temperatura"},
@@ -107,7 +110,7 @@ def new_sensor_template():
         funciones=funciones,
         tipos=tipos,
         grupos=groups,
-        default_group=group
+        default_group=group+'- '+groupData[0].nombre
     )
 
 @app.route('/addToGroup')
@@ -141,6 +144,7 @@ def group_template(groupID):
 
     return render_template(
         'grupos.html',
+        idgrupo = groupID,
         devices = devices,
         domain=DOMAIN
     )

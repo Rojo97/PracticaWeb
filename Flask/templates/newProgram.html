@@ -75,9 +75,10 @@
           <div class="row margin pull-left" style="margin-right:6% ;margin-left:5%">
             <button type="raddButton" class="btn btn-success" @click="addDevice" style="margin-right:1em">Añadir sensor</button>
             <button type="raddButton" class="btn btn-success" @click="removeDevice" :disabled="devices.length <2" >Eliminar sensor</button>
+            <button type="raddButton" class="btn btn-default" @click="reset" >Reset</button>
           </div>
           <div class="row margin pull-right" style="margin-right:6% ;margin-left:5%">
-            <button type="raddButton" class="btn btn-success pull-right" @click="createProgram">Guardar</button>
+            <button type="raddButton" class="btn btn-success pull-right" :disabled="inactivo" @click="createProgram">Guardar</button>
           </div>
         </div>
       </section>
@@ -126,23 +127,43 @@
   {% endfor %}
           ]
     },
+   computed: {
+      inactivo () {
+        if(this.name == '' || this.desc == ''){
+          return true;
+        }
+        for (var i = 0; i < this.devices.length; ++i) {
+          if (this.devices[i].device== '' || this.devices[i].init== '' || this.devices[i].end== '' || this.devices[i].value== ''){
+            return true;
+          }
+        }
+      return false;
+      }
+    },
     methods: {
-      addDevice: () => {
-        app.devices.push({ id: app.devices.length, device: '', init: '', end: '', value: '' });
+      addDevice () {
+        console.log(this.devices[0])
+        this.devices.push({ id: this.devices.length, device: '', init: '', end: '', value: '' });
       },
-      removeDevice: () => {
-        if (app.devices.length > 1) {
-          app.devices.splice(app.devices.length - 1, 1);
+      removeDevice () {
+        if (this.devices.length > 1) {
+          this.devices.splice(this.devices.length - 1, 1);
         }
       },
-      createProgram: () => {
+      createProgram () {
         socket.emit('createProgram', {
-          name: app.name,
-          desc: app.desc,
-          devices: app.devices
+          name: this.name,
+          desc: this.desc,
+          devices: this.devices
         });
+      },
+      reset(){
+        this.name=''
+        this.desc= ''
+        this.devices= [{ id: 0, device: '', init: '', end: '', value: '' }]
       }
-    }
+      
+    } 
   });
 
 

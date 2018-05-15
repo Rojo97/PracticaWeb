@@ -51,6 +51,7 @@
             <label>Grupo</label>
             <select class="form-control select2 select2-hidden-accessible " style="width: 100% " tabindex="-1
               " aria-hidden="true" v-model="grupo">
+              <option >Sin grupo</option>
               <option v-for="grupo in grupos ">[[grupo.id]]- [[grupo.name]]</option>
             </select>
             <span class="select2 select2-container select2-container--default select2-container--below " dir="ltr
@@ -62,7 +63,8 @@
         </div>
       </div>
       <div class="box-footer " style="padding-left:1%; padding-right:1% ">
-        <button type="raddButton " class="btn btn-success" @click="createSensor">Registrar</button>
+        <button @click="reset" type="submit" class="btn btn-default">Reset</button>
+        <button type="raddButton " class="btn btn-success pull-right" @click="createSensor" :disabled="name == '' || funcion == '' || tipo == '' || grupo == ''">Registrar</button>
       </div>
       <!-- Control Sidebar -->
       <aside class="control-sidebar control-sidebar-dark ">
@@ -122,9 +124,13 @@
               tipo: app.tipo
             });
             app.name=''
+            
+          },
+          reset: () => {
+            app.name=''
             app.funcion=''
-            app.grupo=''
             app.tipo=''
+            app.grupo=''
           }
         }
       });

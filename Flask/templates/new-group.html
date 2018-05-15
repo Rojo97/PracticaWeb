@@ -114,8 +114,8 @@
                     </div>
 
                     <div class="box-footer">
-                      <button type="submit" class="btn btn-default">Cancelar</button>
-                      <button @click="createGroup" type="submit" class="btn btn-success pull-right">Añadir Grupo</button>
+                      <button @click="reset" type="submit" class="btn btn-default">Reset</button>
+                      <button @click="createGroup" type="submit" class="btn btn-success pull-right" :disabled="name == '' || desc == ''">Añadir Grupo</button>
                     </div>
                     <!-- /.form-group -->
                   </div>
@@ -172,18 +172,25 @@
       ]
     },
     methods: {
-      createGroup: () => {
+      createGroup(){
         socket.emit('createGroup', {
-          name: app.name,
-          desc: app.desc,
-          devices: app.lights.concat(app.thermostats).concat(app.blinds),
-          subgroups: app.subgroups
+          name: this.name,
+          desc: this.desc,
+          devices: this.lights.concat(this.thermostats).concat(this.blinds),
+          subgroups: this.subgroups
         });
-        app.name=''
-        app.desc=''
-        app.lights=''
-        app.thermostats=''
-        app.blinds=''
+        this.name=''
+        this.desc=''
+        this.lights=[]
+        this.thermostats=[]
+        this.blinds=[]
+      },
+      reset(){
+        this.name=''
+        this.desc=''
+        this.lights=[]
+        this.thermostats=[]
+        this.blinds=[]
       }
     }
   });
