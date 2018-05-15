@@ -92,8 +92,9 @@ def new_sensor_template():
     group = request.args.get('group')
     if group == None or group == 0:
         group = ''
-    groupData = models.Grupo.query.filter_by(grupoID=group).all()
-
+    else:
+        groupData = models.Grupo.query.filter_by(grupoID=group).all()
+        group = group+'- '+groupData[0].nombre
     funciones = [
       {"name": "Luminosidad"},
       {"name": "Temperatura"},
@@ -110,7 +111,7 @@ def new_sensor_template():
         funciones=funciones,
         tipos=tipos,
         grupos=groups,
-        default_group=group+'- '+groupData[0].nombre
+        default_group=group
     )
 
 @app.route('/addToGroup')
