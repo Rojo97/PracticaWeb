@@ -18,6 +18,7 @@ else:
     app.config['DEBUG'] = False
 app.config['PORT'] = 80
 
+
 # Socketio
 DOMAIN = environ.get('DOMAIN')
 socketio = SocketIO(app)
