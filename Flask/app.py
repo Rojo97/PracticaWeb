@@ -28,13 +28,8 @@ models.db.init_app(app)
 @app.route('/groups')
 def groups_template():
     groups = []
-<<<<<<< HEAD
     '''
     allgroups = models.Grupo.query(all)
-=======
-    devices = models.Dispositivo.query.all()
-    allgroups = models.Grupo.query.all()
->>>>>>> feature-new-group-database
     for n in allgroups:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.sensores), "class": n.clase})
 
@@ -42,8 +37,7 @@ def groups_template():
     return render_template(
         'index.html',
         domain=DOMAIN,
-        groups=groups,
-        dispositivostotal=len(devices)
+        groups=groups
     )
 @app.route('/newGroup')
 def new_groups_template():
@@ -137,19 +131,8 @@ def manage_user_groups_template():
         domain=DOMAIN
     )
 
-<<<<<<< HEAD
 @app.route('/group')
 def group_template():
-=======
-@app.route('/group/<int:groupID>')
-def group_template(groupID):
-    if groupID!=0:
-        group = models.Grupo.query.filter_by(grupoID=groupID).all()
-        devices = group[0].dispositivos
-    else:
-        devices = models.Dispositivo.query.all()
-
->>>>>>> feature-new-group-database
     return render_template(
         'grupos.html',
         domain=DOMAIN
@@ -185,70 +168,13 @@ def programs_template():
 @socketio.on('createGroup')
 def createGroup(group):
     # Send message to alls users
-<<<<<<< HEAD
     print(group)
-=======
-    
-    newGroup = models.Grupo(
-        nombre=group['name'],
-        descripccion=group['desc'],
-        clase='',
-    )
-    models.db.session.add(newGroup)
-    try:
-        models.db.session.commit()
-        grupoGenerado= models.Grupo.query.all()[-1].grupoID
-        for dispositivo in group['devices']:
-            newDetalle = models.DetalleDispositivo(
-                grupoID=grupoGenerado,
-                disID=dispositivo.split('-')[0]
-            )
-            models.db.session.add(newDetalle)
-            try:
-                models.db.session.commit()
-            except:
-                models.db.session.rollback()
-    except:
-        models.db.session.rollback()    
-
->>>>>>> feature-new-group-database
 
 @socketio.on('createProgram')
 def createProgram(group):
     # Send message to alls users
-<<<<<<< HEAD
     print(group)
 
 
-=======
-    print(sensor)
-    newSensor = models.Dispositivo(
-        nombre=sensor['name'],
-        tipo=sensor['tipo'],
-        estado=0,
-        clase='',
-        funcion = sensor['funcion']
-    )
-    models.db.session.add(newSensor)
-    try:
-        models.db.session.commit()
-        disGenerado= models.Dispositivo.query.all()[-1].disID
-        newDetalle = models.DetalleDispositivo(
-            grupoID=sensor['grupo'].split('-')[0],
-            disID=disGenerado
-        )
-        models.db.session.add(newDetalle)
-        try:
-            models.db.session.commit()
-        except:
-            models.db.session.rollback()
-    except:
-        models.db.session.rollback()
-    
-    # try:
-        # models.db.session.commit()
-    # except:
-    #     models.db.session.rollback()
->>>>>>> feature-new-group-database
 if __name__ == '__main__':
     socketio.run(app)

@@ -57,7 +57,7 @@ class Usuario(db.Model):
     __tablename__ = 'usuario'
 
     nickname = Column(String(10), primary_key=True)
-    nombre = Column(String(40), nullable=False)
+    nombre = Column(String(20), nullable=False)
     contraseña = Column(String(20), nullable=False)
     email = Column(String(50), nullable=False, unique=True)
 
@@ -65,15 +65,9 @@ class Usuario(db.Model):
 class Grupo(db.Model):
     __tablename__ = 'grupo'
 
-<<<<<<< HEAD
     grupoID = Column(String(10), primary_key=True)
     nombre = Column(String(20), nullable=False)
     descripccion = Column(String(200), nullable=False)
-=======
-    grupoID = Column(Integer, primary_key=True,autoincrement=True)
-    nombre = Column(String(40), nullable=False)
-    descripccion = Column(String(200), nullable=True)
->>>>>>> feature-new-group-database
     clase = Column(String(40), nullable=False)
 
     usuarios = relationship('Usuario', secondary='detalleMiembro',
@@ -84,13 +78,8 @@ class Grupo(db.Model):
 class Dispositivo(db.Model):
     __tablename__ = 'dispositivo'
 
-<<<<<<< HEAD
     disID = Column(String(10), primary_key=True)
     nombre = Column(String(20), nullable=False)
-=======
-    disID = db.Column(Integer, primary_key=True, autoincrement=True)
-    nombre = Column(String(40), nullable=False)
->>>>>>> feature-new-group-database
     tipo = Column(String(20), nullable=False)
     estado = Column(String(20), nullable=False)
     clase = Column(String(40), nullable=False)

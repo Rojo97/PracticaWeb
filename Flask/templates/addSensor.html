@@ -115,7 +115,6 @@
           } {% if not loop.last %}, {% endif %} {% endfor %}]
         },
         methods: {
-<<<<<<< HEAD
       createSensor: () => {
         socket.emit('createSensor', {
           name: app.name,
@@ -125,20 +124,5 @@
         });
       }
     }
-=======
-          createSensor: () => {
-            socket.emit('createSensor', {
-              name: app.name,
-              funcion: app.funcion,
-              grupo: app.grupo,
-              tipo: app.tipo
-            });
-            app.name=''
-            app.funcion=''
-            app.grupo=''
-            app.tipo=''
-          }
-        }
->>>>>>> feature-new-group-database
       });
     </script> {% endblock %}

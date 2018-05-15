@@ -55,7 +55,7 @@ Vue.component("menulateral", {
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
           <div style="width:50%; margin:auto" class="img-responsive">
-            <img src="static/DomoticTrails.png" class="img-circle" style="width:100%; margin-top: 15%; margin-bottom: 15%">
+            <img src="DomoticTrails.png" class="img-circle" style="width:100%; margin-top: 15%; margin-bottom: 15%">
           </div>
           <li class="header">CONTROL</li>
           <li class="treeview">

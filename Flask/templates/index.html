@@ -17,22 +17,6 @@
       </ol>
     </section>
     <section class="content">
-        <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">  
-            <a href="/group/0">
-              <div class="info-box bg-green">
-                <span class="info-box-icon">
-                  <i class="fa" v-bind:class="" ></i>
-                </span>
-                <div class="info-box-content">
-                  <span class="info-box-number">Todos</span>
-                  <span class="info-box-text">[[dispositivostotal]] dispositivos</span>
-                  <span class="info-box-text">Todos los dispositivos </span>
-                </div>
-                <!-- /.info-box-content -->
-              </div>
-            </a>
-            <!-- /.info-box -->
-          </div>
       <groupdisplay v-bind:groups="groups"></groupdisplay>
     </section>
     <!-- Control Sidebar -->
@@ -61,7 +45,6 @@
 <script>
   var appGroups = new Vue({
     el: "#groups",
-    delimiters: ['[[', ']]'],
     data: {
       groups: [
         {% for group in groups %}
@@ -72,8 +55,7 @@
       class: '{{ group.class }}',
     }{% if not loop.last %}, {% endif %}
   {% endfor %}
-          ],
-          dispositivostotal:'{{dispositivostotal}}'
+          ]
         }
       });
 </script> {% endblock %}
