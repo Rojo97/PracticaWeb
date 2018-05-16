@@ -1,35 +1,44 @@
-{% extends "loginLayout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
-<div class="register-box">
+{% extends "loginLayout.html" %} {% block head %} {{ super() }} 
+{% endblock %} 
+{% block content %}
+<div class="wrapper" id="app">
+  <div class="register-box">
     <div class="register-logo">
         <b>DomoticsTrails</b>
     </div>
 
     <div class="register-box-body">
       <p class="login-box-msg">Registrate en la plataforma</p>
-
-      <form action="/" method="get">
-        <div class="form-group has-feedback">
-          <input class="form-control" placeholder="Nombre" type="text">
-          <span class="glyphicon glyphicon-user form-control-feedback"></span>
-        </div>
-        <div class="form-group has-feedback">
-          <input class="form-control" placeholder="Email" type="email">
-          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-        </div>
-        <div class="form-group has-feedback">
-          <input class="form-control" placeholder="Contraseña" type="password">
-          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-        </div>
-        <div class="form-group has-feedback">
-          <input class="form-control" placeholder="Reescribe la contraseña" type="password">
-          <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
-        </div>
-        <!-- /.col -->
-        <div class="col-xs-12">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Registro</button>
-        </div>
-        <!-- /.col -->
-      </form>
+      <p v-if="userCreated" style="color:green">Usuario creado correctamente</p>
+      <p v-if="userNotCreated" style="color:Red">El usuario no se ha podido crear</p>
+      <div class="form-group has-feedback">
+        <input class="form-control" placeholder="Usuario" type="text" v-model="username">
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+      <p v-if="usernameUsed" style="color:red">Ese nombre de usuario ya esta en uso</p>
+      <div class="form-group has-feedback">
+        <input class="form-control" placeholder="Nombre y apellidos" type="text" v-model="name">
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input class="form-control" placeholder="Email" type="email" v-model="email">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <p v-if="usernameUsed" style="color:red">Ya existe una cuenta asociada a ese email</p>
+      <div class="form-group has-feedback">
+        <input class="form-control" placeholder="Contraseña" type="password" v-model="password">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input class="form-control" placeholder="Reescribe la contraseña" type="password" v-model="password2">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <p v-if="distintas" style="color:red">Las contraseñas deben coincidir</p>
+      <!-- /.col -->
+      <div class="col-xs-12">
+        <button @click="createUser" :disabled="inactivo" type="submit" class="btn btn-primary btn-block btn-flat" >Registro</button>
+      </div>
+      <!-- /.col -->
       <br>
       <br>
       <a href="/" class="text-center">Ya estoy registrado</a>
@@ -37,5 +46,71 @@
     <!-- /.form-box -->
   </div>
   <!-- /.register-box -->
-{% endblock %} {% block javascripts %}{{ super() }}
+</div>
+{% endblock %} 
+{% block javascripts %}{{ super() }}
+<script>
+  var socket = io.connect('{{ domain }}');
+  socket.on('userCreated', function () {
+    app.userCreated = true
+    app.userNotCreated = false
+
+  }); 
+  socket.on('userNotCreated', function () {
+    app.userNotCreated = true
+    app.userCreated = false
+
+  });
+  socket.on('userUsed', function () {
+    app.usernameUsed = true
+  });
+  socket.on('emailUsed', function () {
+    app.emailUsed = true
+  });
+  var app = new Vue({
+    el: "#app",
+    delimiters: ['[[',']]'],
+    data: {
+      username: '',
+      name: '',
+      email: '',
+      password: '',
+      password2: '',
+      usernameUsed: false,
+      emailUsed: false,
+      userCreated: false,
+      userNotCreated: false,
+    },
+    methods: {
+      createUser () {
+        socket.emit('createUser', {
+          username: this.username,
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          password2: this.password2
+        });
+        //TODO decirle al usuario que ya se ha registrado, o que el usuario ya esta cogido o yo que se, cosas
+        //Puede que esto se pueda hacer desde el servidor
+      },
+    },
+   computed: {
+      inactivo () {
+        if(this.username==='' || this.name==='' || this.email==='' || this.password==='' || this.password2===''){
+          return true;
+        }
+        if(this.password !== this.password2){
+          return true
+        }
+      return false;
+      },
+      distintas (){
+        if(this.password !== this.password2){
+          return true
+        }
+        return false
+      }
+    } 
+  });
+</script>
 {% endblock %}

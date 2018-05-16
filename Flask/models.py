@@ -56,7 +56,7 @@ class DetalleMiembro(db.Model):
 class Usuario(db.Model):
     __tablename__ = 'usuario'
 
-    nickname = Column(String(10), primary_key=True)
+    nickname = Column(String(20), primary_key=True)
     nombre = Column(String(40), nullable=False)
     contraseña = Column(String(20), nullable=False)
     email = Column(String(50), nullable=False, unique=True)

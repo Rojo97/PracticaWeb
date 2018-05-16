@@ -1,6 +1,6 @@
 from os import environ
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect,url_for
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
@@ -227,6 +227,38 @@ def createProgram(createProgram):
     #     models.db.session.rollback()
     #     return 1
     print()
+
+@socketio.on('createUser')
+def createUser(user):
+    print(user)
+    '''
+    TODO
+    if usuario existe
+        emit('userUsed')
+        emit('userNotCreated')
+    if email existe
+        emit('emailUsed')
+        emit('userNotCreated')
+    '''
+    newUser = models.Usuario(
+        nickname = user['username'],
+        nombre = user['name'],
+        contraseña = user['password'],
+        email = user['email']
+    )
+    models.db.session.add(newUser)
+    try:
+        models.db.session.commit()
+        emit('userCreated')
+
+    except:
+        models.db.session.rollback()
+        emit('userNotCreated')
+    
+    # try:
+        # models.db.session.commit()
+    # except:
+    #     models.db.session.rollback()
 @socketio.on('createSensor')
 def createSensor(sensor):
     # Send message to alls users
