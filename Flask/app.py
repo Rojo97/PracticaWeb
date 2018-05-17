@@ -321,7 +321,6 @@ def createProgram(createProgram):
     print()
 
 @socketio.on('createUser')
-@authenticated_only
 def createUser(user):
     print(user)
     '''
@@ -354,35 +353,35 @@ def createUser(user):
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
-@socketio.on('loginUser')
-@authenticated_only
-def loginUser(user):
-    print(user)
-    try:
-        user = models.Usuario.query.filter_by(email=user['email']).one()
-        #TODO que sea un login de verdad
-        print(user)
-        with app.app_context():
-            login_user(user, remember=True)
-        print(current_user)
-        emit('loggedIn')
-    except Exception as ex:
-        print("Esto falla puto:")
-        print(ex)
-        #TODO mensaje de error
+# @socketio.on('loginUser')
+# @authenticated_only
+# def loginUser(user):
+#     print(user)
+#     try:
+#         user = models.Usuario.query.filter_by(email=user['email']).one()
+#         #TODO que sea un login de verdad
+#         print(user)
+#         with app.app_context():
+#             login_user(user, remember=True)
+#         print(current_user)
+#         emit('loggedIn')
+#     except Exception as ex:
+#         print("Esto falla puto:")
+#         print(ex)
+#         #TODO mensaje de error
 
-@socketio.on('logoutUser')
-@authenticated_only
-def logoutUser():
-    print()
-    try:
+# @socketio.on('logoutUser')
+# @authenticated_only
+# def logoutUser():
+#     print()
+#     try:
         
-        logout_user()
-        emit('loggedOut')
-    except Exception as ex:
-        print("Esto falla puto:")
-        print(ex)
-        #TODO mensaje de error
+#         logout_user()
+#         emit('loggedOut')
+#     except Exception as ex:
+#         print("Esto falla puto:")
+#         print(ex)
+#         #TODO mensaje de error
 
 
 @socketio.on('createSensor')
