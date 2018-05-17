@@ -41,6 +41,15 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login_template"
 
+def authenticated_only(f):
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+        if not current_user.is_authenticated:
+            disconnect()
+        else:
+            return f(*args, **kwargs)
+    return wrapped
+
 @login_manager.user_loader
 def load_user(user_id):
     try:
@@ -153,6 +162,7 @@ def recover_password_template():
     )
 
 @app.route('/newSensor')
+@login_required
 def new_sensor_template():
     group = request.args.get('group')
     if group == None or group == 0:
@@ -181,6 +191,7 @@ def new_sensor_template():
     )
 
 @app.route('/addToGroup')
+@login_required
 def add_to_group_template():
     return render_template(
         'addToGroup.html',
@@ -189,6 +200,7 @@ def add_to_group_template():
     )
 
 @app.route('/changePass')
+@login_required
 def change_pass_template():
     return render_template(
         'cambiarPassword.html',
@@ -197,6 +209,7 @@ def change_pass_template():
     )
 
 @app.route('/manageUserGroups')
+@login_required
 def manage_user_groups_template():
     return render_template(
         'gestionarUsuariosGrupos.html',
@@ -205,6 +218,7 @@ def manage_user_groups_template():
     )
 
 @app.route('/group/<int:groupID>')
+@login_required
 def group_template(groupID):
     if groupID!=0:
         group = models.Grupo.query.filter_by(grupoID=groupID).all()
@@ -221,6 +235,7 @@ def group_template(groupID):
     )
 
 @app.route('/newData')
+@login_required
 def new_data_template():
     return render_template(
         'introducirDatos.html',
@@ -228,6 +243,7 @@ def new_data_template():
         current_user=current_user.nombre,
     )
 @app.route('/newProgram')
+@login_required
 def new_program_template():
     actuadores = models.Dispositivo.query.filter_by(tipo='Actuador').all()
 
@@ -245,6 +261,7 @@ def new_program_template():
         current_user=current_user.nombre,
     )
 @app.route('/programs')
+@login_required
 def programs_template():
     programs = [
       { "id": 1, "group": "Cochera", "name": "Luces de la cochera", "class": "fa-clock-o"},
@@ -260,6 +277,7 @@ def programs_template():
         current_user=current_user.nombre,
     )
 @socketio.on('createGroup')
+@authenticated_only
 def createGroup(group):
     # Send message to alls users
     
@@ -287,6 +305,7 @@ def createGroup(group):
 
 
 @socketio.on('createProgram')
+@authenticated_only
 def createProgram(createProgram):
     # newProgram = mocreateProgramdels.ProgramaGrupo(
     #     grupoID=0
@@ -302,6 +321,7 @@ def createProgram(createProgram):
     print()
 
 @socketio.on('createUser')
+@authenticated_only
 def createUser(user):
     print(user)
     '''
@@ -335,6 +355,7 @@ def createUser(user):
     # except:
     #     models.db.session.rollback()
 @socketio.on('loginUser')
+@authenticated_only
 def loginUser(user):
     print(user)
     try:
@@ -351,6 +372,7 @@ def loginUser(user):
         #TODO mensaje de error
 
 @socketio.on('logoutUser')
+@authenticated_only
 def logoutUser():
     print()
     try:
@@ -364,6 +386,7 @@ def logoutUser():
 
 
 @socketio.on('createSensor')
+@authenticated_only
 def createSensor(sensor):
     # Send message to alls users
     print(sensor)
