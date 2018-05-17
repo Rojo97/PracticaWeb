@@ -9,13 +9,13 @@
 
     <div class="register-box-body">
       <p class="login-box-msg">Registrate en la plataforma</p>
-      <p v-if="userCreated" style="color:green">Usuario creado correctamente</p>
-      <p v-if="userNotCreated" style="color:Red">El usuario no se ha podido crear</p>
+      <p v-if="userCreated" class="success">Usuario creado correctamente</p>
+      <p v-if="userNotCreated" class="error">El usuario no se ha podido crear</p>
       <div class="form-group has-feedback">
         <input class="form-control" placeholder="Usuario" type="text" v-model="username">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
-      <p v-if="usernameUsed" style="color:red">Ese nombre de usuario ya esta en uso</p>
+      <p v-if="usernameUsed" class="error">Ese nombre de usuario ya esta en uso</p>
       <div class="form-group has-feedback">
         <input class="form-control" placeholder="Nombre y apellidos" type="text" v-model="name">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
@@ -24,7 +24,7 @@
         <input class="form-control" placeholder="Email" type="email" v-model="email">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
-      <p v-if="usernameUsed" style="color:red">Ya existe una cuenta asociada a ese email</p>
+      <p v-if="usernameUsed" class="error">Ya existe una cuenta asociada a ese email</p>
       <div class="form-group has-feedback">
         <input class="form-control" placeholder="Contraseña" type="password" v-model="password">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
@@ -33,7 +33,7 @@
         <input class="form-control" placeholder="Reescribe la contraseña" type="password" v-model="password2">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
-      <p v-if="distintas" style="color:red">Las contraseñas deben coincidir</p>
+      <p v-if="distintas" class="error">Las contraseñas deben coincidir</p>
       <!-- /.col -->
       <div class="col-xs-12">
         <button @click="createUser" :disabled="inactivo" type="submit" class="btn btn-primary btn-block btn-flat" >Registro</button>

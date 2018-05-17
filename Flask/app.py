@@ -90,7 +90,8 @@ def new_groups_template():
     return render_template(
         'new-group.html',
         domain=DOMAIN,
-        devices=devices,
+        devices=devices,        
+        current_user=current_user.nombre,
         groups=groups
     )
 
@@ -119,10 +120,10 @@ def login_template():
 
                     return redirect(next or url_for('groups_template'))
             else:
-                flash('Contraseña incorrecta.')
+                flash('Contraseña incorrecta.','error')
 
         else:
-            flash('El usuario no existe.')
+            flash('El usuario no existe.','error')
 
     return render_template(
         'login2.html',
@@ -171,7 +172,8 @@ def new_sensor_template():
     groups = models.Grupo.query.all()
     return render_template(
         'addSensor.html',
-        domain=DOMAIN,
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
         funciones=funciones,
         tipos=tipos,
         grupos=groups,
@@ -182,21 +184,24 @@ def new_sensor_template():
 def add_to_group_template():
     return render_template(
         'addToGroup.html',
-        domain=DOMAIN
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
     )
 
 @app.route('/changePass')
 def change_pass_template():
     return render_template(
         'cambiarPassword.html',
-        domain=DOMAIN
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
     )
 
 @app.route('/manageUserGroups')
 def manage_user_groups_template():
     return render_template(
         'gestionarUsuariosGrupos.html',
-        domain=DOMAIN
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
     )
 
 @app.route('/group/<int:groupID>')
@@ -211,14 +216,16 @@ def group_template(groupID):
         'grupos.html',
         idgrupo = groupID,
         devices = devices,
-        domain=DOMAIN
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
     )
 
 @app.route('/newData')
 def new_data_template():
     return render_template(
         'introducirDatos.html',
-        domain=DOMAIN
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
     )
 @app.route('/newProgram')
 def new_program_template():
@@ -234,7 +241,8 @@ def new_program_template():
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
-        actuadores = actuadores
+        actuadores = actuadores,        
+        current_user=current_user.nombre,
     )
 @app.route('/programs')
 def programs_template():
@@ -248,7 +256,8 @@ def programs_template():
     return render_template(
         'programas.html',
         domain=DOMAIN,
-        programs=programs
+        programs=programs,        
+        current_user=current_user.nombre,
     )
 @socketio.on('createGroup')
 def createGroup(group):

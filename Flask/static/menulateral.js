@@ -40,7 +40,6 @@ Vue.component("menulateral", {
                   </div>
                   <div class="pull-right">
                     <form action="/logout" method="get">
-                      <!--<a class="btn btn-default btn-flat" @click="logout">Salir</a>-->
                       <button class="btn btn-default btn-flat" type="submit">Salir</button>
                     </form>
                   </div>
