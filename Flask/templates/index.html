@@ -1,6 +1,6 @@
 {% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
-<div class="wrapper" id="groups">
-  <menulateral></menulateral>
+<div class="wrapper" id="app">
+  <menulateral current_user="{{current_user}}"></menulateral>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
@@ -59,8 +59,13 @@
 {% endblock %} {% block javascripts %}{{ super() }}
 <script src="{{ url_for('static', filename='groups.js') }}"></script>
 <script>
-  var appGroups = new Vue({
-    el: "#groups",
+  let socket = io.connect('{{ domain }}');
+  socket.on('loggedOut', function () {
+        console.log("logout")
+        window.location="/"
+      }); 
+  var app = new Vue({
+    el: "#app",
     delimiters: ['[[', ']]'],
     data: {
       groups: [
@@ -75,6 +80,6 @@
   {% endfor %}
           ],
           dispositivostotal:'{{dispositivostotal}}'
-        }
-      });
+    }
+  });
 </script> {% endblock %}

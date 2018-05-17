@@ -7,8 +7,10 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from os import environ
 from dotenv import load_dotenv, find_dotenv
+# from flask_security import Security, SQLAlchemyUserDatastore, \
+from flask_login import UserMixin
 
-from sqlalchemy import Column, Date, Float, ForeignKey, String, Table, Integer
+from sqlalchemy import Column, Date, Float, ForeignKey, String, Table, Integer, Boolean
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -27,19 +29,6 @@ manager.add_command('db', MigrateCommand)
 
 Base = declarative_base()
 metadata = Base.metadata
-'''
-t_DetalleDispositivo = Table(
-    'DetalleDispositivo', metadata,
-    Column('grupoID',String(10), ForeignKey('grupo.grupoID')),
-    Column('disID',String(10), ForeignKey('dispositivo.disID'))
-)
-
-t_DetalleMiembro = Table(
-    'DetalleMiembro', metadata,
-    Column('nickname',String(10), ForeignKey('usuario.nickname')),
-    Column('grupoID',String(10), ForeignKey('grupo.grupoID'))
-)
-'''
 
 class DetalleDispositivo(db.Model):
     __tablename__ = 'detalleDispositivo'
@@ -53,13 +42,20 @@ class DetalleMiembro(db.Model):
     grupoID = Column(ForeignKey('grupo.grupoID'), primary_key=True, index=True)
     nickname = Column(ForeignKey('usuario.nickname'), primary_key=True, index=True)
 
-class Usuario(db.Model):
+class Usuario(db.Model,UserMixin):
     __tablename__ = 'usuario'
 
     nickname = Column(String(20), primary_key=True)
-    nombre = Column(String(40), nullable=False)
-    contraseña = Column(String(20), nullable=False)
+    nombre = Column(String(255), nullable=False)
+    active = Column(Boolean())
+    contraseña = Column(String(400), nullable=False)
     email = Column(String(50), nullable=False, unique=True)
+
+    @property
+    def id(self):
+        return self.nickname
+
+
 
 
 class Grupo(db.Model):

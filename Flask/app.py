@@ -1,11 +1,18 @@
+import sys
 from os import environ
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask, render_template, redirect,url_for
+from flask import Flask, render_template, redirect,url_for, abort, request, flash
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 import models
 from flask import request
+# from flask_security import Security, SQLAlchemyUserDatastore, \
+from flask_login import login_required, login_user, logout_user,\
+    current_user
+from flask_login import LoginManager
+from wtforms import Form, TextField, PasswordField, validators
+from werkzeug.security import generate_password_hash, check_password_hash
 
 load_dotenv(find_dotenv())
 app = Flask(__name__)
@@ -27,7 +34,23 @@ socketio = SocketIO(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE')
 models.db.init_app(app)
 
+# Setup Flask-Security
+# user_datastore = SQLAlchemyUserDatastore(models.db, models.User)
+# security = Security(app, user_datastore)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login_template"
+
+@login_manager.user_loader
+def load_user(user_id):
+    try:
+        user = models.Usuario.query.filter_by(nickname=user_id).one()
+    except:
+        user = None
+    return user
+
 @app.route('/groups')
+@login_required
 def groups_template():
     groups = []
     devices = models.Dispositivo.query.all()
@@ -39,9 +62,11 @@ def groups_template():
         'index.html',
         domain=DOMAIN,
         groups=groups,
+        current_user=current_user.nombre,
         dispositivostotal=len(devices)
     )
 @app.route('/newGroup')
+@login_required
 def new_groups_template():
     
     devices = models.Dispositivo.query.all()
@@ -68,12 +93,51 @@ def new_groups_template():
         devices=devices,
         groups=groups
     )
-@app.route('/')
+
+class LoginForm(Form):
+    email = TextField('email', [validators.Required()])
+    password = PasswordField('password', [validators.Required()])
+
+@app.route('/', methods=['GET', 'POST'])
 def login_template():
+    form = LoginForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        user = models.Usuario.query.filter_by(email=form.email.data.lower()).first()
+        if user:
+            if check_password_hash(user.contraseña, form.password.data):
+                if login_user(user):
+                    print('Logged in user %s', user.nickname)
+                    
+
+                    next = request.args.get('next')
+                    # is_safe_url should check if the url is safe for redirects.
+                    # See http://flask.pocoo.org/snippets/62/ for an example.
+                    # TODO: error `pip install urlparse`
+                    # if not is_safe_url(next):
+                    #     return abort(400)
+
+                    return redirect(next or url_for('groups_template'))
+            else:
+                flash('Contraseña incorrecta.')
+
+        else:
+            flash('El usuario no existe.')
+
     return render_template(
         'login2.html',
         domain=DOMAIN
     )
+
+@app.route('/logout')
+@login_required
+def logout_pixas():
+    print('logout', current_user, end='')
+    logout_user()
+    print(current_user)
+    return redirect(url_for('login_template'))
+
+
 @app.route('/register')
 def register_template():
     return render_template(
@@ -243,7 +307,8 @@ def createUser(user):
     newUser = models.Usuario(
         nickname = user['username'],
         nombre = user['name'],
-        contraseña = user['password'],
+        contraseña = generate_password_hash(user['password']),
+        active=True,
         email = user['email']
     )
     models.db.session.add(newUser)
@@ -251,7 +316,8 @@ def createUser(user):
         models.db.session.commit()
         emit('userCreated')
 
-    except:
+    except Exception as ex:
+        print(ex)
         models.db.session.rollback()
         emit('userNotCreated')
     
@@ -259,6 +325,35 @@ def createUser(user):
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
+@socketio.on('loginUser')
+def loginUser(user):
+    print(user)
+    try:
+        user = models.Usuario.query.filter_by(email=user['email']).one()
+        #TODO que sea un login de verdad
+        print(user)
+        with app.app_context():
+            login_user(user, remember=True)
+        print(current_user)
+        emit('loggedIn')
+    except Exception as ex:
+        print("Esto falla puto:")
+        print(ex)
+        #TODO mensaje de error
+
+@socketio.on('logoutUser')
+def logoutUser():
+    print()
+    try:
+        
+        logout_user()
+        emit('loggedOut')
+    except Exception as ex:
+        print("Esto falla puto:")
+        print(ex)
+        #TODO mensaje de error
+
+
 @socketio.on('createSensor')
 def createSensor(sensor):
     # Send message to alls users

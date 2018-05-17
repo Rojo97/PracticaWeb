@@ -1,4 +1,5 @@
 Vue.component("menulateral", {
+    props: ['current_user'],
     template: `
       <div>
       <header class="main-header">
@@ -23,13 +24,13 @@ Vue.component("menulateral", {
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="hidden-xs">Fernando Sanz</span>
+                <span class="hidden-xs">{{current_user}}</span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
                   <p style="margin-top:25%">
-                    Fernando Sanz
+                  {{current_user}}
                   </p>
                 </li>
                 <!-- Menu Footer-->
@@ -38,7 +39,10 @@ Vue.component("menulateral", {
                       <a href="/changePass" class="btn btn-default btn-flat">Cambiar contraseña</a>
                   </div>
                   <div class="pull-right">
-                      <a href="/" class="btn btn-default btn-flat">Salir</a>
+                    <form action="/logout" method="get">
+                      <!--<a class="btn btn-default btn-flat" @click="logout">Salir</a>-->
+                      <button class="btn btn-default btn-flat" type="submit">Salir</button>
+                    </form>
                   </div>
                 </li>
               </ul>
@@ -119,5 +123,11 @@ Vue.component("menulateral", {
       </section>
       <!-- /.sidebar -->
     </aside>
-    </div>`
+    </div>`,
+    methods:{
+      logout(){
+        socket.emit('logoutUser')
+      }
+    }
+    
   });

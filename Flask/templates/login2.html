@@ -1,39 +1,69 @@
 {% extends "loginLayout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
-<div class="login-box">
-  <div class="login-logo">
-    <b>DomoticsTrails</b>
+<div class="wrapper" id="app">
+
+  <div class="login-box">
+    <div class="login-logo">
+      <b>DomoticsTrails</b>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+      <p class="login-box-msg">Loguea para empezar a controlar tu casa</p>
+        <form method="post">
+            <div class="form-group has-feedback">
+              <input class="form-control" placeholder="Email" type="email" id="email" name="email" v-model="email">
+              <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+              <input class="form-control" placeholder="Contraseña" type="password" id="password" name="password"  v-model="password">
+              <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+    
+    
+            <div class="col-xs-12">
+              <button type="submit" class="btn btn-primary btn-block btn-flat">Login</button>
+              <!-- <button type="submit" class="btn btn-primary btn-block btn-flat" @click="loginUser">Login</button> -->
+            </div>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <p  style="color:red">{{ message }}</p>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </form>
+      <br>
+      <br>
+
+
+      <a href="recoverPass">Me olvide mi contraseña</a>
+      <br>
+      <a href="register" class="text-center">Quiero registrarme</a>
+
+    </div>
+    <!-- /.login-box-body -->
   </div>
-  <!-- /.login-logo -->
-  <div class="login-box-body">
-    <p class="login-box-msg">Loguea para empezar a controlar tu casa</p>
-
-    <form action="groups" method="get">
-      <div class="form-group has-feedback">
-        <input class="form-control" placeholder="Email" type="email">
-        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input class="form-control" placeholder="Contraseña" type="password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-
-
-      <div class="col-xs-12">
-        <button type="submit" class="btn btn-primary btn-block btn-flat">Login</button>
-      </div>
-
-    </form>
-
-    <br>
-    <br>
-
-
-    <a href="recoverPass">Me olvide mi contraseña</a>
-    <br>
-    <a href="register" class="text-center">Quiero registrarme</a>
-
-  </div>
-  <!-- /.login-box-body -->
 </div>
 {% endblock %} {% block javascripts %}{{ super() }}
+<script>
+  var socket = io.connect('{{ domain }}');
+  var app = new Vue({
+    el: "#app",
+    delimiters: ['[[',']]'],
+    data: {
+      email: '',
+      password: '',
+      userDoesntExist: false,
+      wrongPassword: false,
+    },
+    methods: {
+      loginUser () {
+        socket.emit('loginUser', {
+          email: this.email,
+          password: this.password,
+        });
+
+      },
+    }
+  });
+</script>
 {% endblock %}
