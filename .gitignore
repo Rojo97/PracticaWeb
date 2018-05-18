@@ -13,11 +13,9 @@ Flask/static/pages
 Flask/static/plugins
 Flask/__pycache__
 Flask/migrations
-
 Flask/.env
+Flask/static/.directory
+Flask/database.sqlite
 
 .vscode
 AdminLTE-2.4.3/
-
-Flask/static/.directory
-Flask/database.sqlite
