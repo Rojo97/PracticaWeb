@@ -151,6 +151,14 @@
         }
       },
       createProgram () {
+        //TODO cambiar esto para que coja el id correcto y poder tener mas de un dispositivo con el mismo nombre
+        for(var i = 0; i< this.devices.length; ++i){
+          for(var j = 0; j<this.actuadores.length; ++j){
+            if(this.devices[i].device.localeCompare(this.actuadores[j].name)==0){
+              this.devices[i].id = this.actuadores[j].id;
+            }
+          }
+        }
         socket.emit('createProgram', {
           name: this.name,
           desc: this.desc,

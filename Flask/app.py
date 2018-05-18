@@ -1,5 +1,6 @@
 import sys
 import functools
+from datetime import time
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template, redirect,url_for, abort, request, flash
@@ -308,6 +309,34 @@ def createGroup(group):
 @socketio.on('createProgram')
 @authenticated_only
 def createProgram(createProgram):
+    print(createProgram)
+    programaGrupo = models.ProgramaGrupo(
+        nombre = createProgram['name'],
+        descripccion = createProgram['desc']
+    )
+    models.db.session.add(programaGrupo)
+    try:
+        models.db.session.commit()
+        programaGenerado = models.ProgramaGrupo.query.all()[-1].grupoID
+        if programaGenerado == None:
+            programaGenerado = '0'
+        for dispositivo in createProgram['devices']:
+            newProgram = models.ProgramaIndividual(
+                progGID=programaGenerado,
+                disID=dispositivo['id'],
+                valor=dispositivo['value'],
+                fechaIni=time(hour=int(dispositivo['init'].split(':')[0]),minute=int(dispositivo['init'].split(':')[1]),second=0, microsecond=0),
+                fechaFin=time(hour=int(dispositivo['end'].split(':')[0]),minute=int(dispositivo['end'].split(':')[1]), second=0, microsecond= 0)
+            )
+            models.db.session.add(newProgram)
+            try:
+                models.db.session.commit()
+            except:
+                models.db.session.rollback()
+    except:
+        models.db.session.rollback()
+        return 0
+   
     # newProgram = mocreateProgramdels.ProgramaGrupo(
     #     grupoID=0
     #     nombre=createProgram['name'],
@@ -319,7 +348,6 @@ def createProgram(createProgram):
     # except:
     #     models.db.session.rollback()
     #     return 1
-    print()
 
 @socketio.on('createUser')
 def createUser(user):
