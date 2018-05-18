@@ -63,9 +63,8 @@ def load_user(user_id):
 @login_required
 def groups_template():
     groups = []
-    devices = models.Dispositivo.query.all()
-    allgroups = models.Grupo.query.all()
-    for n in allgroups:
+    allgroups = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    for n in allgroups.grupos:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.dispositivos), "class": n.clase, "desc": n.descripccion})
     
     return render_template(
@@ -73,7 +72,6 @@ def groups_template():
         domain=DOMAIN,
         groups=groups,
         current_user=current_user.nombre,
-        dispositivostotal=len(devices)
     )
 @app.route('/newGroup')
 @login_required
@@ -118,16 +116,12 @@ def login_template():
         if user:
             if check_password_hash(user.contraseña, form.password.data):
                 if login_user(user):
-                    print('Logged in user %s', user.nickname)
-                    
-
                     next = request.args.get('next')
                     # is_safe_url should check if the url is safe for redirects.
                     # See http://flask.pocoo.org/snippets/62/ for an example.
                     # TODO: error `pip install urlparse`
                     # if not is_safe_url(next):
                     #     return abort(400)
-
                     return redirect(next or url_for('groups_template'))
             else:
                 flash('Contraseña incorrecta.','error')
@@ -142,10 +136,8 @@ def login_template():
 
 @app.route('/logout')
 @login_required
-def logout_pixas():
-    print('logout', current_user, end='')
+def logout():
     logout_user()
-    print(current_user)
     return redirect(url_for('login_template'))
 
 
@@ -169,8 +161,8 @@ def new_sensor_template():
     if group == None or group == 0:
         group = ''
     else:
-        groupData = models.Grupo.query.filter_by(grupoID=group).all()
-        group = group+'- '+groupData[0].nombre
+        groupData = models.Grupo.query.filter_by(grupoID=group).one()
+        group = group+'- '+groupData.nombre
     funciones = [
       {"name": "Luminosidad"},
       {"name": "Temperatura"},
@@ -344,6 +336,30 @@ def createUser(user):
     try:
         models.db.session.commit()
         emit('userCreated')
+        newGroup = models.Grupo(
+            nombre="Todos",
+            descripccion="Todos mis dispositivos",
+            clase='',
+        )
+        models.db.session.add(newGroup)
+        models.db.session.flush()
+        print("Id del nuevo grupo:"+str(newGroup.grupoID))
+        models.db.session.commit()
+        print("Id del nuevo grupo:"+str(newGroup.grupoID))
+
+        newDetalle = models.DetalleMiembro(
+            grupoID=newGroup.grupoID,
+            nickname=newUser.nickname
+            
+        )
+        models.db.session.add(newDetalle)
+        models.db.session.commit()
+    except Exception as ex:
+        print(ex)
+        models.db.session.rollback()    
+
+
+
 
     except Exception as ex:
         print(ex)
@@ -354,37 +370,6 @@ def createUser(user):
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
-# @socketio.on('loginUser')
-# @authenticated_only
-# def loginUser(user):
-#     print(user)
-#     try:
-#         user = models.Usuario.query.filter_by(email=user['email']).one()
-#         #TODO que sea un login de verdad
-#         print(user)
-#         with app.app_context():
-#             login_user(user, remember=True)
-#         print(current_user)
-#         emit('loggedIn')
-#     except Exception as ex:
-#         print("Esto falla puto:")
-#         print(ex)
-#         #TODO mensaje de error
-
-# @socketio.on('logoutUser')
-# @authenticated_only
-# def logoutUser():
-#     print()
-#     try:
-        
-#         logout_user()
-#         emit('loggedOut')
-#     except Exception as ex:
-#         print("Esto falla puto:")
-#         print(ex)
-#         #TODO mensaje de error
-
-
 @socketio.on('createSensor')
 @authenticated_only
 def createSensor(sensor):
