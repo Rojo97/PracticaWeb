@@ -1,4 +1,5 @@
 import sys
+import functools
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template, redirect,url_for, abort, request, flash
@@ -66,7 +67,7 @@ def groups_template():
     allgroups = models.Grupo.query.all()
     for n in allgroups:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.dispositivos), "class": n.clase, "desc": n.descripccion})
-    
+
     return render_template(
         'index.html',
         domain=DOMAIN,
@@ -77,7 +78,7 @@ def groups_template():
 @app.route('/newGroup')
 @login_required
 def new_groups_template():
-    
+
     devices = models.Dispositivo.query.all()
     groups = models.Grupo.query.all()
     '''
@@ -99,7 +100,7 @@ def new_groups_template():
     return render_template(
         'new-group.html',
         domain=DOMAIN,
-        devices=devices,        
+        devices=devices,
         current_user=current_user.nombre,
         groups=groups
     )
@@ -118,7 +119,7 @@ def login_template():
             if check_password_hash(user.contraseña, form.password.data):
                 if login_user(user):
                     print('Logged in user %s', user.nickname)
-                    
+
 
                     next = request.args.get('next')
                     # is_safe_url should check if the url is safe for redirects.
@@ -182,7 +183,7 @@ def new_sensor_template():
     groups = models.Grupo.query.all()
     return render_template(
         'addSensor.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
         funciones=funciones,
         tipos=tipos,
@@ -195,7 +196,7 @@ def new_sensor_template():
 def add_to_group_template():
     return render_template(
         'addToGroup.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -204,7 +205,7 @@ def add_to_group_template():
 def change_pass_template():
     return render_template(
         'cambiarPassword.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -213,7 +214,7 @@ def change_pass_template():
 def manage_user_groups_template():
     return render_template(
         'gestionarUsuariosGrupos.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -230,7 +231,7 @@ def group_template(groupID):
         'grupos.html',
         idgrupo = groupID,
         devices = devices,
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -239,7 +240,7 @@ def group_template(groupID):
 def new_data_template():
     return render_template(
         'introducirDatos.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 @app.route('/newProgram')
@@ -257,7 +258,7 @@ def new_program_template():
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
-        actuadores = actuadores,        
+        actuadores = actuadores,
         current_user=current_user.nombre,
     )
 @app.route('/programs')
@@ -273,14 +274,14 @@ def programs_template():
     return render_template(
         'programas.html',
         domain=DOMAIN,
-        programs=programs,        
+        programs=programs,
         current_user=current_user.nombre,
     )
 @socketio.on('createGroup')
 @authenticated_only
 def createGroup(group):
     # Send message to alls users
-    
+
     newGroup = models.Grupo(
         nombre=group['name'],
         descripccion=group['desc'],
@@ -301,7 +302,7 @@ def createGroup(group):
             except:
                 models.db.session.rollback()
     except:
-        models.db.session.rollback()    
+        models.db.session.rollback()
 
 
 @socketio.on('createProgram')
@@ -348,7 +349,7 @@ def createUser(user):
         print(ex)
         models.db.session.rollback()
         emit('userNotCreated')
-    
+
     # try:
         # models.db.session.commit()
     # except:
@@ -375,7 +376,7 @@ def createUser(user):
 # def logoutUser():
 #     print()
 #     try:
-        
+
 #         logout_user()
 #         emit('loggedOut')
 #     except Exception as ex:
@@ -411,7 +412,7 @@ def createSensor(sensor):
             models.db.session.rollback()
     except:
         models.db.session.rollback()
-    
+
     # try:
         # models.db.session.commit()
     # except:
