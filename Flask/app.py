@@ -13,7 +13,7 @@ from flask_login import login_required, login_user, logout_user,\
 from flask_login import LoginManager
 from wtforms import Form, TextField, PasswordField, validators
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import functools
 load_dotenv(find_dotenv())
 app = Flask(__name__)
 
@@ -40,7 +40,8 @@ models.db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login_template"
-
+login_manager.login_message = u"Por favor logueate para acceder a esa pagina"
+login_manager.login_message_category = "error"
 def authenticated_only(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
