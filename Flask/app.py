@@ -71,22 +71,6 @@ def new_groups_template():
     
     devices = models.Dispositivo.query.all()
     groups = models.Grupo.query.all()
-    '''
-    devices = [
-      { "disID": 1, "nombre": "Luces de la cochera", "funcion": "Luminosidad"},
-      { "disID": 2, "nombre": "Luces de la cochera", "funcion": "Luminosidad"},
-      { "disID": 3, "nombre": "Temperatura del salon", "funcion": "Luminosidad"},
-      { "disID": 4, "nombre": "Luces de la cocina", "funcion": "Luminosidad"},
-      { "disID": 5, "nombre": "Temperatura de la cocina", "funcion": "Luminosidad"},
-    ]
-    groups = [
-      { "id": 1, "name": "Todos", "class": "fa-calendar-minus-o"},
-      { "id": 2, "name": "Salón", "class": "fa-home"},
-      { "id": 3, "name": "Cocina", "class": "fa-home"},
-      { "id": 4, "name": "Pasillo", "class": "fa-home"},
-      { "id": 5, "name": "Luces", "class": "fa-lightbulb-o"}
-    ]
-    '''
     return render_template(
         'new-group.html',
         domain=DOMAIN,
@@ -235,14 +219,6 @@ def new_data_template():
 @login_required
 def new_program_template():
     actuadores = models.Dispositivo.query.filter_by(tipo='Actuador').all()
-
-    # actuadores = [
-    #   { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
-    #   { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
-    #   { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
-    #   { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
-    #   { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
-    # ]
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
