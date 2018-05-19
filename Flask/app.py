@@ -93,6 +93,7 @@ def new_groups_template():
         devices=devices,        
         current_user=current_user.nombre,
         groups=groups,
+        #TODO socketio+flask-login para no tener que mandar aqui el ID
         usuario=current_user.id
 
     )
@@ -264,6 +265,10 @@ def programs_template():
         programs=programs,        
         current_user=current_user.nombre,
     )
+
+#TODO integrar socketio con el login, para poder autentificar al usaurio dentro de esats funciones
+#No es urgente, pero si queremos sacar esto a produccion es necesario (posible agujero de seguridad)
+
 @socketio.on('createGroup')
 def createGroup(group):
     
