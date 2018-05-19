@@ -93,7 +93,7 @@
                       <label>Luces</label>
                       <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione las luces" style="width: 100%;" v-model="lights">
                         <option v-for="device in devices" :key="device.id"
-                        v-if="device.funcion == 'Luminosidad'">[[device.id]]- [[device.name]]</option>
+                        v-if="device.funcion == 'Luminosidad'" v-bind:value="device.id">[[device.name]]</option>
                       </select>
                     </div>
 
@@ -102,7 +102,7 @@
                       <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione los persianas" style="width: 100%;"
                         v-model="blinds">
                         <option v-for="device in devices" :key="device.id"
-                        v-if="device.funcion == 'Persianas'">[[device.id]]- [[device.name]]</option>                      </select>
+                        v-if="device.funcion == 'Persianas'" v-bind:value="device.id">[[device.name]]</option>                      </select>
                     </div>
                     <!-- /.form-group -->
                     <div class="form-group">
@@ -110,7 +110,7 @@
                       <select class="form-control select2" multiple="multiple" data-placeholder="Seleccione las termostatos" style="width: 100%;"
                         v-model="thermostats">
                         <option v-for="device in devices" :key="device.id"
-                        v-if="device.funcion == 'Temperatura'">[[device.id]]- [[device.name]]</option>                      </select>
+                        v-if="device.funcion == 'Temperatura'" v-bind:value="device.id">[[device.name]]</option>                      </select>
                     </div>
 
                     <div class="box-footer">
@@ -149,6 +149,7 @@
     data: {
       name: '',
       desc: '',
+      usuario: '{{ usuario }}',
       subgroups: [],
       thermostats: [],
       blinds: [],
@@ -177,7 +178,8 @@
           name: this.name,
           desc: this.desc,
           devices: this.lights.concat(this.thermostats).concat(this.blinds),
-          subgroups: this.subgroups
+          subgroups: this.subgroups,
+          user: this.usuario
         });
         this.name=''
         this.desc=''
