@@ -68,8 +68,9 @@ def groups_template():
 @app.route('/newGroup')
 @login_required
 def new_groups_template():
-    
-    devices = models.Dispositivo.query.all()
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    grupos = list(filter(lambda a: a.default == True,user.grupos))
+    devices = grupos[0].dispositivos
     groups = models.Grupo.query.all()
     return render_template(
         'new-group.html',
@@ -81,6 +82,26 @@ def new_groups_template():
         usuario=current_user.id
 
     )
+@app.route('/group/<int:groupID>/update')
+@login_required
+def updateGroup(groupID):
+    
+    group = models.Grupo.query.filter_by(grupoID=groupID).one()
+    devicesInGroup = group.dispositivos
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    grupos = list(filter(lambda a: a.default == True,user.grupos))
+    alldevices = grupos[0].dispositivos
+    for i in devicesInGroup[:]:
+        alldevices.remove(i)
+    return render_template(
+        'modificarDispGrupos.html',
+        idgrupo = groupID,
+        devicesInGroup = devicesInGroup,
+        devicesNotInGroup = alldevices,
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
+    )
+
 
 class LoginForm(Form):
     email = TextField('email', [validators.Required()])
@@ -193,12 +214,8 @@ def manage_user_groups_template():
 @app.route('/group/<int:groupID>')
 @login_required
 def group_template(groupID):
-    if groupID!=0:
-        group = models.Grupo.query.filter_by(grupoID=groupID).one()
-        devices = group.dispositivos
-    else:
-        devices = models.Dispositivo.query.all()
-
+    group = models.Grupo.query.filter_by(grupoID=groupID).one()
+    devices = group.dispositivos
     return render_template(
         'grupos.html',
         idgrupo = groupID,
@@ -356,7 +373,6 @@ def createUser(user):
     #     models.db.session.rollback()
 @socketio.on('createSensor')
 def createSensor(sensor):
-    # Send message to alls users
     print(sensor)
     newSensor = models.Dispositivo(
         nombre=sensor['name'],
@@ -392,5 +408,31 @@ def createSensor(sensor):
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
+@socketio.on('addDeviceToGroup')
+def addDeviceToGroup(devices):
+    try:
+        for i in devices['added'][:]:
+            newDetalle = models.DetalleDispositivo(
+                grupoID=devices['grupo'],
+                disID=i
+            )
+            models.db.session.add(newDetalle)
+            models.db.session.commit()
+        emit('reload')
+    except:
+        models.db.session.rollback()
+
+@socketio.on('removeDeviceFromGroup')
+def removeDeviceFromGroup(devices):
+    try:
+        for i in devices['removed'][:]:
+            detalle = models.DetalleDispositivo.query.filter_by(grupoID=devices['grupo'],disID=i).one()
+            models.db.session.delete(detalle)
+            models.db.session.commit()
+        emit('reload')
+    except Exception as ex:
+        print(ex)
+        models.db.session.rollback()
+    
 if __name__ == '__main__':
     socketio.run(app)
