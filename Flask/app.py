@@ -216,9 +216,15 @@ def manage_user_groups_template():
 def group_template(groupID):
     group = models.Grupo.query.filter_by(grupoID=groupID).one()
     devices = group.dispositivos
+    if group.default:
+        default = 'true'
+    else:
+        default = 'false'
     return render_template(
         'grupos.html',
         idgrupo = groupID,
+        groupName = group.nombre,
+        default = default,
         devices = devices,
         domain=DOMAIN,        
         current_user=current_user.nombre,
