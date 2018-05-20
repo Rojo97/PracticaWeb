@@ -184,9 +184,17 @@ def change_pass_template():
 @app.route('/manageUserGroups')
 @login_required
 def manage_user_groups_template():
+    usergroups = []
+    users = []
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()
+    for n in user.grupos:
+        usergroups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion})
     return render_template(
+
         'gestionarUsuariosGrupos.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
+        usergroups=usergroups,
+        users=users,        
         current_user=current_user.nombre,
     )
 

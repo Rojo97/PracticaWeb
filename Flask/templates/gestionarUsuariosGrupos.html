@@ -28,61 +28,7 @@
     <section class="content">
 
       <!-- Desplegable -->
-      <div style="margin-right:15%; margin-left:15%">
-        <div class="box box-default">
-          <div class="box-header with-border" style="padding:0">
-            <div class="info-box bg-green" style="margin:0">
-              <span class="info-box-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-
-              <div class="info-box-content">
-                <span class="info-box-number">Luces del salón</span>
-                <span class="info-box-text">
-                  <small>Salón</small>
-                </span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-plus" style="color:grey"></i>
-              </button>
-            </div>
-            <!-- /.box-tools -->
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body" style="display: none; margin-top:2%">
-            <div style="padding-left:10%; padding-right:10%">
-            <strong>
-              <i class="fa"></i>
-              <big>Usuarios</big>
-            </strong>
-
-            <ul>
-              <li>Usuario 1
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-              <li>Usuario 2
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-              <li>Usuario 3
-                <i>
-                  <i class="fa fa-close pull-right" style="color:red"></i>
-                </i>
-              </li>
-            </ul>
-          </div>
-            <button type="submit" class="btn btn-default pull-right bg-green">Añadir usuario</button>
-          </div>
-          <!-- /.box-body -->
-        </div>
-      </div>
+      <usergroupdisplay v-bind:usergroups="usergroups"></usergroupdisplay>
       <!-- /Desplegable -->
 
     </section>
@@ -110,9 +56,26 @@
   <!-- ./wrapper -->
 
   {% endblock %} {% block javascripts %}{{ super() }}
-  <script>
-    var appNewGroup = new Vue({
-      el: "#app"
+  <script src="{{ url_for('static', filename='users.js') }}"></script>
+  <script src="{{ url_for('static', filename='userGroup.js') }}"></script>
 
-    });
+  <script>
+    var appGroups = new Vue({
+      el: "#app",
+      delimiters: ['[[', ']]'],
+      data: {
+        usergroups: [
+          {% for usergroup in usergroups %}
+		    		{
+      id: '{{ usergroup.id }}',
+      name: '{{ usergroup.name }}',
+      num: '{{ usergroup.num }}',
+      desc: '{{ usergroup.desc }}',
+      class: '{{ usergroup.class }}',
+      users: '{{ usergroup.usuarios}}',
+        }{% if not loop.last %}, {% endif %}
+      {% endfor %}
+            ]
+          }
+        });
   </script> {% endblock %}
