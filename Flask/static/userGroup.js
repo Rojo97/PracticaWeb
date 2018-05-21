@@ -4,18 +4,23 @@ Vue.component("usergroupdisplay", {
   `
   <div>
   <groupuserinfobox
-    v-for="usergroup in usergroups"
+    v-for="groupuser in usergroups"
     v-bind:key="usergroup.id"
     v-bind:groupuser="usergroup"
   ></groupuserinfobox>
   </div>
-  `
+  `,
+  mounted:()=>{
+    console.log(usergroups[0].users[0])
+  }
 });
 Vue.component("groupuserinfobox", {
   props:["groupuser"],
   template:
   `
-  <div style="margin-right:15%; margin-left:15%">
+  <div style="margin-right:15%; margin-left:15%"
+  v-for="groupuser in usergroups"
+    v-bind:key="usergroup.id">
   <div class="box box-default">
     <div class="box-header with-border" style="padding:0">
       <div class="info-box bg-green" style="margin:0">
@@ -48,7 +53,15 @@ Vue.component("groupuserinfobox", {
       </strong>
 
       <ul>
-        <userdisplay v-bind:users="users"></userdisplay>
+        <div>
+        <li
+        v-for="user in groupuser.users"
+        v-bind:key="user.id">Usuario 1
+          <i>
+            <i class="fa fa-close pull-right" style="color:red"></i>
+          </i>
+        </li>
+        </div>
       </ul>
     </div>
       <button type="submit" class="btn btn-default pull-right bg-green">Añadir usuario</button>

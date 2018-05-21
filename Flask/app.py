@@ -185,16 +185,19 @@ def change_pass_template():
 @login_required
 def manage_user_groups_template():
     usergroups = []
-    users = []
+    groups = models.Grupo.query.all()
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()
     for n in user.grupos:
-        usergroups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion})
+        group = list(filter(lambda a: a.grupoID==n.grupoID,groups))
+        print(group[0].usuarios)
+        usergroups.append({"usuarios": group[0].usuarios, "id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion})
+        #for m in n.
+            
     return render_template(
 
         'gestionarUsuariosGrupos.html',
         domain=DOMAIN,
-        usergroups=usergroups,
-        users=users,        
+        usergroups=usergroups,        
         current_user=current_user.nombre,
     )
 

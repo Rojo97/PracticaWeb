@@ -3,11 +3,14 @@ Vue.component("userdisplay", {
   template:
   `
   <div>
-  <userInfoBox
-    v-for="user in users"
-    v-bind:key="user.id"
-    v-bind:group="user"
-  ></userInfoBox>
+  <li
+  v-for="user in users"
+  v-bind:key="user.id"
+  v-bind:group="user">Usuario 1
+    <i>
+      <i class="fa fa-close pull-right" style="color:red"></i>
+    </i>
+  </li>
   </div>
   `
 });
@@ -15,11 +18,7 @@ Vue.component("userInfoBox", {
   props:["user"],
   template:
   `
-  <li>Usuario 1
-    <i>
-      <i class="fa fa-close pull-right" style="color:red"></i>
-    </i>
-  </li>
+  
   `
 });
 
