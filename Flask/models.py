@@ -70,6 +70,8 @@ class Grupo(db.Model):
     usuarios = relationship('Usuario', secondary='detalleMiembro',
         backref=backref('grupos', lazy=True))
 
+    programas = relationship('ProgramaGrupo')
+
 
 
 class Dispositivo(db.Model):

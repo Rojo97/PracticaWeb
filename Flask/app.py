@@ -58,7 +58,7 @@ def groups_template():
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
     for n in user.grupos:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.dispositivos), "class": n.clase, "desc": n.descripccion})
-    
+
     return render_template(
         'index.html',
         domain=DOMAIN,
@@ -68,13 +68,13 @@ def groups_template():
 @app.route('/newGroup')
 @login_required
 def new_groups_template():
-    
+
     devices = models.Dispositivo.query.all()
     groups = models.Grupo.query.all()
     return render_template(
         'new-group.html',
         domain=DOMAIN,
-        devices=devices,        
+        devices=devices,
         current_user=current_user.nombre,
         groups=groups,
         #TODO socketio+flask-login para no tener que mandar aqui el ID
@@ -155,7 +155,7 @@ def new_sensor_template():
     grupos = list(filter(lambda a: a.default == False,user.grupos))
     return render_template(
         'addSensor.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
         funciones=funciones,
         tipos=tipos,
@@ -168,7 +168,7 @@ def new_sensor_template():
 def add_to_group_template():
     return render_template(
         'addToGroup.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -177,7 +177,7 @@ def add_to_group_template():
 def change_pass_template():
     return render_template(
         'cambiarPassword.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -186,7 +186,7 @@ def change_pass_template():
 def manage_user_groups_template():
     return render_template(
         'gestionarUsuariosGrupos.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -203,7 +203,7 @@ def group_template(groupID):
         'grupos.html',
         idgrupo = groupID,
         devices = devices,
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -212,7 +212,7 @@ def group_template(groupID):
 def new_data_template():
     return render_template(
         'introducirDatos.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 @app.route('/newProgram')
@@ -222,23 +222,23 @@ def new_program_template():
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
-        actuadores = actuadores,        
+        actuadores = actuadores,
         current_user=current_user.nombre,
     )
 @app.route('/programs')
 @login_required
 def programs_template():
-    programs = [
-      { "id": 1, "group": "Cochera", "name": "Luces de la cochera", "class": "fa-clock-o"},
-      { "id": 2, "group": "Salón", "name": "Luces del salon", "class": "fa-clock-o"},
-      { "id": 3, "group": "Salón", "name": "Temperatura del salon", "class": "fa-clock-o"},
-      { "id": 4, "group": "Cocina", "name": "Luces de la cocina", "class": "fa-clock-o"},
-      { "id": 5, "group": "Cocina", "name": "Temperatura de la cocina", "class": "fa-clock-o"},
-    ]
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()
+
+    grupos = user.grupos
+    programs = []
+    for grupo in grupos:
+        programs.append(grupo.programas)
+
     return render_template(
         'programas.html',
         domain=DOMAIN,
-        programs=programs,        
+        programs=programs,
         current_user=current_user.nombre,
     )
 
@@ -247,13 +247,13 @@ def programs_template():
 
 @socketio.on('createGroup')
 def createGroup(group):
-    
+
     newGroup = models.Grupo(
         nombre=group['name'],
         descripccion=group['desc'],
         default=False,
         clase='',
-        
+
     )
     models.db.session.add(newGroup)
     print(current_user)
@@ -278,7 +278,7 @@ def createGroup(group):
                 models.db.session.rollback()
     except Exception as ex:
         print("Peligro: "+str(ex))
-        models.db.session.rollback()    
+        models.db.session.rollback()
 
 
 @socketio.on('createProgram')
@@ -334,13 +334,13 @@ def createUser(user):
         newDetalle = models.DetalleMiembro(
             grupoID=newGroup.grupoID,
             nickname=newUser.nickname
-            
+
         )
         models.db.session.add(newDetalle)
         models.db.session.commit()
     except Exception as ex:
         print(ex)
-        models.db.session.rollback()    
+        models.db.session.rollback()
 
 
 
@@ -349,7 +349,7 @@ def createUser(user):
         print(ex)
         models.db.session.rollback()
         emit('userNotCreated')
-    
+
     # try:
         # models.db.session.commit()
     # except:
@@ -378,7 +378,7 @@ def createSensor(sensor):
             models.db.session.commit()
         user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
         grupos = list(filter(lambda a: a.default == True,user.grupos))
-    
+
         newDetalle = models.DetalleDispositivo(
             grupoID=grupos[0].grupoID,
             disID=newSensor.disID
@@ -387,7 +387,7 @@ def createSensor(sensor):
         models.db.session.commit()
     except:
         models.db.session.rollback()
-    
+
     # try:
         # models.db.session.commit()
     # except:
