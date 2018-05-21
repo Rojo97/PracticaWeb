@@ -266,6 +266,10 @@ def programs_template():
         programs=programs,
         current_user=current_user.nombre,
     )
+@app.route('/newData')
+@login_required
+def measure_template():
+    return ''
 
 #TODO integrar socketio con el login, para poder autentificar al usaurio dentro de esats funciones
 #No es urgente, pero si queremos sacar esto a produccion es necesario (posible agujero de seguridad)
@@ -332,6 +336,10 @@ def createProgram(createProgram):
     except:
         models.db.session.rollback()
         return 0
+
+@socketio.on('createMeasure')
+def createMeasure(measure):
+    print(measure)
 
 @socketio.on('createUser')
 def createUser(user):

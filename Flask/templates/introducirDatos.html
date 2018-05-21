@@ -20,65 +20,33 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="nav-tabs-custom">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#activity" data-toggle="tab">Introducir datos sensores</a>
-                            </li>
-                            <li>
-                                <a href="#timeline" data-toggle="tab">Cambiar estado actuadores</a>
-                            </li>
-                        </ul>
+                    <div class="box box-primary" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%;">
                         <div class="tab-content">
                             <div class="active tab-pane" id="activity">
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <label>Tipo de sensor</label>
+                                        <label>Sensor</label>
                                         <select class="form-control">
                                             <option>Temperatura</option>
                                             <option>Luminosidad</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>Textarea</label>
-                                        <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
-                                    </div>
-                                </div>
-                                <div class="box-footer">
-                                    <button type="submit" class="btn btn-success">Cambiar</button>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="timeline">
-                                <div class="box-body">
-                                    <div class="form-group">
-                                        <label>Tipo de actuador</label>
-                                        <select class="form-control">
-                                            <option>Iluminacion</option>
-                                            <option>Persianas</option>
-                                        </select>
+                                        <label>Valor</label>
+                                        <input type="text" class="form-control" id="sensorValue" placeholder="Valor del sensor" v-model="value">
                                     </div>
                                     <div class="form-group">
-                                        <label>Select Multiple</label>
-                                        <select multiple="" class="form-control">
-                                            <option>Bombilla 1</option>
-                                            <option>Bombilla 2</option>
-                                            <option>Bombilla 3</option>
-                                            <option>Bombilla 4</option>
-                                            <option>Bombilla 5</option>
-                                        </select>
-                                    </div>
-                                    <div class="slider slider-horizontal" id="blue">
-                                        <div class="slider-track">
-                                            <div class="slider-track-low" style="left: 0px; width: 0%;"></div>
-                                            <div class="slider-selection" style="left: 0%; width: 75%;"></div>
-                                            <div class="slider-track-high" style="right: 0px; width: 25%;"></div>
-                                            <div class="slider-handle max-slider-handle round" role="slider" aria-valuemin="-200" aria-valuemax="200" style="left: 75%;"
-                                                aria-valuenow="100" tabindex="0"></div>
+                                        <label>Fecha y hora</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" class="form-control" id="sensorDateTime" placeholder="dd/mm/yy-hh:mm">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="box-footer">
-                                    <button type="submit" class="btn btn-success">Cambiar</button>
+                                    <button type="submit" class="btn btn-success">Añadir medida</button>
                                 </div>
                             </div>
                         </div>
@@ -87,38 +55,69 @@
                     <!-- /.nav-tabs-custom -->
                 </div>
             </div>
-            <!-- /.row -->
-
-        </section>
-        <!-- /.content -->
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Create the tabs -->
-            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-            </ul>
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <!-- Home tab content -->
-                <div id="control-sidebar-home-tab">
-                    </form>
-                </div>
-                <!-- /.tab-pane -->
-            </div>
-        </aside>
-        <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-        <div class="control-sidebar-bg"></div>
     </div>
-    <!-- ./wrapper -->
 
-    {% endblock %} {% block javascripts %}{{ super() }}
-    <script>
-        var appNewGroup = new Vue({
-            el: "#app"
+    </section>
+    <!-- /.content -->
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <!-- Home tab content -->
+            <div id="control-sidebar-home-tab">
+                </form>
+            </div>
+            <!-- /.tab-pane -->
+        </div>
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+{% endblock %} {% block javascripts %}{{ super() }}
+<script>
+    var socket = io.connect('{{ domain }}');
+    var appNewGroup = new Vue({
+        el: "#app"
+        data: {
+            id: '',
+            value: '',
+            datetime: '',
+            sensores: [
+                {% for sensor in sensores %}
+	    		    {
+            id: '{{ actuador.disID }}',
+            name: '{{ actuador.nombre }}'
+        }{% if not loop.last %}, {% endif %}
+    {% endfor %}
+            ]
+        },
+    computed: {
+        inactivo() {
+            if (this.id == '' || this.value == '' || this.datetime == '') {
+                return true;
+            }
+            return false;
+        }
+    },
+    methods: {
+        createMeasure() {
+            socket.emit('createMeasure', {
+                id: this.id,
+                value: this.value,
+                datetime: this.datetime
+            });
+        },
+    }
 
         });
 
 
-    </script> {% endblock %}
+</script> {% endblock %}
