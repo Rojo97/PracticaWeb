@@ -68,14 +68,9 @@ def groups_template():
 @app.route('/newGroup')
 @login_required
 def new_groups_template():
-<<<<<<< HEAD
-
-    devices = models.Dispositivo.query.all()
-=======
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
     grupos = list(filter(lambda a: a.default == True,user.grupos))
     devices = grupos[0].dispositivos
->>>>>>> origin/develop
     groups = models.Grupo.query.all()
     return render_template(
         'new-group.html',
@@ -90,7 +85,7 @@ def new_groups_template():
 @app.route('/group/<int:groupID>/update')
 @login_required
 def updateGroup(groupID):
-    
+
     group = models.Grupo.query.filter_by(grupoID=groupID).one()
     devicesInGroup = group.dispositivos
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
@@ -103,7 +98,7 @@ def updateGroup(groupID):
         idgrupo = groupID,
         devicesInGroup = devicesInGroup,
         devicesNotInGroup = alldevices,
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -444,6 +439,6 @@ def removeDeviceFromGroup(devices):
     except Exception as ex:
         print(ex)
         models.db.session.rollback()
-    
+
 if __name__ == '__main__':
     socketio.run(app)
