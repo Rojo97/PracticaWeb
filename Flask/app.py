@@ -15,7 +15,7 @@ from flask_login import login_required, login_user, logout_user,\
 from flask_login import LoginManager
 from wtforms import Form, TextField, PasswordField, validators
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import functools
 load_dotenv(find_dotenv())
 app = Flask(__name__)
 
@@ -42,15 +42,8 @@ models.db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login_template"
-
-def authenticated_only(f):
-    @functools.wraps(f)
-    def wrapped(*args, **kwargs):
-        if not current_user.is_authenticated:
-            disconnect()
-        else:
-            return f(*args, **kwargs)
-    return wrapped
+login_manager.login_message = u"Por favor logueate para acceder a esa pagina"
+login_manager.login_message_category = "error"
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -64,9 +57,8 @@ def load_user(user_id):
 @login_required
 def groups_template():
     groups = []
-    devices = models.Dispositivo.query.all()
-    allgroups = models.Grupo.query.all()
-    for n in allgroups:
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    for n in user.grupos:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.dispositivos), "class": n.clase, "desc": n.descripccion})
 
     return render_template(
@@ -74,37 +66,44 @@ def groups_template():
         domain=DOMAIN,
         groups=groups,
         current_user=current_user.nombre,
-        dispositivostotal=len(devices)
     )
 @app.route('/newGroup')
 @login_required
 def new_groups_template():
-
-    devices = models.Dispositivo.query.all()
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    grupos = list(filter(lambda a: a.default == True,user.grupos))
+    devices = grupos[0].dispositivos
     groups = models.Grupo.query.all()
-    '''
-    devices = [
-      { "disID": 1, "nombre": "Luces de la cochera", "funcion": "Luminosidad"},
-      { "disID": 2, "nombre": "Luces de la cochera", "funcion": "Luminosidad"},
-      { "disID": 3, "nombre": "Temperatura del salon", "funcion": "Luminosidad"},
-      { "disID": 4, "nombre": "Luces de la cocina", "funcion": "Luminosidad"},
-      { "disID": 5, "nombre": "Temperatura de la cocina", "funcion": "Luminosidad"},
-    ]
-    groups = [
-      { "id": 1, "name": "Todos", "class": "fa-calendar-minus-o"},
-      { "id": 2, "name": "Salón", "class": "fa-home"},
-      { "id": 3, "name": "Cocina", "class": "fa-home"},
-      { "id": 4, "name": "Pasillo", "class": "fa-home"},
-      { "id": 5, "name": "Luces", "class": "fa-lightbulb-o"}
-    ]
-    '''
     return render_template(
         'new-group.html',
         domain=DOMAIN,
         devices=devices,
         current_user=current_user.nombre,
-        groups=groups
+        groups=groups,
+        #TODO socketio+flask-login para no tener que mandar aqui el ID
+        usuario=current_user.id
+
     )
+@app.route('/group/<int:groupID>/update')
+@login_required
+def updateGroup(groupID):
+    
+    group = models.Grupo.query.filter_by(grupoID=groupID).one()
+    devicesInGroup = group.dispositivos
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    grupos = list(filter(lambda a: a.default == True,user.grupos))
+    alldevices = grupos[0].dispositivos
+    for i in devicesInGroup[:]:
+        alldevices.remove(i)
+    return render_template(
+        'modificarDispGrupos.html',
+        idgrupo = groupID,
+        devicesInGroup = devicesInGroup,
+        devicesNotInGroup = alldevices,
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
+    )
+
 
 class LoginForm(Form):
     email = TextField('email', [validators.Required()])
@@ -119,16 +118,12 @@ def login_template():
         if user:
             if check_password_hash(user.contraseña, form.password.data):
                 if login_user(user):
-                    print('Logged in user %s', user.nickname)
-
-
                     next = request.args.get('next')
                     # is_safe_url should check if the url is safe for redirects.
                     # See http://flask.pocoo.org/snippets/62/ for an example.
                     # TODO: error `pip install urlparse`
                     # if not is_safe_url(next):
                     #     return abort(400)
-
                     return redirect(next or url_for('groups_template'))
             else:
                 flash('Contraseña incorrecta.','error')
@@ -143,10 +138,8 @@ def login_template():
 
 @app.route('/logout')
 @login_required
-def logout_pixas():
-    print('logout', current_user, end='')
+def logout():
     logout_user()
-    print(current_user)
     return redirect(url_for('login_template'))
 
 
@@ -167,11 +160,11 @@ def recover_password_template():
 @login_required
 def new_sensor_template():
     group = request.args.get('group')
-    if group == None or group == 0:
+    if group == None:
         group = ''
     else:
-        groupData = models.Grupo.query.filter_by(grupoID=group).all()
-        group = group+'- '+groupData[0].nombre
+        groupData = models.Grupo.query.filter_by(grupoID=group).one()
+        group = groupData.nombre
     funciones = [
       {"name": "Luminosidad"},
       {"name": "Temperatura"},
@@ -181,15 +174,16 @@ def new_sensor_template():
       {"name": "Actuador"},
       {"name": "Sensor"},
     ]
-    groups = models.Grupo.query.all()
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    grupos = list(filter(lambda a: a.default == False,user.grupos))
     return render_template(
         'addSensor.html',
         domain=DOMAIN,
         current_user=current_user.nombre,
         funciones=funciones,
         tipos=tipos,
-        grupos=groups,
-        default_group=group
+        grupos=grupos,
+        default_group=group,
     )
 
 @app.route('/addToGroup')
@@ -222,15 +216,17 @@ def manage_user_groups_template():
 @app.route('/group/<int:groupID>')
 @login_required
 def group_template(groupID):
-    if groupID!=0:
-        group = models.Grupo.query.filter_by(grupoID=groupID).all()
-        devices = group[0].dispositivos
+    group = models.Grupo.query.filter_by(grupoID=groupID).one()
+    devices = group.dispositivos
+    if group.default:
+        default = 'true'
     else:
-        devices = models.Dispositivo.query.all()
-
+        default = 'false'
     return render_template(
         'grupos.html',
         idgrupo = groupID,
+        groupName = group.nombre,
+        default = default,
         devices = devices,
         domain=DOMAIN,
         current_user=current_user.nombre,
@@ -248,14 +244,6 @@ def new_data_template():
 @login_required
 def new_program_template():
     actuadores = models.Dispositivo.query.filter_by(tipo='Actuador').all()
-
-    # actuadores = [
-    #   { "id": 1, "name": "Todos", "num": 26, "class": "fa-calendar-minus-o"},
-    #   { "id": 2, "name": "Salón", "num": 5, "class": "fa-home"},
-    #   { "id": 3, "name": "Cocina", "num": 3, "class": "fa-home"},
-    #   { "id": 4, "name": "Pasillo", "num": 2, "class": "fa-home"},
-    #   { "id": 5, "name": "Luces", "num": 14, "class": "fa-lightbulb-o"}
-    # ]
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
@@ -278,36 +266,47 @@ def programs_template():
         programs=programs,
         current_user=current_user.nombre,
     )
-@socketio.on('createGroup')
-@authenticated_only
-def createGroup(group):
-    # Send message to alls users
 
+#TODO integrar socketio con el login, para poder autentificar al usaurio dentro de esats funciones
+#No es urgente, pero si queremos sacar esto a produccion es necesario (posible agujero de seguridad)
+
+@socketio.on('createGroup')
+def createGroup(group):
+    
     newGroup = models.Grupo(
         nombre=group['name'],
         descripccion=group['desc'],
+        default=False,
         clase='',
+        
     )
     models.db.session.add(newGroup)
+    print(current_user)
     try:
+        models.db.session.flush()
         models.db.session.commit()
-        grupoGenerado= models.Grupo.query.all()[-1].grupoID
+        newDetalle = models.DetalleMiembro(
+            grupoID=newGroup.grupoID,
+            nickname=group['user']
+        )
+        models.db.session.add(newDetalle)
+        models.db.session.commit()
         for dispositivo in group['devices']:
             newDetalle = models.DetalleDispositivo(
-                grupoID=grupoGenerado,
-                disID=dispositivo.split('-')[0]
+                grupoID=newGroup.grupoID,
+                disID=dispositivo
             )
             models.db.session.add(newDetalle)
             try:
                 models.db.session.commit()
             except:
                 models.db.session.rollback()
-    except:
-        models.db.session.rollback()
+    except Exception as ex:
+        print("Peligro: "+str(ex))
+        models.db.session.rollback()    
 
 
 @socketio.on('createProgram')
-@authenticated_only
 def createProgram(createProgram):
     print(createProgram)
     programaGrupo = models.ProgramaGrupo(
@@ -357,6 +356,31 @@ def createUser(user):
     try:
         models.db.session.commit()
         emit('userCreated')
+        newGroup = models.Grupo(
+            nombre="Todos",
+            descripccion="Todos mis dispositivos",
+            default=True,
+            clase='',
+        )
+        models.db.session.add(newGroup)
+        models.db.session.flush()
+        print("Id del nuevo grupo:"+str(newGroup.grupoID))
+        models.db.session.commit()
+        print("Id del nuevo grupo:"+str(newGroup.grupoID))
+
+        newDetalle = models.DetalleMiembro(
+            grupoID=newGroup.grupoID,
+            nickname=newUser.nickname
+            
+        )
+        models.db.session.add(newDetalle)
+        models.db.session.commit()
+    except Exception as ex:
+        print(ex)
+        models.db.session.rollback()    
+
+
+
 
     except Exception as ex:
         print(ex)
@@ -367,41 +391,8 @@ def createUser(user):
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
-# @socketio.on('loginUser')
-# @authenticated_only
-# def loginUser(user):
-#     print(user)
-#     try:
-#         user = models.Usuario.query.filter_by(email=user['email']).one()
-#         #TODO que sea un login de verdad
-#         print(user)
-#         with app.app_context():
-#             login_user(user, remember=True)
-#         print(current_user)
-#         emit('loggedIn')
-#     except Exception as ex:
-#         print("Esto falla puto:")
-#         print(ex)
-#         #TODO mensaje de error
-
-# @socketio.on('logoutUser')
-# @authenticated_only
-# def logoutUser():
-#     print()
-#     try:
-
-#         logout_user()
-#         emit('loggedOut')
-#     except Exception as ex:
-#         print("Esto falla puto:")
-#         print(ex)
-#         #TODO mensaje de error
-
-
 @socketio.on('createSensor')
-@authenticated_only
 def createSensor(sensor):
-    # Send message to alls users
     print(sensor)
     newSensor = models.Dispositivo(
         nombre=sensor['name'],
@@ -411,18 +402,25 @@ def createSensor(sensor):
         funcion = sensor['funcion']
     )
     models.db.session.add(newSensor)
+    models.db.session.flush()
     try:
         models.db.session.commit()
-        disGenerado= models.Dispositivo.query.all()[-1].disID
+        if sensor['grupo'] != -1:
+            newDetalle = models.DetalleDispositivo(
+                grupoID=sensor['grupo'],
+                disID=newSensor.disID
+            )
+            models.db.session.add(newDetalle)
+            models.db.session.commit()
+        user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+        grupos = list(filter(lambda a: a.default == True,user.grupos))
+    
         newDetalle = models.DetalleDispositivo(
-            grupoID=sensor['grupo'].split('-')[0],
-            disID=disGenerado
+            grupoID=grupos[0].grupoID,
+            disID=newSensor.disID
         )
         models.db.session.add(newDetalle)
-        try:
-            models.db.session.commit()
-        except:
-            models.db.session.rollback()
+        models.db.session.commit()
     except:
         models.db.session.rollback()
 
@@ -430,5 +428,31 @@ def createSensor(sensor):
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
+@socketio.on('addDeviceToGroup')
+def addDeviceToGroup(devices):
+    try:
+        for i in devices['added'][:]:
+            newDetalle = models.DetalleDispositivo(
+                grupoID=devices['grupo'],
+                disID=i
+            )
+            models.db.session.add(newDetalle)
+            models.db.session.commit()
+        emit('reload')
+    except:
+        models.db.session.rollback()
+
+@socketio.on('removeDeviceFromGroup')
+def removeDeviceFromGroup(devices):
+    try:
+        for i in devices['removed'][:]:
+            detalle = models.DetalleDispositivo.query.filter_by(grupoID=devices['grupo'],disID=i).one()
+            models.db.session.delete(detalle)
+            models.db.session.commit()
+        emit('reload')
+    except Exception as ex:
+        print(ex)
+        models.db.session.rollback()
+    
 if __name__ == '__main__':
     socketio.run(app)

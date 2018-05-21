@@ -21,6 +21,7 @@
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
+        <!-- TODO comprobaciones de que es un email de verdad -->
         <input class="form-control" placeholder="Email" type="email" v-model="email">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
@@ -114,3 +115,7 @@
   });
 </script>
 {% endblock %}
+
+mounted: {
+  var socket = io.connect(domain);
+}
