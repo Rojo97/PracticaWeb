@@ -338,6 +338,25 @@ def createProgram(createProgram):
 @socketio.on('createMeasure')
 def createMeasure(measure):
     print(measure)
+    parts = measure['datetime'].split("-")
+    date = parts[0].split("/")
+    day = int(date[0])
+    month = int(date[1])
+    year = int(date[2])
+    time = parts[1].split(":")
+    hour = int(time[0])
+    minute = int(time[1])
+    medida = models.Medicion(
+        disId = measure['id'],
+        valor = measure['value'],
+        fecha = datetime(year, month, day, hour, minute, 0,0)
+    )
+    models.db.session.add(medida)
+    try:
+        models.db.session.commit()
+    except Exception as ex:
+        print("Peligro: "+str(ex))
+        models.db.session.rollback()
 
 @socketio.on('createUser')
 def createUser(user):

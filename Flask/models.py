@@ -10,7 +10,7 @@ from dotenv import load_dotenv, find_dotenv
 # from flask_security import Security, SQLAlchemyUserDatastore, \
 from flask_login import UserMixin
 
-from sqlalchemy import Column, Date, Float, ForeignKey, String, Table, Integer, Boolean, Time
+from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Table, Integer, Boolean, Time
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -93,7 +93,7 @@ class Medicion(db.Model):
     medID = Column(Integer, primary_key=True,autoincrement=True)
     disID = Column(ForeignKey('dispositivo.disID'), index=True)
     valor = Column(Float(asdecimal=True), nullable=False)
-    fecha = Column(Date, nullable=False)
+    fecha = Column(DateTime, nullable=False)
 
     Dispositivo = relationship('Dispositivo')
 

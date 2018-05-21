@@ -48,7 +48,7 @@
                                             </div>
                                             <input type="text" class="form-control" id="sensorDateTime" placeholder="dd/mm/yy-hh:mm" v-model="datetime">
                                         </div>
-                                        <p v-if="badformat" class="error">El formato debe ser dd/mm/yy-hh:mm</p>
+                                        <p v-if="isvalidDateTime == false" class="error">El formato debe ser dd/mm/yy-hh:mm y ser valida, ademas el año debe estar entre 1000 y 3000.</p>
                                     </div>
                                 </div>
                                 <div class="box-footer">
@@ -84,7 +84,7 @@
 {% endblock %} {% block javascripts %}{{ super() }}
 <script>
     var socket = io.connect('{{ domain }}');
-    var appNewGroup = new Vue({
+    var app = new Vue({
         el: "#app",
         delimiters: ['[[', ']]'],
         data: {
@@ -105,13 +105,62 @@
             if (this.id === '' || this.value === '' || this.datetime === '') {
                 return true;
             }
+            if (!/^\d{1,2}\/\d{1,2}\/\d{4}-\d{2}\:\d{2}$/.test(this.datetime)) return true;
             return false;
-        }
-        badformat(){
-            if (this.datetime !== '' || this.datetime.charat(2) !== '/' || this.datetime.charat(5) !== '/' || this.datetime.charat(8) !== '-' || this.datetime.charat(11) !== ':') {
+            var parts = this.datetime.split("-");
+            var date = parts[0].split("/");
+            var day = parseInt(date[0], 10);
+            var month = parseInt(date[1], 10);
+            var year = parseInt(date[2], 10);
+            var time = parts[1].split(":");
+            var hour = parseInt(time[0], 10);
+            var min = parseInt(time[1], 10);
+            // Check the ranges of month and year
+            if (year < 1000 || year > 3000 || month == 0 || month > 12)
                 return true;
-            }
-            return false;
+
+            var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+            // Adjust for leap years
+            if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+                monthLength[1] = 29;
+
+            // Check the time
+            if (hour < 0 || hour > 23 || min > 59 || min < 0)
+                return true;
+            // Check the range of the day
+            return !(day > 0 && day <= monthLength[month - 1]);
+        },
+        // Se repite codigo por ser la unica forma encontrada de que esto funcionase a la vez
+        isvalidDateTime() {
+            if (this.datetime == '')
+                return true;
+            if (!/^\d{1,2}\/\d{1,2}\/\d{4}-\d{2}\:\d{2}$/.test(this.datetime))
+                return false;
+            // Parse the date parts to integers
+            var parts = this.datetime.split("-");
+            var date = parts[0].split("/");
+            var day = parseInt(date[0], 10);
+            var month = parseInt(date[1], 10);
+            var year = parseInt(date[2], 10);
+            var time = parts[1].split(":");
+            var hour = parseInt(time[0], 10);
+            var min = parseInt(time[1], 10);
+            // Check the ranges of month and year
+            if (year < 1000 || year > 3000 || month == 0 || month > 12)
+                return false;
+
+            var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+            // Adjust for leap years
+            if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+                monthLength[1] = 29;
+
+            // Check the time
+            if (hour < 0 || hour > 23 || min > 59 || min < 0)
+                return false;
+            // Check the range of the day
+            return (day > 0 && day <= monthLength[month - 1]);
         }
     },
     methods: {
