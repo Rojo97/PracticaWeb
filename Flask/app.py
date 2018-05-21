@@ -1,4 +1,6 @@
 import sys
+import functools
+from datetime import time
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template, redirect,url_for, abort, request, flash
@@ -58,7 +60,7 @@ def groups_template():
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
     for n in user.grupos:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.dispositivos), "class": n.clase, "desc": n.descripccion})
-    
+
     return render_template(
         'index.html',
         domain=DOMAIN,
@@ -75,7 +77,7 @@ def new_groups_template():
     return render_template(
         'new-group.html',
         domain=DOMAIN,
-        devices=devices,        
+        devices=devices,
         current_user=current_user.nombre,
         groups=groups,
         #TODO socketio+flask-login para no tener que mandar aqui el ID
@@ -176,7 +178,7 @@ def new_sensor_template():
     grupos = list(filter(lambda a: a.default == False,user.grupos))
     return render_template(
         'addSensor.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
         funciones=funciones,
         tipos=tipos,
@@ -189,7 +191,7 @@ def new_sensor_template():
 def add_to_group_template():
     return render_template(
         'addToGroup.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -198,7 +200,7 @@ def add_to_group_template():
 def change_pass_template():
     return render_template(
         'cambiarPassword.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -207,7 +209,7 @@ def change_pass_template():
 def manage_user_groups_template():
     return render_template(
         'gestionarUsuariosGrupos.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -226,7 +228,7 @@ def group_template(groupID):
         groupName = group.nombre,
         default = default,
         devices = devices,
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -235,7 +237,7 @@ def group_template(groupID):
 def new_data_template():
     return render_template(
         'introducirDatos.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 @app.route('/newProgram')
@@ -245,7 +247,7 @@ def new_program_template():
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
-        actuadores = actuadores,        
+        actuadores = actuadores,
         current_user=current_user.nombre,
     )
 @app.route('/programs')
@@ -261,7 +263,7 @@ def programs_template():
     return render_template(
         'programas.html',
         domain=DOMAIN,
-        programs=programs,        
+        programs=programs,
         current_user=current_user.nombre,
     )
 
@@ -306,18 +308,30 @@ def createGroup(group):
 
 @socketio.on('createProgram')
 def createProgram(createProgram):
-    # newProgram = mocreateProgramdels.ProgramaGrupo(
-    #     grupoID=0
-    #     nombre=createProgram['name'],
-    #     descripccion=createProgram['desc']
-    # )
-    # models.db.session.add(newGroup)
-    # try:
-    #     models.db.session.commit()
-    # except:
-    #     models.db.session.rollback()
-    #     return 1
-    print()
+    print(createProgram)
+    programaGrupo = models.ProgramaGrupo(
+        nombre = createProgram['name'],
+        descripccion = createProgram['desc']
+    )
+    models.db.session.add(programaGrupo)
+    try:
+        models.db.session.commit()
+        for dispositivo in createProgram['devices']:
+            newProgram = models.ProgramaIndividual(
+                progGID=programaGrupo.progGID,
+                disID=dispositivo['id'],
+                valor=dispositivo['value'],
+                fechaIni=time(hour=int(dispositivo['init'].split(':')[0]),minute=int(dispositivo['init'].split(':')[1]),second=0, microsecond=0),
+                fechaFin=time(hour=int(dispositivo['end'].split(':')[0]),minute=int(dispositivo['end'].split(':')[1]), second=0, microsecond= 0)
+            )
+            models.db.session.add(newProgram)
+            try:
+                models.db.session.commit()
+            except:
+                models.db.session.rollback()
+    except:
+        models.db.session.rollback()
+        return 0
 
 @socketio.on('createUser')
 def createUser(user):
@@ -372,7 +386,7 @@ def createUser(user):
         print(ex)
         models.db.session.rollback()
         emit('userNotCreated')
-    
+
     # try:
         # models.db.session.commit()
     # except:
@@ -409,7 +423,7 @@ def createSensor(sensor):
         models.db.session.commit()
     except:
         models.db.session.rollback()
-    
+
     # try:
         # models.db.session.commit()
     # except:

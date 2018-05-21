@@ -40,8 +40,8 @@
                 <div class="form-group">
                   <label>Actuadores</label>
                   <select class="form-control select2 select2-hidden-accessible" data-placeholder="Seleccione los Actuadores" style="width: 100%;"
-                    tabindex="-1" aria-hidden="true" v-model="device.device">
-                    <option v-for="actuador in actuadores">[[actuador.name]]</option>
+                    tabindex="-1" aria-hidden="true" v-model="device.id">
+                    <option v-for="actuador in actuadores" :key="actuador.id" v-bind:value='actuador.id'>[[actuador.name]]</option>
                   </select>
                 </div>
                 <!--Caja hora Inicio -->
@@ -117,7 +117,7 @@
     data: {
       name: '',
       desc: '',
-      devices: [{ id: 0, device: '', init: '', end: '', value: '' }],
+      devices: [{ id: '', init: '', end: '', value: '' }],
       actuadores: [
         {% for actuador in actuadores %}
 		    		{
@@ -133,7 +133,7 @@
           return true;
         }
         for (var i = 0; i < this.devices.length; ++i) {
-          if (this.devices[i].device== '' || this.devices[i].init== '' || this.devices[i].end== '' || this.devices[i].value== ''){
+          if (this.devices[i].id== '' || this.devices[i].init== '' || this.devices[i].end== '' || this.devices[i].value== ''){
             return true;
           }
         }
@@ -143,7 +143,7 @@
     methods: {
       addDevice () {
         console.log(this.devices[0])
-        this.devices.push({ id: this.devices.length, device: '', init: '', end: '', value: '' });
+        this.devices.push({ id: '', init: '', end: '', value: '' });
       },
       removeDevice () {
         if (this.devices.length > 1) {
@@ -160,7 +160,7 @@
       reset(){
         this.name=''
         this.desc= ''
-        this.devices= [{ id: 0, device: '', init: '', end: '', value: '' }]
+        this.devices= [{ id: '', init: '', end: '', value: '' }]
       }
       
     } 
