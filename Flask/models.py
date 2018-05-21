@@ -122,6 +122,27 @@ class ProgramaIndividual(db.Model):
     Dispositivo = relationship('Dispositivo')
     ProgramaGrupo = relationship('ProgramaGrupo')
 
+def model_to_dict(inst, cls):
+  """
+  Jsonify the sql alchemy query result. Skips attr starting with "_"
+  """
+  convert = {}
+  d = dict()
+  for c in cls.__table__.columns:
+    if c.name.startswith("_"):
+      continue
+    v = getattr(inst, c.name)
+    current_type = str(c.type)
+    if current_type in convert.keys() and v is not None:
+      try:
+        d[c.name] = convert[current_type](v)
+      except:
+        d[c.name] = "Error:  Failed to covert using ", unicode(convert[c.type])
+    elif v is None:
+      d[c.name] = unicode()
+    else:
+      d[c.name] = v
+  return d
 
 if __name__ == "__main__":
     manager.run()

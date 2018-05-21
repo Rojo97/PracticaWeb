@@ -440,5 +440,52 @@ def removeDeviceFromGroup(devices):
         print(ex)
         models.db.session.rollback()
     
+@socketio.on('cambiarEstadoLuz')
+def cambiarEstadoLuz(device):
+    print("Hola")
+    disp = models.Dispositivo.query.filter_by(disID=device['id']).one()
+    print(">>>", disp.estado)
+
+    if disp.estado==0.0:
+        with app.app_context():
+            disp.estado = 1.0
+            models.db.session.commit()
+            emit('reload',models.model_to_dict(disp, models.Dispositivo))
+    else:
+        with app.app_context():
+            disp.estado = 0.0
+            models.db.session.commit()
+            emit('reload',models.model_to_dict(disp, models.Dispositivo))
+@socketio.on('cambiarEstado')
+def cambiarEstado(device):
+    print("Hola")
+    disp = models.Dispositivo.query.filter_by(disID=device['id']).one()
+    print(">>>", disp.estado)
+    try:
+        valor=float(device['newValue'])
+        pass
+    except:
+        return
+    if disp.funcion == 'Persianas':
+        if valor > 100.0:
+            valor=100.0
+        if valor < 0.0:
+            valor=0.0
+        else:
+            valor=round(valor,0)
+    else:
+        if valor > 30.0:
+            valor=30.0
+        if valor < 10.0:
+            valor=10.0
+        else:
+            valor=round(valor,1)
+    with app.app_context():
+        disp.estado = valor
+        models.db.session.commit()
+        emit('reload',models.model_to_dict(disp, models.Dispositivo))
+
+
+    
 if __name__ == '__main__':
     socketio.run(app)
