@@ -185,20 +185,24 @@ def change_pass_template():
 @login_required
 def manage_user_groups_template():
     usergroups = []
+    usuarios = models.Usuario.query.all()
     groups = models.Grupo.query.all()
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()
     for n in user.grupos:
+        useraux = usuarios[:]
         group = list(filter(lambda a: a.grupoID==n.grupoID,groups))
-        print(group[0].usuarios)
-        usergroups.append({"usuarios": group[0].usuarios, "id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion})
-        #for m in n.
+        for s in group[0].usuarios:
+            useraux.remove(s) 
+        usergroups.append({"nousuarios":useraux,  "usuarios": group[0].usuarios, "id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion})
             
     return render_template(
 
         'gestionarUsuariosGrupos.html',
         domain=DOMAIN,
-        usergroups=usergroups,        
+        usergroups=usergroups,  
+        users=usuarios,      
         current_user=current_user.nombre,
+        current_nickname=current_user.nickname
     )
 
 @app.route('/group/<int:groupID>')
@@ -403,5 +407,44 @@ def createSensor(sensor):
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
+
+@socketio.on('addGroupUser')
+def addGroupUser(data):
+    group_id = data['groupId']
+    user_nickname = data['userNickname']
+
+    with app.app_context():
+        try:
+            newDetalle = models.DetalleMiembro(
+                grupoID = group_id,
+                nickname = user_nickname
+            )
+            models.db.session.add(newDetalle)
+            models.db.session.commit()
+            emit('addedGroupUser', data)
+        except Exception as ex:
+            print("Error:", ex)
+            models.db.session.rollback()
+            emit('notAddedGroupUser')
+
+@socketio.on('removeGroupUser')
+def addGroupUser(data):
+    group_id = data['groupId']
+    user_nickname = data['userNickname']
+
+    with app.app_context():
+        try:
+            models.DetalleMiembro.query.filter_by(
+                grupoID = group_id,
+                nickname = user_nickname
+            ).delete()
+            models.db.session.commit()
+            emit('removedGroupUser', data)
+        except Exception as ex:
+            print("Error:", ex)
+            models.db.session.rollback()
+            emit('notRemovedGroupUser')
+
+
 if __name__ == '__main__':
     socketio.run(app)

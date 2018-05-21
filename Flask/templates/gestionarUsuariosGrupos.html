@@ -28,57 +28,64 @@
     <section class="content">
 
       <!-- Desplegable -->
-      <div style="margin-right:15%; margin-left:15%"
-  v-for="groupuser in usergroups"
-    v-bind:key="groupuser.id">
-      <div class="box box-default">
-        <div class="box-header with-border" style="padding:0">
-          <div class="info-box bg-green" style="margin:0">
-            <span class="info-box-icon">
-            </span>
-
-            <div class="info-box-content">
-              <span class="info-box-number">[[groupuser.name]]</span>
-              <span class="info-box-text">
-              <span class="info-box-text">[[groupuser.num]] usuarios</span>
-                <small>[[groupuser.desc]]</small>
+      <div style="margin-right:15%; margin-left:15%" v-for="groupuser in usergroups" v-bind:key="groupuser.id" v-if="groupuser.name != 'Todos' ">
+        <div class="box box-default">
+          <div class="box-header with-border" style="padding:0">
+            <div class="info-box bg-green" style="margin:0">
+              <span class="info-box-icon">
               </span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
 
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse">
-              <i class="fa fa-plus" style="color:white"></i>
-            </button>
-          </div>
-          <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body" style="display: none; margin-top:2%">
-          <div style="padding-left:10%; padding-right:10%">
-          <strong>
-            <i class="fa"></i>
-            <big>Usuarios</big>
-          </strong>
-
-          <ul>
-            <div>
-            <li
-            v-for="user in groupuser.users"
-            v-bind:key="user.id">Usuario 1
-              <i>
-                <i class="fa fa-close pull-right" style="color:red"></i>
-              </i>
-            </li>
+              <div class="info-box-content">
+                <span class="info-box-number">[[groupuser.name]]</span>
+                <span class="info-box-text">
+                  <span class="info-box-text">[[groupuser.users.length]] usuarios</span>
+                  <small>[[groupuser.desc]]</small>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
             </div>
-          </ul>
+
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-plus" style="color:white"></i>
+              </button>
+            </div>
+            <!-- /.box-tools -->
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body" style="display: none; margin-top:2%">
+            <div style="padding-left:10%; padding-right:10%">
+              <strong>
+                <i class="fa"></i>
+                <big>Usuarios</big>
+              </strong>
+
+              <ul>
+                  <li v-for="user in groupuser.users" v-bind:key="user.id">[[user.nickname]]
+                      <a href="#"  @click.prevent="removeGroupUser(groupuser.id, user.nickname)" v-if="user.nickname !== '{{current_nickname}}'"><i class="fa fa-trash pull-right" style="color:red"></i></a>
+                      <!-- <a href="#" @click.prevent="nope" class="pull-right" v-else>&#128405;</a> -->
+                  </li>
+              </ul>
+            </div>
+            <div type="submit" class="dropdown user user-menu pull-right bg-green btn" v-show="nousers(groupuser.id).length">
+              <btn class="dropdown-toggle" data-toggle="dropdown">
+                <span class="hidden-xs" style="color:white">Añadir usuario</span>
+              </btn>
+              <ul class="dropdown-menu">
+                <!-- Menu Footer-->
+                <li class="user-header">
+                  <center>
+                    <div v-for="nouser in nousers(groupuser.id)" v-bind:key="nouser.id">
+                      <a href=# class="btn btn-default btn-block bg-green " style="margin:0" v-on:click.prevent="addUser(groupuser.id, nouser.nickname)">[[nouser.nickname]]</a>
+                    </div>
+                  </center>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-      <button type="submit" class="btn btn-default pull-right bg-green">Añadir usuario</button>
-    </div>
-    <!-- /.box-body -->
-  </div>
-</div>
+        <!-- /.box-body -->
+      </div>
       <!-- /Desplegable -->
 
     </section>
@@ -106,30 +113,99 @@
   <!-- ./wrapper -->
 
   {% endblock %} {% block javascripts %}{{ super() }}
+
   
+  {# ,
+    nousers: [
+      {% for user in usergroup.nousuarios %}
+    {
+      nickname: '{{user.nickname}}'
+    } {% if not loop.last %}, {% endif %}
+    {% endfor %}
+                ]
+                    }{% if not loop.last %}, {% endif %}
+    {% endfor %} 
+  #}
   <script>
+    var socket = io.connect('{{ domain }}');
     var appGroups = new Vue({
       el: "#app",
       delimiters: ['[[', ']]'],
       data: {
         usergroups: [
           {% for usergroup in usergroups %}
-		    		{
-                id: '{{ usergroup.id }}',
-                name: '{{ usergroup.name }}',
-                num: '{{ usergroup.num }}',
-                desc: '{{ usergroup.desc }}',
-                class: '{{ usergroup.class }}',
-                users:[
-                        {% for user in usergroup.usuarios %}
-                          {
-                            nickname: '{{user.nickname}}'
-                              }{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                      ]
-                    }{% if not loop.last %}, {% endif %}
-                {% endfor %}
-              ]
-          }
+          {
+            id: '{{ usergroup.id }}',
+            name: '{{ usergroup.name }}',
+            num: '{{ usergroup.num }}',
+            desc: '{{ usergroup.desc }}',
+            class: '{{ usergroup.class }}',
+            users: [
+              {% for user in usergroup.usuarios %}
+              { nickname: '{{user.nickname}}' }
+              {% if not loop.last %}, {% endif %}
+              {% endfor %}
+            ]
+          } {% if not loop.last %}, {% endif %}
+          {% endfor %}
+        ],
+        users: [
+          {% for user in users %}
+            { nickname: '{{user.nickname}}' }
+          {% if not loop.last %}, {% endif %}
+          {% endfor %}
+        ]
+    },
+    methods: {
+      addUser(groupId, userNickname) {
+        socket.emit('addGroupUser', {
+          groupId: groupId,
+          userNickname: userNickname
         });
+      },
+      removeGroupUser(groupId, userNickname) {
+        socket.emit('removeGroupUser', {
+          groupId: groupId,
+          userNickname: userNickname
+        });
+      },
+      nousers(groupId) {
+        let group = this.usergroups.find((group) => group.id === groupId);
+        return group ? this.users.filter((user) => {
+          return group.users.find((other_user)=> {
+            return other_user.nickname === user.nickname;
+          }) === undefined;
+        }) : this.users;
+      },
+      addUserToGroup(groupId, userNickname) {
+        let groupIndex = this.usergroups.map((group)=>group.id).indexOf(groupId);
+        this.usergroups[groupIndex].users.push({nickname: userNickname});
+      },
+      removeUserFromGroup(groupId, userNickname) {
+        let groupIndex = this.usergroups.map((group)=>group.id).indexOf(groupId);
+        let userIndex = this.usergroups[groupIndex].users.map((user)=>user.nickname).indexOf(userNickname);
+        if(userIndex !== -1)
+          this.usergroups[groupIndex].users.splice(userIndex, 1);
+      }
+    }, 
+    created: function() {
+        let app = this;
+
+        socket.on('addedGroupUser', function (data) {
+          app.addUserToGroup(data.groupId, data.userNickname);
+        });
+
+        socket.on('notAddedGroupUser', function () {
+          console.log('Shiiiiit');
+        });
+
+        socket.on('removedGroupUser', function (data) {
+          app.removeUserFromGroup(data.groupId, data.userNickname);
+        });
+
+        socket.on('notRemovedGroupUser', function () {
+          console.log('Error');
+        });
+    }
+    });
   </script> {% endblock %}
