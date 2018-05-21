@@ -1,4 +1,6 @@
 import sys
+import functools
+from datetime import time
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template, redirect,url_for, abort, request, flash
@@ -58,7 +60,7 @@ def groups_template():
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
     for n in user.grupos:
         groups.append({"id": n.grupoID, "name": n.nombre, "num": len(n.dispositivos), "class": n.clase, "desc": n.descripccion})
-    
+
     return render_template(
         'index.html',
         domain=DOMAIN,
@@ -68,19 +70,40 @@ def groups_template():
 @app.route('/newGroup')
 @login_required
 def new_groups_template():
-    
-    devices = models.Dispositivo.query.all()
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    grupos = list(filter(lambda a: a.default == True,user.grupos))
+    devices = grupos[0].dispositivos
     groups = models.Grupo.query.all()
     return render_template(
         'new-group.html',
         domain=DOMAIN,
-        devices=devices,        
+        devices=devices,
         current_user=current_user.nombre,
         groups=groups,
         #TODO socketio+flask-login para no tener que mandar aqui el ID
         usuario=current_user.id
 
     )
+@app.route('/group/<int:groupID>/update')
+@login_required
+def updateGroup(groupID):
+    
+    group = models.Grupo.query.filter_by(grupoID=groupID).one()
+    devicesInGroup = group.dispositivos
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+    grupos = list(filter(lambda a: a.default == True,user.grupos))
+    alldevices = grupos[0].dispositivos
+    for i in devicesInGroup[:]:
+        alldevices.remove(i)
+    return render_template(
+        'modificarDispGrupos.html',
+        idgrupo = groupID,
+        devicesInGroup = devicesInGroup,
+        devicesNotInGroup = alldevices,
+        domain=DOMAIN,        
+        current_user=current_user.nombre,
+    )
+
 
 class LoginForm(Form):
     email = TextField('email', [validators.Required()])
@@ -155,7 +178,7 @@ def new_sensor_template():
     grupos = list(filter(lambda a: a.default == False,user.grupos))
     return render_template(
         'addSensor.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
         funciones=funciones,
         tipos=tipos,
@@ -168,7 +191,7 @@ def new_sensor_template():
 def add_to_group_template():
     return render_template(
         'addToGroup.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -177,7 +200,7 @@ def add_to_group_template():
 def change_pass_template():
     return render_template(
         'cambiarPassword.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -208,17 +231,19 @@ def manage_user_groups_template():
 @app.route('/group/<int:groupID>')
 @login_required
 def group_template(groupID):
-    if groupID!=0:
-        group = models.Grupo.query.filter_by(grupoID=groupID).one()
-        devices = group.dispositivos
+    group = models.Grupo.query.filter_by(grupoID=groupID).one()
+    devices = group.dispositivos
+    if group.default:
+        default = 'true'
     else:
-        devices = models.Dispositivo.query.all()
-
+        default = 'false'
     return render_template(
         'grupos.html',
         idgrupo = groupID,
+        groupName = group.nombre,
+        default = default,
         devices = devices,
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -227,7 +252,7 @@ def group_template(groupID):
 def new_data_template():
     return render_template(
         'introducirDatos.html',
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 @app.route('/newProgram')
@@ -237,7 +262,7 @@ def new_program_template():
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
-        actuadores = actuadores,        
+        actuadores = actuadores,
         current_user=current_user.nombre,
     )
 @app.route('/programs')
@@ -253,7 +278,7 @@ def programs_template():
     return render_template(
         'programas.html',
         domain=DOMAIN,
-        programs=programs,        
+        programs=programs,
         current_user=current_user.nombre,
     )
 
@@ -298,18 +323,30 @@ def createGroup(group):
 
 @socketio.on('createProgram')
 def createProgram(createProgram):
-    # newProgram = mocreateProgramdels.ProgramaGrupo(
-    #     grupoID=0
-    #     nombre=createProgram['name'],
-    #     descripccion=createProgram['desc']
-    # )
-    # models.db.session.add(newGroup)
-    # try:
-    #     models.db.session.commit()
-    # except:
-    #     models.db.session.rollback()
-    #     return 1
-    print()
+    print(createProgram)
+    programaGrupo = models.ProgramaGrupo(
+        nombre = createProgram['name'],
+        descripccion = createProgram['desc']
+    )
+    models.db.session.add(programaGrupo)
+    try:
+        models.db.session.commit()
+        for dispositivo in createProgram['devices']:
+            newProgram = models.ProgramaIndividual(
+                progGID=programaGrupo.progGID,
+                disID=dispositivo['id'],
+                valor=dispositivo['value'],
+                fechaIni=time(hour=int(dispositivo['init'].split(':')[0]),minute=int(dispositivo['init'].split(':')[1]),second=0, microsecond=0),
+                fechaFin=time(hour=int(dispositivo['end'].split(':')[0]),minute=int(dispositivo['end'].split(':')[1]), second=0, microsecond= 0)
+            )
+            models.db.session.add(newProgram)
+            try:
+                models.db.session.commit()
+            except:
+                models.db.session.rollback()
+    except:
+        models.db.session.rollback()
+        return 0
 
 @socketio.on('createUser')
 def createUser(user):
@@ -364,14 +401,13 @@ def createUser(user):
         print(ex)
         models.db.session.rollback()
         emit('userNotCreated')
-    
+
     # try:
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
 @socketio.on('createSensor')
 def createSensor(sensor):
-    # Send message to alls users
     print(sensor)
     newSensor = models.Dispositivo(
         nombre=sensor['name'],
@@ -402,7 +438,7 @@ def createSensor(sensor):
         models.db.session.commit()
     except:
         models.db.session.rollback()
-    
+
     # try:
         # models.db.session.commit()
     # except:
@@ -428,7 +464,7 @@ def addGroupUser(data):
             emit('notAddedGroupUser')
 
 @socketio.on('removeGroupUser')
-def addGroupUser(data):
+def removeGroupUser(data):
     group_id = data['groupId']
     user_nickname = data['userNickname']
 
@@ -445,6 +481,32 @@ def addGroupUser(data):
             models.db.session.rollback()
             emit('notRemovedGroupUser')
 
+
+@socketio.on('addDeviceToGroup')
+def addDeviceToGroup(devices):
+    try:
+        for i in devices['added'][:]:
+            newDetalle = models.DetalleDispositivo(
+                grupoID=devices['grupo'],
+                disID=i
+            )
+            models.db.session.add(newDetalle)
+            models.db.session.commit()
+        emit('reload')
+    except:
+        models.db.session.rollback()
+
+@socketio.on('removeDeviceFromGroup')
+def removeDeviceFromGroup(devices):
+    try:
+        for i in devices['removed'][:]:
+            detalle = models.DetalleDispositivo.query.filter_by(grupoID=devices['grupo'],disID=i).one()
+            models.db.session.delete(detalle)
+            models.db.session.commit()
+        emit('reload')
+    except Exception as ex:
+        print(ex)
+        models.db.session.rollback()
 
 if __name__ == '__main__':
     socketio.run(app)
