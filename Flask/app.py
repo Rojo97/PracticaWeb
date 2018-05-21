@@ -1,6 +1,6 @@
 import sys
 import functools
-from datetime import time
+from datetime import time, datetime
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template, redirect,url_for, abort, request, flash
@@ -338,18 +338,15 @@ def createProgram(createProgram):
 @socketio.on('createMeasure')
 def createMeasure(measure):
     print(measure)
-    parts = measure['datetime'].split("-")
-    date = parts[0].split("/")
-    day = int(date[0])
-    month = int(date[1])
-    year = int(date[2])
-    time = parts[1].split(":")
-    hour = int(time[0])
-    minute = int(time[1])
     medida = models.Medicion(
-        disId = measure['id'],
+        disID = measure['id'],
         valor = measure['value'],
-        fecha = datetime(year, month, day, hour, minute, 0,0)
+        fecha = datetime(int(measure['datetime'].split('-')[0].split('/')[2]),
+            int(measure['datetime'].split('-')[0].split('/')[1]),
+            int(measure['datetime'].split('-')[0].split('/')[0]),
+            int(measure['datetime'].split('-')[1].split(':')[0]),
+            int(measure['datetime'].split('-')[1].split(':')[1])
+            )
     )
     models.db.session.add(medida)
     try:
