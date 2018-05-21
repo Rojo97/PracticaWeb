@@ -13,11 +13,17 @@
             <h1>
                 Introducir datos
             </h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">
+                        <i class="fa fa-dashboard"></i> Home</a>
+                </li>
+                <li class="active">Introducir datos</li>
+            </ol>
         </section>
 
         <!-- Main content -->
         <section class="content">
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box-primary" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%;">
@@ -26,9 +32,8 @@
                                 <div class="box-body">
                                     <div class="form-group">
                                         <label>Sensor</label>
-                                        <select class="form-control">
-                                            <option>Temperatura</option>
-                                            <option>Luminosidad</option>
+                                        <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="id">
+                                            <option v-for="sensor in sensores" :key="sensor.id" v-bind:value='sensor.id'>[[sensor.name]]</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -41,12 +46,13 @@
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input type="text" class="form-control" id="sensorDateTime" placeholder="dd/mm/yy-hh:mm">
+                                            <input type="text" class="form-control" id="sensorDateTime" placeholder="dd/mm/yy-hh:mm" v-model="datetime">
                                         </div>
+                                        <p v-if="badformat" class="error">El formato debe ser dd/mm/yy-hh:mm</p>
                                     </div>
                                 </div>
                                 <div class="box-footer">
-                                    <button type="submit" class="btn btn-success">Añadir medida</button>
+                                    <button @click="createMeasure" :disabled="inactivo" type="submit" class="btn btn-success">Añadir medida</button>
                                 </div>
                             </div>
                         </div>
@@ -55,37 +61,32 @@
                     <!-- /.nav-tabs-custom -->
                 </div>
             </div>
-    </div>
+        </section>
+        <!-- /.content -->
 
-    </section>
-    <!-- /.content -->
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Create the tabs -->
-        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <!-- Home tab content -->
-            <div id="control-sidebar-home-tab">
-                </form>
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- Home tab content -->
+                <div id="control-sidebar-home-tab">
+                    </form>
+                </div>
+                <!-- /.tab-pane -->
             </div>
-            <!-- /.tab-pane -->
-        </div>
-    </aside>
-    <!-- /.control-sidebar -->
-    <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-    <div class="control-sidebar-bg"></div>
+        </aside>
+    </div>
+    <!-- ./wrapper -->
 </div>
-<!-- ./wrapper -->
-
 {% endblock %} {% block javascripts %}{{ super() }}
 <script>
     var socket = io.connect('{{ domain }}');
     var appNewGroup = new Vue({
-        el: "#app"
+        el: "#app",
+        delimiters: ['[[', ']]'],
         data: {
             id: '',
             value: '',
@@ -93,15 +94,21 @@
             sensores: [
                 {% for sensor in sensores %}
 	    		    {
-            id: '{{ actuador.disID }}',
-            name: '{{ actuador.nombre }}'
+            id: '{{ sensor.disID }}',
+            name: '{{ sensor.nombre }}'
         }{% if not loop.last %}, {% endif %}
     {% endfor %}
             ]
         },
     computed: {
         inactivo() {
-            if (this.id == '' || this.value == '' || this.datetime == '') {
+            if (this.id === '' || this.value === '' || this.datetime === '') {
+                return true;
+            }
+            return false;
+        }
+        badformat(){
+            if (this.datetime !== '' || this.datetime.charat(2) !== '/' || this.datetime.charat(5) !== '/' || this.datetime.charat(8) !== '-' || this.datetime.charat(11) !== ':') {
                 return true;
             }
             return false;
@@ -116,8 +123,5 @@
             });
         },
     }
-
         });
-
-
 </script> {% endblock %}

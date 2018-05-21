@@ -235,9 +235,11 @@ def group_template(groupID):
 @app.route('/newData')
 @login_required
 def new_data_template():
+    sensores = models.Dispositivo.query.filter_by(tipo='Sensor').all()
     return render_template(
         'introducirDatos.html',
         domain=DOMAIN,
+        sensores = sensores,
         current_user=current_user.nombre,
     )
 @app.route('/newProgram')
@@ -266,10 +268,6 @@ def programs_template():
         programs=programs,
         current_user=current_user.nombre,
     )
-@app.route('/newData')
-@login_required
-def measure_template():
-    return ''
 
 #TODO integrar socketio con el login, para poder autentificar al usaurio dentro de esats funciones
 #No es urgente, pero si queremos sacar esto a produccion es necesario (posible agujero de seguridad)
@@ -382,14 +380,7 @@ def createUser(user):
             
         )
         models.db.session.add(newDetalle)
-        models.db.session.commit()
-    except Exception as ex:
-        print(ex)
-        models.db.session.rollback()    
-
-
-
-
+        models.db.session.commit()   
     except Exception as ex:
         print(ex)
         models.db.session.rollback()
