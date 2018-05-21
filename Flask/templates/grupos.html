@@ -15,23 +15,18 @@
         <ol class="breadcrumb">
           <li>
             <a href="#">
-              <i class="fa fa-sitemap"></i> Grupo 1</a>
+              <i class="fa fa-sitemap"></i> Grupo [[nombreGrupo]]</a>
           </li>
         </ol>
       </section>
 
 
 
-      <div style="margin-bottom:2%; margin-left:10%; margin-right:15%">
+      <div v-if="!{{default}}"style="margin-bottom:2%; margin-left:10%; margin-right:15%">
         <div class="row" style="margin-bottom:2%">
-          <div class="col-md-6">
-            <a class="btn btn-block btn-social btn-bitbucket" :href="'/newSensor?group='+idgrupo">
-              <i class="fa fa-plus"></i>Añadir nuevo dispositivo
-            </a>
-          </div>
-          <div class="col-md-6">
-            <a class="btn btn-block btn-social btn-bitbucket">
-              <i class="fa fa-minus"></i> Eliminar dispositivo
+          <div class="col-md-12">
+            <a class="btn btn-block btn-social btn-bitbucket" :href="'/group/'+idgrupo+'/update'">
+              <i class="fa fa-plus"></i>Modificar dispositivos
             </a>
           </div>
         </div>
@@ -77,8 +72,10 @@
 <script>
   var appGroups = new Vue({
     el: "#app",
+    delimiters: ['[[',']]'],
     data: {
       idgrupo: {{ idgrupo }},
+      nombreGrupo: '{{ groupName }}',
       devices: [
         {% for device in devices %}
 		    		{
@@ -89,7 +86,7 @@
       estado: '{{ device.estado }}'
     }{% if not loop.last %}, {% endif %}
   {% endfor %}
-          ]
+          ],
         }
       });
 </script> {% endblock %}
