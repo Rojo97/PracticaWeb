@@ -317,12 +317,9 @@ def createProgram(createProgram):
     models.db.session.add(programaGrupo)
     try:
         models.db.session.commit()
-        programaGenerado = models.ProgramaGrupo.query.all()[-1].grupoID
-        if programaGenerado == None:
-            programaGenerado = '0'
         for dispositivo in createProgram['devices']:
             newProgram = models.ProgramaIndividual(
-                progGID=programaGenerado,
+                progGID=programaGrupo.progGID,
                 disID=dispositivo['id'],
                 valor=dispositivo['value'],
                 fechaIni=time(hour=int(dispositivo['init'].split(':')[0]),minute=int(dispositivo['init'].split(':')[1]),second=0, microsecond=0),
@@ -336,18 +333,6 @@ def createProgram(createProgram):
     except:
         models.db.session.rollback()
         return 0
-   
-    # newProgram = mocreateProgramdels.ProgramaGrupo(
-    #     grupoID=0
-    #     nombre=createProgram['name'],
-    #     descripccion=createProgram['desc']
-    # )
-    # models.db.session.add(newGroup)
-    # try:
-    #     models.db.session.commit()
-    # except:
-    #     models.db.session.rollback()
-    #     return 1
 
 @socketio.on('createUser')
 def createUser(user):
