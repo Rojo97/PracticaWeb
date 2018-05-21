@@ -1,6 +1,6 @@
 import sys
 import functools
-from datetime import time
+from datetime import time, datetime
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template, redirect,url_for, abort, request, flash
@@ -250,9 +250,11 @@ def group_template(groupID):
 @app.route('/newData')
 @login_required
 def new_data_template():
+    sensores = models.Dispositivo.query.filter_by(tipo='Sensor').all()
     return render_template(
         'introducirDatos.html',
         domain=DOMAIN,
+        sensores = sensores,
         current_user=current_user.nombre,
     )
 @app.route('/newProgram')
@@ -348,6 +350,26 @@ def createProgram(createProgram):
         models.db.session.rollback()
         return 0
 
+@socketio.on('createMeasure')
+def createMeasure(measure):
+    print(measure)
+    medida = models.Medicion(
+        disID = measure['id'],
+        valor = measure['value'],
+        fecha = datetime(int(measure['datetime'].split('-')[0].split('/')[2]),
+            int(measure['datetime'].split('-')[0].split('/')[1]),
+            int(measure['datetime'].split('-')[0].split('/')[0]),
+            int(measure['datetime'].split('-')[1].split(':')[0]),
+            int(measure['datetime'].split('-')[1].split(':')[1])
+            )
+    )
+    models.db.session.add(medida)
+    try:
+        models.db.session.commit()
+    except Exception as ex:
+        print("Peligro: "+str(ex))
+        models.db.session.rollback()
+
 @socketio.on('createUser')
 def createUser(user):
     print(user)
@@ -389,14 +411,7 @@ def createUser(user):
             
         )
         models.db.session.add(newDetalle)
-        models.db.session.commit()
-    except Exception as ex:
-        print(ex)
-        models.db.session.rollback()    
-
-
-
-
+        models.db.session.commit()   
     except Exception as ex:
         print(ex)
         models.db.session.rollback()
