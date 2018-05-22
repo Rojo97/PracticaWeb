@@ -216,7 +216,7 @@ def manage_user_groups_template():
         group = list(filter(lambda a: a.grupoID==n.grupoID,groups))
         for s in group[0].usuarios:
             useraux.remove(s) 
-        usergroups.append({"nousuarios":useraux,  "usuarios": group[0].usuarios, "id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion})
+        usergroups.append({"nousuarios":useraux,  "usuarios": group[0].usuarios, "id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion, "creator": n.creator})
             
     return render_template(
 
@@ -298,6 +298,7 @@ def createGroup(group):
         descripccion=group['desc'],
         default=False,
         clase='',
+        creator=group['user'],
         
     )
     models.db.session.add(newGroup)
@@ -403,6 +404,7 @@ def createUser(user):
             descripccion="Todos mis dispositivos",
             default=True,
             clase='',
+            creator=newUser.nickname,
         )
         models.db.session.add(newGroup)
         models.db.session.flush()
