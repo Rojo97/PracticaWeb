@@ -356,11 +356,11 @@ def createMeasure(measure):
     medida = models.Medicion(
         disID = measure['id'],
         valor = measure['value'],
-        fecha = datetime(int(measure['datetime'].split('-')[0].split('/')[2]),
-            int(measure['datetime'].split('-')[0].split('/')[1]),
-            int(measure['datetime'].split('-')[0].split('/')[0]),
-            int(measure['datetime'].split('-')[1].split(':')[0]),
-            int(measure['datetime'].split('-')[1].split(':')[1])
+        fecha = datetime(int(measure['date'].split('-')[0]),
+            int(measure['date'].split('-')[1]),
+            int(measure['date'].split('-')[2]),
+            int(measure['time'].split(':')[0]),
+            int(measure['time'].split(':')[1])
             )
     )
     models.db.session.add(medida)
