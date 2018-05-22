@@ -73,20 +73,20 @@
             </span>
             <div class="info-box-content">
               <span class="info-box-number">[[device.name]]</span>
-                <span class="info-box-text">[[device.estado]] ºC</span>
-                <span class="pull-right">
-                  <div class="row">
-                    <div class="col-sm-6">
+              <span class="info-box-text">[[device.estado]] ºC</span>
+              <span class="pull-right">
+                <div class="row">
+                  <div class="col-sm-6">
                     <input type="number" class="form-control" placeholder="Nuevo valor" type="text" v-model="device.newValue">
-                    </div>
-                    <div class="col-sm-6">
+                  </div>
+                  <div class="col-sm-6">
 
                     <button type="button" class="btn btn-block btn-primary" @click="cambiarEstado(device)">
                       Cambiar
                     </button>
-                    </div>
                   </div>
-                </span>            
+                </div>
+              </span>
             </div>
             <!-- /.info-box-content -->
           </div>
@@ -105,16 +105,16 @@
                 <span class="info-box-text">[[device.estado]] %</span>
                 <span class="pull-right">
                   <div class="row">
-                      <div class="col-sm-6">
+                    <div class="col-sm-6">
                       <input type="number" class="form-control" placeholder="Nuevo valor" type="text" v-model="device.newValue">
-                      </div>
-                      <div class="col-sm-6">
-  
+                    </div>
+                    <div class="col-sm-6">
+
                       <button type="button" class="btn btn-block btn-primary" @click="cambiarEstado(device)">
                         Cambiar
                       </button>
-                      </div>
                     </div>
+                  </div>
                 </span>
               </div>
             </div>
@@ -124,7 +124,7 @@
 
         </div>
       </div>
-      <devicedisplaysensor v-bind:devices="devices"></devicedisplaysensor>
+      <devicedisplaysensor v-bind:devices="devices" @add-sensor-value="onAddedSensorValue"></devicedisplaysensor>
     </section>
 
 
@@ -138,7 +138,6 @@
       <div class="tab-content">
         <!-- Home tab content -->
         <div id="control-sidebar-home-tab">
-          </form>
         </div>
         <!-- /.tab-pane -->
       </div>
@@ -149,46 +148,58 @@
     <div class="control-sidebar-bg"></div>
   </div>
   <!-- ./wrapper -->
+</div>
 
 
-
-  {% endblock %} {% block javascripts %}{{ super() }}
-  <script src="{{ url_for('static', filename='deviceSensor.js') }}"></script>
-
-  <script>
-    var socket = io.connect('{{ domain }}');
-    socket.on('reload', function (device) {
-      console.log(device)
-      for (var i in app.devices){
-        if(app.devices[i].id == device.disID){
-          app.devices[i].estado = device.estado
-          break;
-        }
+{% endblock %} {% block javascripts %}{{ super() }}
+<script src="{{ url_for('static', filename='deviceSensor.js') }}"></script>
+<script src="https://unpkg.com/chart.js@2.7.2/dist/Chart.bundle.js"></script>
+<!-- <script src="https://unpkg.com/vue-chartkick@0.3.0"></script> -->
+<script>
+  var socket = io.connect('{{ domain }}');
+  socket.on('reload', function (device) {
+    console.log(device)
+    for (var i in app.devices) {
+      if (app.devices[i].id == device.disID) {
+        app.devices[i].estado = device.estado
+        break;
       }
-      //location.reload()
-    });
-    var app = new Vue({
-      el: "#app",
-      delimiters: ['[[', ']]'],
-      data: {
-        idgrupo: {{ idgrupo }},
-    nombreGrupo: '{{ groupName }}',
+    }
+    //location.reload()
+  });
+
+  var app = new Vue({
+    el: "#app",
+    delimiters: ['[[', ']]'],
+    data: {
+      idgrupo: {{ idgrupo }},
+      nombreGrupo: '{{ groupName }}',
       devices: [
         {% for device in devices %}
-    {
-      id: '{{ device.disID }}',
-        name: '{{ device.nombre }}',
+        {
+          id: '{{ device.disID }}',
+          name: '{{ device.nombre }}',
           tipo: '{{ device.tipo }}',
-            funcion: '{{ device.funcion }}',
-              estado: {{ device.estado }},
-              newValue: ''
-    } {% if not loop.last %}, {% endif %}
-    {% endfor %}
-          ],
-        },
+          funcion: '{{ device.funcion }}',
+          estado: {{ device.estado }},
+          newValue: '',
+          meassurements: [
+            {% for meassurement in device.mediciones %}
+            {
+              date: new Date('{{ meassurement.fecha.isoformat() }}'),
+              value: {{ meassurement.valor }}
+            }
+            {% if not loop.last %}, {% endif %}
+            {% endfor %}
+          ]
+        }
+        {% if not loop.last %}, {% endif %}
+        {% endfor %}
+      ]
+    },
     methods: {
       lightButton(estado){
-        if(estado===0){
+        if (estado === 0) {
           return 'Encender'
         }
         return 'Apagar'
@@ -204,7 +215,12 @@
           id: device.id,
           newValue: device.newValue,
         });
+      },
+      onAddedSensorValue(e) {
+        // socket.emit('addSensorValue', e);
+        console.log(e);
       }
     }
-      });
-  </script> {% endblock %}
+  });
+</script>
+{% endblock %}
