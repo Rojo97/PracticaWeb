@@ -29,7 +29,7 @@
             <label>Grupo</label>
             <select class="form-control select2" style="width: 100%;" v-model="grupoamostrar">
               <option selected="selected">Todos los grupos</option>
-              <option v-for="group in groups">[[group]]</option>
+              <option v-for="group in groups">[[group.name]]</option>
             </select>
           </div>
         </div>
@@ -70,13 +70,21 @@
       programs: [
         {% for program in programs %}
 		    		{
-      id: '{{ program.id }}',
-      name: '{{ program.name }}',
-      group: '{{ program.group }}',
-      class: '{{program.class}}'
+      id: '{{ program.progGID }}',
+      name: '{{ program.nombre }}',
+      group: '{{ program.grupo.nombre }}',
+      class: '{{program.descripccion}}'
     }{% if not loop.last %}, {% endif %}
   {% endfor %}
       ],
+      groups: [
+        {% for group in groups %}
+		    		{
+      id: '{{ group.grupoID }}',
+      name: '{{ group.nombre }}'
+    }{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  ],
   grupoamostrar: 'Todos los grupos'
     },
   computed: {

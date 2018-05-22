@@ -12,6 +12,7 @@ Vue.component("programdisplay", {
   </div>
   `
 });
+
 Vue.component("programinfobox", {
   props:["program"],
   template:
@@ -115,4 +116,3 @@ Vue.component("programinfobox", {
         </div>
   `
 });
-

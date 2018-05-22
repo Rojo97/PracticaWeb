@@ -255,13 +255,23 @@ def programs_template():
 
     grupos = user.grupos
     programs = []
+    groups = []
     for grupo in grupos:
-        programs.append(grupo.programas)
+        if len(grupo.programas)>0:
+            groups.append(grupo)
+        for programa in grupo.programas:
+            programs.append(programa)
+
+    print("PROGRAMAS")
+    print(len(programs))
+    print("GRUPOS")
+    print(len(groups))
 
     return render_template(
         'programas.html',
         domain=DOMAIN,
         programs=programs,
+        groups = groups,
         current_user=current_user.nombre,
     )
 
