@@ -4,7 +4,7 @@ Vue.component("menulateral", {
       <div>
       <header class="main-header">
       <!-- Logo -->
-      <a href="/" class="logo">
+      <a href="/groups" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini">
           <b>D</b>Tr</span>

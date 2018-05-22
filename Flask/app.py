@@ -354,15 +354,16 @@ def createProgram(createProgram):
 def createMeasure(measure):
     print(measure)
     medida = models.Medicion(
-        disID = measure['id'],
+        disID = measure['id'], 
         valor = measure['value'],
-        fecha = datetime(int(measure['datetime'].split('-')[0].split('/')[2]),
-            int(measure['datetime'].split('-')[0].split('/')[1]),
-            int(measure['datetime'].split('-')[0].split('/')[0]),
-            int(measure['datetime'].split('-')[1].split(':')[0]),
-            int(measure['datetime'].split('-')[1].split(':')[1])
-            )
+        fecha = datetime.strptime(measure['datetime'], '%d/%m/%Y-%H:%M').date()
     )
+        # fecha = datetime(int(measure['datetime'].split('-')[0].split('/')[2]),
+        #     int(measure['datetime'].split('-')[0].split('/')[1]),
+        #     int(measure['datetime'].split('-')[0].split('/')[0]),
+        #     int(measure['datetime'].split('-')[1].split(':')[0]),
+        #     int(measure['datetime'].split('-')[1].split(':')[1])
+        #     )
     models.db.session.add(medida)
     try:
         models.db.session.commit()
