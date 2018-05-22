@@ -106,7 +106,6 @@
                 return true;
             }
             if (!/^\d{1,2}\/\d{1,2}\/\d{4}-\d{2}\:\d{2}$/.test(this.datetime)) return true;
-            return false;
             var parts = this.datetime.split("-");
             var date = parts[0].split("/");
             var day = parseInt(date[0], 10);
