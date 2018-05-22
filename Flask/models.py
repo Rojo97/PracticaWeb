@@ -10,7 +10,7 @@ from dotenv import load_dotenv, find_dotenv
 # from flask_security import Security, SQLAlchemyUserDatastore, \
 from flask_login import UserMixin
 
-from sqlalchemy import Column, Date, Float, ForeignKey, String, Table, Integer, Boolean
+from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Table, Integer, Boolean, Time
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -99,7 +99,7 @@ class Medicion(db.Model):
     medID = Column(Integer, primary_key=True,autoincrement=True)
     disID = Column(ForeignKey('dispositivo.disID'), index=True)
     valor = Column(Float(asdecimal=True), nullable=False)
-    fecha = Column(Date, nullable=False)
+    fecha = Column(DateTime, nullable=False)
 
     Dispositivo = relationship('Dispositivo')
 
@@ -124,12 +124,33 @@ class ProgramaIndividual(db.Model):
     progGID = Column(ForeignKey('programaGrupo.progGID'), index=True)
     disID = Column(ForeignKey('dispositivo.disID'), index=True)
     valor = Column(Float(asdecimal=True), nullable=False)
-    fechaIni = Column(Date, nullable=False)
-    fechaFin = Column(Date, nullable=False)
+    fechaIni = Column(Time, nullable=False)
+    fechaFin = Column(Time, nullable=False)
 
     Dispositivo = relationship('Dispositivo')
     ProgramaGrupo = relationship('ProgramaGrupo')
 
+def model_to_dict(inst, cls):
+  """
+  Jsonify the sql alchemy query result. Skips attr starting with "_"
+  """
+  convert = {}
+  d = dict()
+  for c in cls.__table__.columns:
+    if c.name.startswith("_"):
+      continue
+    v = getattr(inst, c.name)
+    current_type = str(c.type)
+    if current_type in convert.keys() and v is not None:
+      try:
+        d[c.name] = convert[current_type](v)
+      except:
+        d[c.name] = "Error:  Failed to covert using ", unicode(convert[c.type])
+    elif v is None:
+      d[c.name] = unicode()
+    else:
+      d[c.name] = v
+  return d
 
 if __name__ == "__main__":
     manager.run()

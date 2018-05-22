@@ -13,72 +13,46 @@
             <h1>
                 Introducir datos
             </h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">
+                        <i class="fa fa-dashboard"></i> Home</a>
+                </li>
+                <li class="active">Introducir datos</li>
+            </ol>
         </section>
 
         <!-- Main content -->
         <section class="content">
-
             <div class="row">
                 <div class="col-md-12">
-                    <div class="nav-tabs-custom">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#activity" data-toggle="tab">Introducir datos sensores</a>
-                            </li>
-                            <li>
-                                <a href="#timeline" data-toggle="tab">Cambiar estado actuadores</a>
-                            </li>
-                        </ul>
+                    <div class="box box-primary" style="padding-bottom:1%; padding-top:1%; padding-left:1%; padding-right:1%;">
                         <div class="tab-content">
                             <div class="active tab-pane" id="activity">
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <label>Tipo de sensor</label>
-                                        <select class="form-control">
-                                            <option>Temperatura</option>
-                                            <option>Luminosidad</option>
+                                        <label>Sensor</label>
+                                        <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="id">
+                                            <option v-for="sensor in sensores" :key="sensor.id" v-bind:value='sensor.id'>[[sensor.name]]</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>Textarea</label>
-                                        <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
-                                    </div>
-                                </div>
-                                <div class="box-footer">
-                                    <button type="submit" class="btn btn-success">Cambiar</button>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="timeline">
-                                <div class="box-body">
-                                    <div class="form-group">
-                                        <label>Tipo de actuador</label>
-                                        <select class="form-control">
-                                            <option>Iluminacion</option>
-                                            <option>Persianas</option>
-                                        </select>
+                                        <label>Valor</label>
+                                        <input type="text" class="form-control" id="sensorValue" placeholder="Valor del sensor" v-model="value">
                                     </div>
                                     <div class="form-group">
-                                        <label>Select Multiple</label>
-                                        <select multiple="" class="form-control">
-                                            <option>Bombilla 1</option>
-                                            <option>Bombilla 2</option>
-                                            <option>Bombilla 3</option>
-                                            <option>Bombilla 4</option>
-                                            <option>Bombilla 5</option>
-                                        </select>
-                                    </div>
-                                    <div class="slider slider-horizontal" id="blue">
-                                        <div class="slider-track">
-                                            <div class="slider-track-low" style="left: 0px; width: 0%;"></div>
-                                            <div class="slider-selection" style="left: 0%; width: 75%;"></div>
-                                            <div class="slider-track-high" style="right: 0px; width: 25%;"></div>
-                                            <div class="slider-handle max-slider-handle round" role="slider" aria-valuemin="-200" aria-valuemax="200" style="left: 75%;"
-                                                aria-valuenow="100" tabindex="0"></div>
+                                        <label>Fecha y hora</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" class="form-control" id="sensorDateTime" placeholder="dd/mm/yy-hh:mm" v-model="datetime">
                                         </div>
+                                        <p v-if="isvalidDateTime == false" class="error">El formato debe ser dd/mm/yy-hh:mm y ser valida, ademas el año debe estar entre 1000 y 3000.</p>
                                     </div>
                                 </div>
                                 <div class="box-footer">
-                                    <button type="submit" class="btn btn-success">Cambiar</button>
+                                    <button @click="createMeasure" :disabled="inactivo" type="submit" class="btn btn-success">Añadir medida</button>
                                 </div>
                             </div>
                         </div>
@@ -87,8 +61,6 @@
                     <!-- /.nav-tabs-custom -->
                 </div>
             </div>
-            <!-- /.row -->
-
         </section>
         <!-- /.content -->
 
@@ -106,19 +78,98 @@
                 <!-- /.tab-pane -->
             </div>
         </aside>
-        <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-        <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
+</div>
+{% endblock %} {% block javascripts %}{{ super() }}
+<script>
+    var socket = io.connect('{{ domain }}');
+    var app = new Vue({
+        el: "#app",
+        delimiters: ['[[', ']]'],
+        data: {
+            id: '',
+            value: '',
+            datetime: '',
+            sensores: [
+                {% for sensor in sensores %}
+	    		    {
+            id: '{{ sensor.disID }}',
+            name: '{{ sensor.nombre }}'
+        }{% if not loop.last %}, {% endif %}
+    {% endfor %}
+            ]
+        },
+    computed: {
+        inactivo() {
+            if (this.id === '' || this.value === '' || this.datetime === '') {
+                return true;
+            }
+            if (!/^\d{1,2}\/\d{1,2}\/\d{4}-\d{2}\:\d{2}$/.test(this.datetime)) return true;
+            var parts = this.datetime.split("-");
+            var date = parts[0].split("/");
+            var day = parseInt(date[0], 10);
+            var month = parseInt(date[1], 10);
+            var year = parseInt(date[2], 10);
+            var time = parts[1].split(":");
+            var hour = parseInt(time[0], 10);
+            var min = parseInt(time[1], 10);
+            // Check the ranges of month and year
+            if (year < 1000 || year > 3000 || month == 0 || month > 12)
+                return true;
 
-    {% endblock %} {% block javascripts %}{{ super() }}
-    <script>
-        var appNewGroup = new Vue({
-            el: "#app"
+            var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
+            // Adjust for leap years
+            if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+                monthLength[1] = 29;
+
+            // Check the time
+            if (hour < 0 || hour > 23 || min > 59 || min < 0)
+                return true;
+            // Check the range of the day
+            return !(day > 0 && day <= monthLength[month - 1]);
+        },
+        // Se repite codigo por ser la unica forma encontrada de que esto funcionase a la vez
+        isvalidDateTime() {
+            if (this.datetime == '')
+                return true;
+            if (!/^\d{1,2}\/\d{1,2}\/\d{4}-\d{2}\:\d{2}$/.test(this.datetime))
+                return false;
+            // Parse the date parts to integers
+            var parts = this.datetime.split("-");
+            var date = parts[0].split("/");
+            var day = parseInt(date[0], 10);
+            var month = parseInt(date[1], 10);
+            var year = parseInt(date[2], 10);
+            var time = parts[1].split(":");
+            var hour = parseInt(time[0], 10);
+            var min = parseInt(time[1], 10);
+            // Check the ranges of month and year
+            if (year < 1000 || year > 3000 || month == 0 || month > 12)
+                return false;
+
+            var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+            // Adjust for leap years
+            if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+                monthLength[1] = 29;
+
+            // Check the time
+            if (hour < 0 || hour > 23 || min > 59 || min < 0)
+                return false;
+            // Check the range of the day
+            return (day > 0 && day <= monthLength[month - 1]);
+        }
+    },
+    methods: {
+        createMeasure() {
+            socket.emit('createMeasure', {
+                id: this.id,
+                value: this.value,
+                datetime: this.datetime
+            });
+        },
+    }
         });
-
-
-    </script> {% endblock %}
+</script> {% endblock %}

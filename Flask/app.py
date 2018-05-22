@@ -1,4 +1,6 @@
 import sys
+import functools
+from datetime import time, datetime
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template, redirect,url_for, abort, request, flash
@@ -205,10 +207,28 @@ def change_pass_template():
 @app.route('/manageUserGroups')
 @login_required
 def manage_user_groups_template():
+    usergroups = []
+    usuarios = models.Usuario.query.all()
+    groups = models.Grupo.query.all()
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()
+    for n in user.grupos:
+        useraux = usuarios[:]
+        group = list(filter(lambda a: a.grupoID==n.grupoID,groups))
+        for s in group[0].usuarios:
+            useraux.remove(s)
+        usergroups.append({"nousuarios":useraux,  "usuarios": group[0].usuarios, "id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion})
+
     return render_template(
+
         'gestionarUsuariosGrupos.html',
         domain=DOMAIN,
+<<<<<<< HEAD
+=======
+        usergroups=usergroups,
+        users=usuarios,
+>>>>>>> origin/develop
         current_user=current_user.nombre,
+        current_nickname=current_user.nickname
     )
 
 @app.route('/group/<int:groupID>')
@@ -233,9 +253,11 @@ def group_template(groupID):
 @app.route('/newData')
 @login_required
 def new_data_template():
+    sensores = models.Dispositivo.query.filter_by(tipo='Sensor').all()
     return render_template(
         'introducirDatos.html',
         domain=DOMAIN,
+        sensores = sensores,
         current_user=current_user.nombre,
     )
 @app.route('/newProgram')
@@ -271,7 +293,6 @@ def programs_template():
         'programas.html',
         domain=DOMAIN,
         programs=programs,
-        groups = groups,
         current_user=current_user.nombre,
     )
 
@@ -316,18 +337,50 @@ def createGroup(group):
 
 @socketio.on('createProgram')
 def createProgram(createProgram):
-    # newProgram = mocreateProgramdels.ProgramaGrupo(
-    #     grupoID=0
-    #     nombre=createProgram['name'],
-    #     descripccion=createProgram['desc']
-    # )
-    # models.db.session.add(newGroup)
-    # try:
-    #     models.db.session.commit()
-    # except:
-    #     models.db.session.rollback()
-    #     return 1
-    print()
+    print(createProgram)
+    programaGrupo = models.ProgramaGrupo(
+        nombre = createProgram['name'],
+        descripccion = createProgram['desc']
+    )
+    models.db.session.add(programaGrupo)
+    try:
+        models.db.session.commit()
+        for dispositivo in createProgram['devices']:
+            newProgram = models.ProgramaIndividual(
+                progGID=programaGrupo.progGID,
+                disID=dispositivo['id'],
+                valor=dispositivo['value'],
+                fechaIni=time(hour=int(dispositivo['init'].split(':')[0]),minute=int(dispositivo['init'].split(':')[1]),second=0, microsecond=0),
+                fechaFin=time(hour=int(dispositivo['end'].split(':')[0]),minute=int(dispositivo['end'].split(':')[1]), second=0, microsecond= 0)
+            )
+            models.db.session.add(newProgram)
+            try:
+                models.db.session.commit()
+            except:
+                models.db.session.rollback()
+    except:
+        models.db.session.rollback()
+        return 0
+
+@socketio.on('createMeasure')
+def createMeasure(measure):
+    print(measure)
+    medida = models.Medicion(
+        disID = measure['id'],
+        valor = measure['value'],
+        fecha = datetime(int(measure['datetime'].split('-')[0].split('/')[2]),
+            int(measure['datetime'].split('-')[0].split('/')[1]),
+            int(measure['datetime'].split('-')[0].split('/')[0]),
+            int(measure['datetime'].split('-')[1].split(':')[0]),
+            int(measure['datetime'].split('-')[1].split(':')[1])
+            )
+    )
+    models.db.session.add(medida)
+    try:
+        models.db.session.commit()
+    except Exception as ex:
+        print("Peligro: "+str(ex))
+        models.db.session.rollback()
 
 @socketio.on('createUser')
 def createUser(user):
@@ -374,13 +427,6 @@ def createUser(user):
     except Exception as ex:
         print(ex)
         models.db.session.rollback()
-
-
-
-
-    except Exception as ex:
-        print(ex)
-        models.db.session.rollback()
         emit('userNotCreated')
 
     # try:
@@ -424,6 +470,45 @@ def createSensor(sensor):
         # models.db.session.commit()
     # except:
     #     models.db.session.rollback()
+
+@socketio.on('addGroupUser')
+def addGroupUser(data):
+    group_id = data['groupId']
+    user_nickname = data['userNickname']
+
+    with app.app_context():
+        try:
+            newDetalle = models.DetalleMiembro(
+                grupoID = group_id,
+                nickname = user_nickname
+            )
+            models.db.session.add(newDetalle)
+            models.db.session.commit()
+            emit('addedGroupUser', data)
+        except Exception as ex:
+            print("Error:", ex)
+            models.db.session.rollback()
+            emit('notAddedGroupUser')
+
+@socketio.on('removeGroupUser')
+def removeGroupUser(data):
+    group_id = data['groupId']
+    user_nickname = data['userNickname']
+
+    with app.app_context():
+        try:
+            models.DetalleMiembro.query.filter_by(
+                grupoID = group_id,
+                nickname = user_nickname
+            ).delete()
+            models.db.session.commit()
+            emit('removedGroupUser', data)
+        except Exception as ex:
+            print("Error:", ex)
+            models.db.session.rollback()
+            emit('notRemovedGroupUser')
+
+
 @socketio.on('addDeviceToGroup')
 def addDeviceToGroup(devices):
     try:
@@ -449,6 +534,53 @@ def removeDeviceFromGroup(devices):
     except Exception as ex:
         print(ex)
         models.db.session.rollback()
+
+@socketio.on('cambiarEstadoLuz')
+def cambiarEstadoLuz(device):
+    print("Hola")
+    disp = models.Dispositivo.query.filter_by(disID=device['id']).one()
+    print(">>>", disp.estado)
+
+    if disp.estado==0.0:
+        with app.app_context():
+            disp.estado = 1.0
+            models.db.session.commit()
+            emit('reload',models.model_to_dict(disp, models.Dispositivo))
+    else:
+        with app.app_context():
+            disp.estado = 0.0
+            models.db.session.commit()
+            emit('reload',models.model_to_dict(disp, models.Dispositivo))
+@socketio.on('cambiarEstado')
+def cambiarEstado(device):
+    print("Hola")
+    disp = models.Dispositivo.query.filter_by(disID=device['id']).one()
+    print(">>>", disp.estado)
+    try:
+        valor=float(device['newValue'])
+        pass
+    except:
+        return
+    if disp.funcion == 'Persianas':
+        if valor > 100.0:
+            valor=100.0
+        if valor < 0.0:
+            valor=0.0
+        else:
+            valor=round(valor,0)
+    else:
+        if valor > 30.0:
+            valor=30.0
+        if valor < 10.0:
+            valor=10.0
+        else:
+            valor=round(valor,1)
+    with app.app_context():
+        disp.estado = valor
+        models.db.session.commit()
+        emit('reload',models.model_to_dict(disp, models.Dispositivo))
+
+
 
 if __name__ == '__main__':
     socketio.run(app)

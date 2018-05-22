@@ -16,6 +16,7 @@ Flask/static/plugins
 Flask/__pycache__
 Flask/migrations
 Flask/.env
+Flask/.directory
 Flask/static/.directory
 Flask/database.sqlite
 

@@ -23,7 +23,7 @@ Vue.component("menulateral", {
             <!-- Messages: style can be found in dropdown.less-->
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <span class="hidden-xs">{{current_user}}</span>
               </a>
               <ul class="dropdown-menu">
@@ -44,7 +44,7 @@ Vue.component("menulateral", {
                     </form>
                   </div>
                 </li>
-              </ul>
+              </ul> 
             </li>
           </ul>
         </div>
@@ -58,7 +58,7 @@ Vue.component("menulateral", {
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
           <div style="width:50%; margin:auto" class="img-responsive">
-            <img src="static/DomoticTrails.png" class="img-circle" style="width:100%; margin-top: 15%; margin-bottom: 15%">
+            <img src="../../static/DomoticTrails.png" class="img-circle" style="width:100%; margin-top: 15%; margin-bottom: 15%">
           </div>
           <li class="header">CONTROL</li>
           <li class="treeview">

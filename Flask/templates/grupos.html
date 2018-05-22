@@ -1,92 +1,210 @@
-
-{% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
+ {% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
 
 <div class="wrapper" id="app">
 
   <menulateral current_user="{{current_user}}"></menulateral>
 
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-      <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
-      <section class="content-header" style="margin-bottom:5%">
-        <h1 class="logo-lg">
-          <b>Grupos</b>
-        </h1>
-        <ol class="breadcrumb">
-          <li>
-            <a href="#">
-              <i class="fa fa-sitemap"></i> Grupo [[nombreGrupo]]</a>
-          </li>
-        </ol>
-      </section>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Escribir dentro de este div para añadir cosas a la plantilla -->
+    <section class="content-header" style="margin-bottom:5%">
+      <h1 class="logo-lg">
+        <b>Grupos</b>
+      </h1>
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">
+            <i class="fa fa-sitemap"></i> Grupo [[nombreGrupo]]</a>
+        </li>
+      </ol>
+    </section>
 
 
 
-      <div v-if="!{{default}}"style="margin-bottom:2%; margin-left:10%; margin-right:15%">
-        <div class="row" style="margin-bottom:2%">
-          <div class="col-md-12">
-            <a class="btn btn-block btn-social btn-bitbucket" :href="'/group/'+idgrupo+'/update'">
-              <i class="fa fa-plus"></i>Modificar dispositivos
-            </a>
-          </div>
+    <div v-if="!{{default}}" style="margin-bottom:2%; margin-left:10%; margin-right:15%">
+      <div class="row" style="margin-bottom:2%">
+        <div class="col-md-12">
+          <a class="btn btn-block btn-social btn-bitbucket" :href="'/group/'+idgrupo+'/update'">
+            <i class="fa fa-plus"></i>Modificar dispositivos
+          </a>
         </div>
       </div>
-
-      <!-- mostramos los dispositivos -->
-      <section class="content">
-        <devicedisplay v-bind:devices="devices"></devicedisplay>
-        <devicedisplaylight v-bind:devices="devices"></devicedisplaylight>
-        <devicedisplaysensor v-bind:devices="devices"></devicedisplaysensor>
-      </section>
-
-
-
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Create the tabs -->
-        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <!-- Home tab content -->
-          <div id="control-sidebar-home-tab">
-            </form>
-          </div>
-          <!-- /.tab-pane -->
-        </div>
-      </aside>
-      <!-- /.control-sidebar -->
-      <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-      <div class="control-sidebar-bg"></div>
     </div>
-    <!-- ./wrapper -->
+
+    <!-- mostramos los dispositivos -->
+    <section class="content">
+      <!-- Luces -->
+      <div style="margin-bottom:2%; margin-left:10%; margin-right:15%" v-for="device in devices" v-bind:key="device.id">
+        <div v-if="device.tipo === 'Actuador' && device.funcion === 'Luminosidad'">
+          <div class="box box-default">
+            <div class="box-header with-border" style="padding:0">
+              <div class="info-box bg-green" style="margin:0">
+                <span class="info-box-icon">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <div class="info-box-content">
+                  <span class="info-box-text">[[device.name]]</span>
+                  <span v-if="device.estado === 0" class="info-box-number">Apagada</span>
+                  <span v-else class="info-box-number">Encendida</span>
+                  <span class="pull-right">
+                    <button type="button" class="btn btn-block btn-primary" @click="cambiarEstadoLuz(device)">
+                      [[ lightButton(device.estado) ]]
+                    </button>
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+
+
+              </div>
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body" style="display: none;">
+            </div>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <div v-if="device.tipo === 'Actuador' && device.funcion === 'Temperatura'">
+
+          <div class="info-box bg-green">
+            <span class="info-box-icon">
+              <i class="fa fa-eyedropper"></i>
+            </span>
+            <div class="info-box-content">
+              <span class="info-box-number">[[device.name]]</span>
+                <span class="info-box-text">[[device.estado]] ºC</span>
+                <span class="pull-right">
+                  <div class="row">
+                    <div class="col-sm-6">
+                    <input type="number" class="form-control" placeholder="Nuevo valor" type="text" v-model="device.newValue">
+                    </div>
+                    <div class="col-sm-6">
+
+                    <button type="button" class="btn btn-block btn-primary" @click="cambiarEstado(device)">
+                      Cambiar
+                    </button>
+                    </div>
+                  </div>
+                </span>            
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+
+        </div>
+        <div v-if="device.tipo === 'Actuador' && device.funcion === 'Persianas'">
+
+          <div class="info-box bg-green">
+            <span class="info-box-icon">
+              <i class="fa fa-sun-o"></i>
+            </span>
+            <div class="info-box-content">
+              <span class="info-box-number">[[device.name]]</span>
+              <div>
+                <span class="info-box-text">[[device.estado]] %</span>
+                <span class="pull-right">
+                  <div class="row">
+                      <div class="col-sm-6">
+                      <input type="number" class="form-control" placeholder="Nuevo valor" type="text" v-model="device.newValue">
+                      </div>
+                      <div class="col-sm-6">
+  
+                      <button type="button" class="btn btn-block btn-primary" @click="cambiarEstado(device)">
+                        Cambiar
+                      </button>
+                      </div>
+                    </div>
+                </span>
+              </div>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+
+        </div>
+      </div>
+      <devicedisplaysensor v-bind:devices="devices"></devicedisplaysensor>
+    </section>
 
 
 
-{% endblock %} {% block javascripts %}{{ super() }}
-<script src="{{ url_for('static', filename='deviceNormal.js') }}"></script>
-<script src="{{ url_for('static', filename='deviceSensor.js') }}"></script>
-<script src="{{ url_for('static', filename='deviceLight.js') }}"></script>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Create the tabs -->
+      <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <!-- Home tab content -->
+        <div id="control-sidebar-home-tab">
+          </form>
+        </div>
+        <!-- /.tab-pane -->
+      </div>
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+  </div>
+  <!-- ./wrapper -->
 
-<script>
-  var appGroups = new Vue({
-    el: "#app",
-    delimiters: ['[[',']]'],
-    data: {
-      idgrupo: {{ idgrupo }},
-      nombreGrupo: '{{ groupName }}',
+
+
+  {% endblock %} {% block javascripts %}{{ super() }}
+  <script src="{{ url_for('static', filename='deviceSensor.js') }}"></script>
+
+  <script>
+    var socket = io.connect('{{ domain }}');
+    socket.on('reload', function (device) {
+      console.log(device)
+      for (var i in app.devices){
+        if(app.devices[i].id == device.disID){
+          app.devices[i].estado = device.estado
+          break;
+        }
+      }
+      //location.reload()
+    });
+    var app = new Vue({
+      el: "#app",
+      delimiters: ['[[', ']]'],
+      data: {
+        idgrupo: {{ idgrupo }},
+    nombreGrupo: '{{ groupName }}',
       devices: [
         {% for device in devices %}
-		    		{
+    {
       id: '{{ device.disID }}',
-      name: '{{ device.nombre }}',
-      tipo: '{{ device.tipo }}',
-      funcion: '{{ device.funcion }}',
-      estado: '{{ device.estado }}'
-    }{% if not loop.last %}, {% endif %}
-  {% endfor %}
+        name: '{{ device.nombre }}',
+          tipo: '{{ device.tipo }}',
+            funcion: '{{ device.funcion }}',
+              estado: {{ device.estado }},
+              newValue: ''
+    } {% if not loop.last %}, {% endif %}
+    {% endfor %}
           ],
+        },
+    methods: {
+      lightButton(estado){
+        if(estado===0){
+          return 'Encender'
         }
+        return 'Apagar'
+      },
+      cambiarEstadoLuz(device){
+        socket.emit('cambiarEstadoLuz', {
+          id: device.id,
+          estado: device.id,
+        });
+      },
+      cambiarEstado(device){
+        socket.emit('cambiarEstado', {
+          id: device.id,
+          newValue: device.newValue,
+        });
+      }
+    }
       });
-</script> {% endblock %}
+  </script> {% endblock %}
