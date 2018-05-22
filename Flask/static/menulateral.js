@@ -18,7 +18,7 @@ Vue.component("menulateral", {
           <span class="sr-only">Toggle navigation</span>
         </a>
         <div class="navbar-custom-menu">
-  
+
           <ul class="nav navbar-nav">
             <!-- Messages: style can be found in dropdown.less-->
             <!-- User Account: style can be found in dropdown.less -->
@@ -44,7 +44,7 @@ Vue.component("menulateral", {
                     </form>
                   </div>
                 </li>
-              </ul> 
+              </ul>
             </li>
           </ul>
         </div>
@@ -54,7 +54,7 @@ Vue.component("menulateral", {
     <aside class="main-sidebar">
       <!-- sidebar: style can be found in sidebar.less -->
       <section class="sidebar">
-  
+
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
           <div style="width:50%; margin:auto" class="img-responsive">
@@ -128,5 +128,5 @@ Vue.component("menulateral", {
         socket.emit('logoutUser')
       }
     }
-    
+
   });
