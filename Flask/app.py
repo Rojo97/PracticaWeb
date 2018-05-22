@@ -222,11 +222,6 @@ def manage_user_groups_template():
 
         'gestionarUsuariosGrupos.html',
         domain=DOMAIN,
-<<<<<<< HEAD
-=======
-        usergroups=usergroups,
-        users=usuarios,
->>>>>>> origin/develop
         current_user=current_user.nombre,
         current_nickname=current_user.nickname
     )
@@ -276,12 +271,14 @@ def programs_template():
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()
 
     grupos = user.grupos
+    print(len(grupos))
     programs = []
     groups = []
     for grupo in grupos:
         if len(grupo.programas)>0:
             groups.append(grupo)
         for programa in grupo.programas:
+            print(len(grupo.programas))
             programs.append(programa)
 
     print("PROGRAMAS")
@@ -293,6 +290,7 @@ def programs_template():
         'programas.html',
         domain=DOMAIN,
         programs=programs,
+        groups = groups,
         current_user=current_user.nombre,
     )
 
