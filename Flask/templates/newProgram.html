@@ -30,7 +30,11 @@
                 <label for="progDesc">Descripción</label>
                 <input type="text" class="form-control" id="progDesc" placeholder="Descripción" v-model="desc">
               </div>
-
+              <label for="progDesc">Grupo</label>
+              <select class="form-control select2 select2-hidden-accessible " style="width: 100% " tabindex="-1
+                " aria-hidden="true" v-model="grupo">
+                <option v-for="grupo in grupos " v-bind:value="grupo.id">[[grupo.name]]</option>
+              </select>
             </div>
           </div>
           <!-- Caja Actuadores -->
@@ -41,7 +45,7 @@
                   <label>Actuadores</label>
                   <select class="form-control select2 select2-hidden-accessible" data-placeholder="Seleccione los Actuadores" style="width: 100%;"
                     tabindex="-1" aria-hidden="true" v-model="device.id">
-                    <option v-for="actuador in actuadores" :key="actuador.id" v-bind:value='actuador.id'>[[actuador.name]]</option>
+                    <option v-for="actuador in actuadoresGrupo" :key="actuador.id" v-bind:value='actuador.id'>[[actuador.name]]</option>
                   </select>
                 </div>
                 <!--Caja hora Inicio -->
@@ -118,14 +122,36 @@
       name: '',
       desc: '',
       devices: [{ id: '', init: '', end: '', value: '' }],
+      grupo:'',
+      grupos: [
+        {% for grupo in grupos %}
+        {
+            id: '{{ grupo.grupoID }}',
+            name: '{{ grupo.nombre }}', 
+            actuadores: [
+              {% for dispositivo in grupo.dispositivos %}
+                {
+                  id: '{{ dispositivo.disID }}',
+                  name: '{{ dispositivo.nombre }}',
+                  tipo: '{{ dispositivo.tipo }}',
+                }
+              {% if not loop.last %}, {% endif %}
+              {% endfor %}
+            ]
+          }
+        {% if not loop.last %}, {% endif %}
+        {% endfor %}
+      ],
       actuadores: [
-        {% for actuador in actuadores %}
-		    		{
-      id: '{{ actuador.disID }}',
-      name: '{{ actuador.nombre }}'
-    }{% if not loop.last %}, {% endif %}
-  {% endfor %}
-          ]
+        {% for dispositivo in actuadores %}
+          {
+            id: '{{ dispositivo.disID }}',
+            name: '{{ dispositivo.nombre }}',
+            tipo: '{{ dispositivo.tipo }}',
+          }
+        {% if not loop.last %}, {% endif %}
+        {% endfor %}
+      ]
     },
    computed: {
       inactivo () {
@@ -138,6 +164,15 @@
           }
         }
       return false;
+      }
+      ,
+      actuadoresGrupo(){
+        var count = this.grupos.length;
+        for(var i = 0; i < count; i++) {
+          if(this.grupos[i].id==this.grupo){
+            return this.grupos[i].actuadores
+          }
+        }
       }
     },
     methods: {
@@ -154,7 +189,8 @@
         socket.emit('createProgram', {
           name: this.name,
           desc: this.desc,
-          devices: this.devices
+          devices: this.devices,
+          grupo: this.grupo
         });
       },
       reset(){

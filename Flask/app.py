@@ -261,10 +261,13 @@ def new_data_template():
 @login_required
 def new_program_template():
     actuadores = models.Dispositivo.query.filter_by(tipo='Actuador').all()
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
         actuadores = actuadores,
+        grupos = user.grupos,
         current_user=current_user.nombre,
     )
 @app.route('/programs')
@@ -328,7 +331,8 @@ def createProgram(createProgram):
     print(createProgram)
     programaGrupo = models.ProgramaGrupo(
         nombre = createProgram['name'],
-        descripccion = createProgram['desc']
+        descripccion = createProgram['desc'],
+        grupo = createProgram['grupo']
     )
     models.db.session.add(programaGrupo)
     try:
@@ -356,16 +360,7 @@ def createMeasure(measure):
     medida = models.Medicion(
         disID = measure['id'], 
         valor = measure['value'],
-<<<<<<< HEAD
         fecha = datetime.strptime(measure['datetime'], '%d/%m/%Y-%H:%M').date()
-=======
-        fecha = datetime(int(measure['date'].split('-')[0]),
-            int(measure['date'].split('-')[1]),
-            int(measure['date'].split('-')[2]),
-            int(measure['time'].split(':')[0]),
-            int(measure['time'].split(':')[1])
-            )
->>>>>>> develop
     )
         # fecha = datetime(int(measure['datetime'].split('-')[0].split('/')[2]),
         #     int(measure['datetime'].split('-')[0].split('/')[1]),
