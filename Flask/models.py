@@ -10,7 +10,7 @@ from dotenv import load_dotenv, find_dotenv
 # from flask_security import Security, SQLAlchemyUserDatastore, \
 from flask_login import UserMixin
 
-from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Table, Integer, Boolean, Time
+from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Table, Integer, Boolean, Time, Date
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -66,6 +66,8 @@ class Grupo(db.Model):
     descripccion = Column(String(200), nullable=True)
     clase = Column(String(40), nullable=False)
     default = Column(Boolean())
+    creator = Column(ForeignKey('usuario.nickname'), nullable=False)
+
 
     usuarios = relationship('Usuario', secondary='detalleMiembro',
         backref=backref('grupos', lazy=True))
@@ -90,6 +92,7 @@ class Dispositivo(db.Model):
 
     grupos = relationship('Grupo', secondary='detalleDispositivo',
         backref=backref('dispositivos', lazy=True))
+    mediciones = relationship('Medicion')
 
 
 

@@ -56,18 +56,22 @@
           <div class="box-body" style="display: none; margin-top:2%">
             <div style="padding-left:10%; padding-right:10%">
               <strong>
+                <span >Administrador: [[groupuser.creator]]</span><br>
+                
                 <i class="fa"></i>
                 <big>Usuarios</big>
               </strong>
 
               <ul>
                   <li v-for="user in groupuser.users" v-bind:key="user.id">[[user.nickname]]
-                      <a href="#"  @click.prevent="removeGroupUser(groupuser.id, user.nickname)" v-if="user.nickname !== '{{current_nickname}}'"><i class="fa fa-trash pull-right" style="color:red"></i></a>
-                      <!-- <a href="#" @click.prevent="nope" class="pull-right" v-else>&#128405;</a> -->
+                        <a href="#"  @click.prevent="removeGroupUser(groupuser.id, user.nickname)" v-if="'{{current_nickname}}'===groupuser.creator && user.nickname !== '{{current_nickname}}'"><i class="fa fa-trash pull-right" style="color:red"></i></a>
+                        <!-- <a href="#" @click.prevent="nope" class="pull-right" v-else>&#128405;</a> -->
+                        <a href="#"  @click.prevent="removeGroupUser(groupuser.id, user.nickname)" v-if="'{{current_nickname}}'!==groupuser.creator && user.nickname === '{{current_nickname}}'"><i class="fa fa-trash pull-right" style="color:red"></i></a>
+                        <!-- <a href="#" @click.prevent="nope" class="pull-right" v-else>&#128405;</a> -->
                   </li>
               </ul>
             </div>
-            <div type="submit" class="dropdown user user-menu pull-right bg-green btn" v-show="nousers(groupuser.id).length">
+            <div v-if="'{{current_nickname}}'===groupuser.creator" type="submit" class="dropdown user user-menu pull-right bg-green btn" v-show="nousers(groupuser.id).length">
               <btn class="dropdown-toggle" data-toggle="dropdown">
                 <span class="hidden-xs" style="color:white">Añadir usuario</span>
               </btn>
@@ -140,6 +144,7 @@
             num: '{{ usergroup.num }}',
             desc: '{{ usergroup.desc }}',
             class: '{{ usergroup.class }}',
+            creator: '{{ usergroup.creator }}',
             users: [
               {% for user in usergroup.usuarios %}
               { nickname: '{{user.nickname}}' }

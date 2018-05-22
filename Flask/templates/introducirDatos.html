@@ -1,5 +1,4 @@
  {% extends "layout.html" %} {% block head %} {{ super() }} {% endblock %} {% block content %}
-
 <div class="wrapper" id="app">
 
     <menulateral current_user="{{current_user}}"></menulateral>
@@ -46,21 +45,24 @@
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input type="text" class="form-control" id="sensorDateTime" placeholder="dd/mm/yy-hh:mm" v-model="datetime">
+                                            <input type="date" class="form-control" id="sensorDate" v-model="date">
                                         </div>
-                                        <p v-if="isvalidDateTime == false" class="error">El formato debe ser dd/mm/yy-hh:mm y ser valida, ademas el año debe estar entre 1000 y 3000.</p>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                            <input type="time" class="form-control timepicker" id="sensorTime" v-model="time">
+                                        </div>
+                                        <div class="box-footer">
+                                            <button @click="createMeasure" :disabled="inactivo" type="submit" class="btn btn-success">Añadir medida</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="box-footer">
-                                    <button @click="createMeasure" :disabled="inactivo" type="submit" class="btn btn-success">Añadir medida</button>
-                                </div>
+                                <!-- /.tab-content -->
                             </div>
+                            <!-- /.nav-tabs-custom -->
                         </div>
-                        <!-- /.tab-content -->
                     </div>
-                    <!-- /.nav-tabs-custom -->
-                </div>
-            </div>
         </section>
         <!-- /.content -->
 
@@ -78,98 +80,45 @@
                 <!-- /.tab-pane -->
             </div>
         </aside>
-    </div>
-    <!-- ./wrapper -->
-</div>
-{% endblock %} {% block javascripts %}{{ super() }}
-<script>
-    var socket = io.connect('{{ domain }}');
-    var app = new Vue({
-        el: "#app",
-        delimiters: ['[[', ']]'],
-        data: {
-            id: '',
-            value: '',
-            datetime: '',
-            sensores: [
-                {% for sensor in sensores %}
+        </div>
+        <!-- ./wrapper -->
+        </div>
+        {% endblock %} {% block javascripts %}{{ super() }}
+        <script>
+            var socket = io.connect('{{ domain }}');
+            var app = new Vue({
+                el: "#app",
+                delimiters: ['[[', ']]'],
+                data: {
+                    id: '',
+                    value: '',
+                    date: '',
+                    time: '',
+                    sensores: [
+                        {% for sensor in sensores %}
 	    		    {
-            id: '{{ sensor.disID }}',
-            name: '{{ sensor.nombre }}'
-        }{% if not loop.last %}, {% endif %}
-    {% endfor %}
+                    id: '{{ sensor.disID }}',
+                    name: '{{ sensor.nombre }}'
+                }{% if not loop.last %}, {% endif %}
+            {% endfor %}
             ]
         },
-    computed: {
-        inactivo() {
-            if (this.id === '' || this.value === '' || this.datetime === '') {
-                return true;
+            computed: {
+                inactivo() {
+                    if (this.id == '' || this.value == '' || this.date == '' || this.time == '') {
+                        return true;
+                    }
+                }
+            },
+            methods: {
+                createMeasure() {
+                    socket.emit('createMeasure', {
+                        id: this.id,
+                        value: this.value,
+                        date: this.date,
+                        time: this.time
+                    });
+                },
             }
-            if (!/^\d{1,2}\/\d{1,2}\/\d{4}-\d{2}\:\d{2}$/.test(this.datetime)) return true;
-            var parts = this.datetime.split("-");
-            var date = parts[0].split("/");
-            var day = parseInt(date[0], 10);
-            var month = parseInt(date[1], 10);
-            var year = parseInt(date[2], 10);
-            var time = parts[1].split(":");
-            var hour = parseInt(time[0], 10);
-            var min = parseInt(time[1], 10);
-            // Check the ranges of month and year
-            if (year < 1000 || year > 3000 || month == 0 || month > 12)
-                return true;
-
-            var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-            // Adjust for leap years
-            if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
-                monthLength[1] = 29;
-
-            // Check the time
-            if (hour < 0 || hour > 23 || min > 59 || min < 0)
-                return true;
-            // Check the range of the day
-            return !(day > 0 && day <= monthLength[month - 1]);
-        },
-        // Se repite codigo por ser la unica forma encontrada de que esto funcionase a la vez
-        isvalidDateTime() {
-            if (this.datetime == '')
-                return true;
-            if (!/^\d{1,2}\/\d{1,2}\/\d{4}-\d{2}\:\d{2}$/.test(this.datetime))
-                return false;
-            // Parse the date parts to integers
-            var parts = this.datetime.split("-");
-            var date = parts[0].split("/");
-            var day = parseInt(date[0], 10);
-            var month = parseInt(date[1], 10);
-            var year = parseInt(date[2], 10);
-            var time = parts[1].split(":");
-            var hour = parseInt(time[0], 10);
-            var min = parseInt(time[1], 10);
-            // Check the ranges of month and year
-            if (year < 1000 || year > 3000 || month == 0 || month > 12)
-                return false;
-
-            var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-            // Adjust for leap years
-            if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
-                monthLength[1] = 29;
-
-            // Check the time
-            if (hour < 0 || hour > 23 || min > 59 || min < 0)
-                return false;
-            // Check the range of the day
-            return (day > 0 && day <= monthLength[month - 1]);
-        }
-    },
-    methods: {
-        createMeasure() {
-            socket.emit('createMeasure', {
-                id: this.id,
-                value: this.value,
-                datetime: this.datetime
-            });
-        },
-    }
         });
-</script> {% endblock %}
+        </script> {% endblock %}
