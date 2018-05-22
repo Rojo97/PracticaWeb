@@ -261,10 +261,13 @@ def new_data_template():
 @login_required
 def new_program_template():
     actuadores = models.Dispositivo.query.filter_by(tipo='Actuador').all()
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
+
     return render_template(
         'newProgram.html',
         domain=DOMAIN,
         actuadores = actuadores,
+        grupos = user.grupos,
         current_user=current_user.nombre,
     )
 @app.route('/programs')
@@ -328,7 +331,8 @@ def createProgram(createProgram):
     print(createProgram)
     programaGrupo = models.ProgramaGrupo(
         nombre = createProgram['name'],
-        descripccion = createProgram['desc']
+        descripccion = createProgram['desc'],
+        grupo = createProgram['grupo']
     )
     models.db.session.add(programaGrupo)
     try:
