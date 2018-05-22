@@ -66,6 +66,8 @@ class Grupo(db.Model):
     descripccion = Column(String(200), nullable=True)
     clase = Column(String(40), nullable=False)
     default = Column(Boolean())
+    creator = Column(ForeignKey('usuario.nickname'), nullable=False)
+
 
     usuarios = relationship('Usuario', secondary='detalleMiembro',
         backref=backref('grupos', lazy=True))
