@@ -30,6 +30,7 @@
                 <label for="progDesc">Descripción</label>
                 <input type="text" class="form-control" id="progDesc" placeholder="Descripción" v-model="desc">
               </div>
+              <label for="progDesc">Grupo</label>
               <select class="form-control select2 select2-hidden-accessible " style="width: 100% " tabindex="-1
                 " aria-hidden="true" v-model="grupo">
                 <option v-for="grupo in grupos " v-bind:value="grupo.id">[[grupo.name]]</option>
