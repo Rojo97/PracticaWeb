@@ -8,7 +8,22 @@ Vue.component("programdisplay", {
     v-if="program.group == grupoamostrar || grupoamostrar == 'Todos los grupos'"
     v-bind:key="program.id"
     v-bind:program="program"
+    v-bind:subprograms="program.subprogramas"
   ></programinfobox>
+  </div>
+  `
+});
+
+Vue.component("deviceprogramdisplay", {
+  props: ['programs','tipo','funcion'],
+  template:
+  `
+  <div>
+  <p
+    v-for="program in programs"
+    v-if="program.tipo == tipo || program.funcion == funcion"
+    <li>{{program.nombre}}</li>
+  ></p>
   </div>
   `
 });
@@ -48,14 +63,7 @@ Vue.component("programinfobox", {
                   <i class="fa"></i>
                   <big>Luces</big>
                 </strong>
-
-                <p class="text-muted">
-                  <ul>
-                    <li>Luz Salon 1</li>
-                    <li>Luz Salon 2</li>
-                    <li>Luz Salon 3</li>
-                  </ul>
-                </p>
+                <deviceprogramdisplay v-bind:programs={{program.subprogramas}} v-bind:tipo='Actuador' v-bind:funcion='Luminosidad'>
               </div>
               <div class="col-md-2">
                 <strong>

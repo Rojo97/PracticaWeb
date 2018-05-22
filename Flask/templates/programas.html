@@ -73,7 +73,15 @@
       id: '{{ program.progGID }}',
       name: '{{ program.nombre }}',
       group: '{{ program.grupo.nombre }}',
-      class: '{{program.descripccion}}'
+      class: '{{program.descripccion}}',
+      subprograms: [
+        {% for subprogram in program.subprogramas %}
+		    		{
+              nameP: '{{subprogram.Dispositivo.nombre}}',
+              tipo: '{{subprogram.Dispositivo.tipo}}',
+              funcion: '{{subprogram.Dispositivo.funcion}}'
+            }
+      ]
     }{% if not loop.last %}, {% endif %}
   {% endfor %}
       ],

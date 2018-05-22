@@ -114,6 +114,9 @@ class ProgramaGrupo(db.Model):
 
     group = relationship("Grupo")
 
+    subprogramas = relationship('ProgramaIndividual',
+        backref=backref('prog', lazy=True))
+
     #grupo = relationship('Grupo')
 
 
