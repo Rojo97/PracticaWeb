@@ -343,7 +343,7 @@ def createProgram(createProgram):
     programaGrupo = models.ProgramaGrupo(
         nombre = createProgram['name'],
         descripccion = createProgram['desc'],
-        grupo = createProgram['grupo']
+        grupoID = createProgram['grupo']
     )
     models.db.session.add(programaGrupo)
     try:
