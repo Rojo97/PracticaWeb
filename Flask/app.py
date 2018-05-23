@@ -215,9 +215,9 @@ def manage_user_groups_template():
         useraux = usuarios[:]
         group = list(filter(lambda a: a.grupoID==n.grupoID,groups))
         for s in group[0].usuarios:
-            useraux.remove(s) 
+            useraux.remove(s)
         usergroups.append({"nousuarios":useraux,  "usuarios": group[0].usuarios, "id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion, "creator": n.creator})
-            
+
     return render_template(
 
         'gestionarUsuariosGrupos.html',
@@ -309,7 +309,7 @@ def createGroup(group):
         default=False,
         clase='',
         creator=group['user'],
-        
+
     )
     models.db.session.add(newGroup)
     print(current_user)
@@ -369,16 +369,17 @@ def createProgram(createProgram):
 def createMeasure(measure):
     print(measure)
     medida = models.Medicion(
-        disID = measure['id'], 
+        disID = measure['id'],
         valor = measure['value'],
-        fecha = datetime.strptime(measure['datetime'], '%d/%m/%Y-%H:%M').date()
-    )
-        # fecha = datetime(int(measure['datetime'].split('-')[0].split('/')[2]),
-        #     int(measure['datetime'].split('-')[0].split('/')[1]),
-        #     int(measure['datetime'].split('-')[0].split('/')[0]),
-        #     int(measure['datetime'].split('-')[1].split(':')[0]),
-        #     int(measure['datetime'].split('-')[1].split(':')[1])
-        #     )
+        # fecha = datetime.strptime(measure['datetime'], '%d/%m/%Y-%H:%M').date()
+
+        fecha = datetime(int(measure['date'].split('-')[0]),
+            int(measure['date'].split('-')[1]),
+            int(measure['date'].split('-')[2]),
+            int(measure['time'].split(':')[0]),
+            int(measure['time'].split(':')[1])
+            )
+            )
     models.db.session.add(medida)
     try:
         models.db.session.commit()
