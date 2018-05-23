@@ -215,16 +215,20 @@ def manage_user_groups_template():
         useraux = usuarios[:]
         group = list(filter(lambda a: a.grupoID==n.grupoID,groups))
         for s in group[0].usuarios:
-            useraux.remove(s)
+            useraux.remove(s) 
         usergroups.append({"nousuarios":useraux,  "usuarios": group[0].usuarios, "id": n.grupoID, "name": n.nombre, "num": len(n.usuarios), "class": n.clase, "desc": n.descripccion, "creator": n.creator})
-
+            
     return render_template(
 
         'gestionarUsuariosGrupos.html',
         domain=DOMAIN,
+        usergroups=usergroups,  
+        users=usuarios,      
         current_user=current_user.nombre,
         current_nickname=current_user.nickname
     )
+
+
 
 @app.route('/group/<int:groupID>')
 @login_required
