@@ -72,6 +72,12 @@ class Grupo(db.Model):
     usuarios = relationship('Usuario', secondary='detalleMiembro',
         backref=backref('grupos', lazy=True))
 
+    programas = relationship('ProgramaGrupo',
+        backref=backref('grupo', lazy=True))
+
+    #programa = relationship('ProgramaGrupo', back_populates='gruporef')
+    #progs = relationship("ProgramaGrupo", back_populates="grup")
+
 
 
 class Dispositivo(db.Model):
@@ -109,7 +115,12 @@ class ProgramaGrupo(db.Model):
     nombre = Column(String(20), nullable=False)
     descripccion = Column(String(200), nullable=True)
 
-    Grupo = relationship('Grupo')
+    group = relationship("Grupo")
+
+    subprogramas = relationship('ProgramaIndividual',
+        backref=backref('prog', lazy=True))
+
+    #grupo = relationship('Grupo')
 
 
 class ProgramaIndividual(db.Model):

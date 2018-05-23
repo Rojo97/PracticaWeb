@@ -87,7 +87,7 @@ def new_groups_template():
 @app.route('/group/<int:groupID>/update')
 @login_required
 def updateGroup(groupID):
-    
+
     group = models.Grupo.query.filter_by(grupoID=groupID).one()
     devicesInGroup = group.dispositivos
     user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
@@ -100,7 +100,7 @@ def updateGroup(groupID):
         idgrupo = groupID,
         devicesInGroup = devicesInGroup,
         devicesNotInGroup = alldevices,
-        domain=DOMAIN,        
+        domain=DOMAIN,
         current_user=current_user.nombre,
     )
 
@@ -222,8 +222,6 @@ def manage_user_groups_template():
 
         'gestionarUsuariosGrupos.html',
         domain=DOMAIN,
-        usergroups=usergroups,  
-        users=usuarios,      
         current_user=current_user.nombre,
         current_nickname=current_user.nickname
     )
@@ -273,17 +271,29 @@ def new_program_template():
 @app.route('/programs')
 @login_required
 def programs_template():
-    programs = [
-      { "id": 1, "group": "Cochera", "name": "Luces de la cochera", "class": "fa-clock-o"},
-      { "id": 2, "group": "Salón", "name": "Luces del salon", "class": "fa-clock-o"},
-      { "id": 3, "group": "Salón", "name": "Temperatura del salon", "class": "fa-clock-o"},
-      { "id": 4, "group": "Cocina", "name": "Luces de la cocina", "class": "fa-clock-o"},
-      { "id": 5, "group": "Cocina", "name": "Temperatura de la cocina", "class": "fa-clock-o"},
-    ]
+    user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()
+
+    grupos = user.grupos
+    print(len(grupos))
+    programs = []
+    groups = []
+    for grupo in grupos:
+        if len(grupo.programas)>0:
+            groups.append(grupo)
+        for programa in grupo.programas:
+            print(len(grupo.programas))
+            programs.append(programa)
+
+    print("PROGRAMAS")
+    print(len(programs))
+    print("GRUPOS")
+    print(len(groups))
+
     return render_template(
         'programas.html',
         domain=DOMAIN,
         programs=programs,
+        groups = groups,
         current_user=current_user.nombre,
     )
 
@@ -292,7 +302,7 @@ def programs_template():
 
 @socketio.on('createGroup')
 def createGroup(group):
-    
+
     newGroup = models.Grupo(
         nombre=group['name'],
         descripccion=group['desc'],
@@ -324,7 +334,7 @@ def createGroup(group):
                 models.db.session.rollback()
     except Exception as ex:
         print("Peligro: "+str(ex))
-        models.db.session.rollback()    
+        models.db.session.rollback()
 
 
 @socketio.on('createProgram')
@@ -333,7 +343,7 @@ def createProgram(createProgram):
     programaGrupo = models.ProgramaGrupo(
         nombre = createProgram['name'],
         descripccion = createProgram['desc'],
-        grupo = createProgram['grupo']
+        grupoID = createProgram['grupo']
     )
     models.db.session.add(programaGrupo)
     try:
@@ -415,10 +425,10 @@ def createUser(user):
         newDetalle = models.DetalleMiembro(
             grupoID=newGroup.grupoID,
             nickname=newUser.nickname
-            
+
         )
         models.db.session.add(newDetalle)
-        models.db.session.commit()   
+        models.db.session.commit()
     except Exception as ex:
         print(ex)
         models.db.session.rollback()
@@ -451,7 +461,7 @@ def createSensor(sensor):
             models.db.session.commit()
         user = models.Usuario.query.filter_by(nickname=current_user.nickname).one()#filter_by(nickname=current_user.nickname).all()
         grupos = list(filter(lambda a: a.default == True,user.grupos))
-    
+
         newDetalle = models.DetalleDispositivo(
             grupoID=grupos[0].grupoID,
             disID=newSensor.disID
@@ -529,7 +539,7 @@ def removeDeviceFromGroup(devices):
     except Exception as ex:
         print(ex)
         models.db.session.rollback()
-    
+
 @socketio.on('cambiarEstadoLuz')
 def cambiarEstadoLuz(device):
     print("Hola")
@@ -576,6 +586,6 @@ def cambiarEstado(device):
         emit('reload',models.model_to_dict(disp, models.Dispositivo))
 
 
-    
+
 if __name__ == '__main__':
     socketio.run(app)

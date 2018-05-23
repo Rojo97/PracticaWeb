@@ -12,8 +12,20 @@ Vue.component("programdisplay", {
   </div>
   `
 });
+
+Vue.component("deviceprogramdisplay", {
+  props: ['programs','tipo','funcion'],
+  template:
+  `
+  <ul>
+<li v-for="program in programs"
+  v-if="program.funcion == funcion">{{program.nameP}}</li>
+  </ul>
+  `
+});
+
 Vue.component("programinfobox", {
-  props:["program"],
+  props:['program'],
   template:
   `
   <div class="box box-default">
@@ -42,68 +54,31 @@ Vue.component("programinfobox", {
           <!-- /.box-header -->
           <div class="box-body" style="display: none; margin-top:2%">
             <div class="row">
-              <div class="col-md-2" style="margin-left:7%">
+              <div class="col-md-3" style="margin-left:7%">
                 <strong>
                   <i class="fa"></i>
                   <big>Luces</big>
                 </strong>
-
                 <p class="text-muted">
-                  <ul>
-                    <li>Luz Salon 1</li>
-                    <li>Luz Salon 2</li>
-                    <li>Luz Salon 3</li>
-                  </ul>
+                <deviceprogramdisplay v-bind:programs="program.subprograms" v-bind:funcion="'Luminosidad'"></deviceprogramdisplay>
                 </p>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <strong>
                   <i class="fa"></i>
                   <big>Persianas</big>
                 </strong>
-
                 <p class="text-muted">
-                  <ul>
-                    <li>Persiana 1</li>
-                    <li>Persiana 2</li>
-                  </ul>
+                <deviceprogramdisplay v-bind:programs="program.subprograms" v-bind:funcion="'Persianas'"></deviceprogramdisplay>
                 </p>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <strong>
                   <i class="fa"></i>
                   <big>Termostatos</big>
                 </strong>
-
                 <p class="text-muted">
-                  <ul>
-                    <li>Termostato 1</li>
-                  </ul>
-                </p>
-              </div>
-              <div class="col-md-2">
-                <strong>
-                  <i class="fa"></i>
-                  <big>Sensores luminosidad</big>
-                </strong>
-
-                <p class="text-muted">
-                  <ul>
-                    <li>Luminosidad 1</li>
-                    <li>Luminosidad 2</li>
-                  </ul>
-                </p>
-              </div>
-              <div class="col-md-2">
-                <strong>
-                  <i class="fa"></i>
-                  <big>Termometros</big>
-                </strong>
-
-                <p class="text-muted">
-                  <ul>
-                    <li>Termometro 1</li>
-                  </ul>
+                <deviceprogramdisplay v-bind:programs="program.subprograms" v-bind:funcion="'Temperatura'"></deviceprogramdisplay>
                 </p>
               </div>
               <hr>
@@ -115,4 +90,3 @@ Vue.component("programinfobox", {
         </div>
   `
 });
-

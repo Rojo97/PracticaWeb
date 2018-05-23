@@ -70,13 +70,30 @@
       programs: [
         {% for program in programs %}
 		    		{
-      id: '{{ program.id }}',
-      name: '{{ program.name }}',
-      group: '{{ program.group }}',
-      class: '{{program.class}}'
-    }{% if not loop.last %}, {% endif %}
-  {% endfor %}
-      ],
+          id: '{{ program.progGID }}',
+          name: '{{ program.nombre }}',
+          group: '{{ program.grupo.nombre }}',
+          class: '{{program.descripccion}}',
+          subprograms: [
+            {% for subprogram in program.subprogramas %}
+                {
+                  nameP: '{{subprogram.Dispositivo.nombre}}',
+                  tipo: '{{subprogram.Dispositivo.tipo}}',
+                  funcion: '{{subprogram.Dispositivo.funcion}}'
+                }{% if not loop.last %}, {% endif %}
+              {% endfor %}
+          ],
+        }{% if not loop.last %}, {% endif %}
+              {% endfor %}
+          ],
+      // groups: [
+      //   {% for group in groups %}
+		  //   		{
+      //     id: '{{ group.grupoID }}',
+      //     name: '{{ group.nombre }}'
+      //     }{% if not loop.last %}, {% endif %}
+      //   {% endfor %}
+      // ],
   grupoamostrar: 'Todos los grupos'
     },
   computed: {
