@@ -19,7 +19,12 @@ Vue.component("deviceprogramdisplay", {
   `
   <ul>
 <li v-for="program in programs"
-  v-if="program.funcion == funcion">{{program.nameP}}</li>
+  v-if="program.funcion == funcion">
+  {{program.nameP}} -
+  [{{program.horaIni}},
+  {{program.horaFin}}]
+  <i class="fa fa-trash" style="color:red">
+  </li>
   </ul>
   `
 });

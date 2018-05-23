@@ -79,7 +79,9 @@
                 {
                   nameP: '{{subprogram.Dispositivo.nombre}}',
                   tipo: '{{subprogram.Dispositivo.tipo}}',
-                  funcion: '{{subprogram.Dispositivo.funcion}}'
+                  funcion: '{{subprogram.Dispositivo.funcion}}',
+                  horaIni: '{{subprogram.fechaIni}}',
+                  horaFin: '{{subprogram.fechaFin}}'
                 }{% if not loop.last %}, {% endif %}
               {% endfor %}
           ],
