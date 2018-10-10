@@ -9,7 +9,6 @@ Al introducir el archivo html que se cree en la carpeta raiz de adminLTE se podr
 
 ### Uso del repositorio
 
-Un pequeño resumen para victor que es la primera vez que utiliza esto.
 Para organizarnos todo mejor hay una lista de issues con partes de la entrega a elaborar, cuando vayais a trabajar en una asignarosla y así sabemos que uno ya está haciendo ese trabajo.
 Por cada issue cread una rama que salga de develop y cuyo nombre sea feature-nombre y en la que se resuelva toda la issue. Una vez acabada la funcionalidad haced un merge request hacia 
 develop poniendo como revisores a los demás para que veamos todo. Al mergear, si en los comentarios poneis fix #numeroDeIssue ese merge quedará asociado a la issue y así será más facil
